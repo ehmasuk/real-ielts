@@ -20,5 +20,8 @@
   "packageManager": "pnpm@10.33.4",
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
   }
 }
