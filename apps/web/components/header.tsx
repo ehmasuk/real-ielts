@@ -1,26 +1,36 @@
 "use client"
 
 import * as React from "react"
+import { useSyncExternalStore } from "react"
 import Link from "next/link"
 import { useTheme } from "next-themes"
-import { BookOpen, Moon, Sun, Menu, X, Award, Flame, GraduationCap } from "lucide-react"
+import { BookOpen, Moon, Sun, Menu, X, GraduationCap, Headphones, PenTool, Mic } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
+
+interface NavLink {
+  href: string
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+  disabled?: boolean
+  badge?: string
+}
+
+// SSR-safe client detection — avoids set-state-in-effect lint warning
+const subscribe = () => () => {}
+function useIsClient() {
+  return useSyncExternalStore(subscribe, () => true, () => false)
+}
 
 export function Header() {
   const { resolvedTheme, setTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
+  const mounted = useIsClient()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
-  // Avoid hydration mismatch by waiting for mount
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const navLinks = [
-    { href: "/", label: "Practice Tests", icon: BookOpen },
-    { href: "#", label: "Full Mock Exams", icon: GraduationCap },
-    { href: "#", label: "Writing Evaluator", icon: Award },
-    { href: "#", label: "Daily Challenge", icon: Flame, badge: "New" },
+  const navLinks: NavLink[] = [
+    { href: "/listening", label: "Listening", icon: Headphones },
+    { href: "/reading", label: "Reading", icon: BookOpen },
+    { href: "/writing", label: "Writing", icon: PenTool },
+    { href: "/speaking", label: "Speaking", icon: Mic, disabled: true },
   ]
 
   return (
@@ -43,6 +53,21 @@ export function Header() {
         <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => {
             const Icon = link.icon
+            if (link.disabled) {
+              return (
+                <div
+                  key={link.label}
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground/40 cursor-not-allowed select-none"
+                  title={`${link.label} - Coming Soon`}
+                >
+                  <Icon className="h-4 w-4 text-muted-foreground/30" />
+                  {link.label}
+                  <span className="ml-1 rounded-full bg-muted/60 px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground/50 border border-border/20">
+                    Soon
+                  </span>
+                </div>
+              )
+            }
             return (
               <Link
                 key={link.label}
@@ -120,6 +145,20 @@ export function Header() {
           <nav className="flex flex-col gap-2">
             {navLinks.map((link) => {
               const Icon = link.icon
+              if (link.disabled) {
+                return (
+                  <div
+                    key={link.label}
+                    className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground/40 cursor-not-allowed select-none"
+                  >
+                    <Icon className="h-4 w-4 text-muted-foreground/30" />
+                    {link.label}
+                    <span className="ml-auto rounded-full bg-muted/60 px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground/50 border border-border/20">
+                      Soon
+                    </span>
+                  </div>
+                )
+              }
               return (
                 <Link
                   key={link.label}

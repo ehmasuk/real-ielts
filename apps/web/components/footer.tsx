@@ -18,12 +18,6 @@ export function Footer() {
     { href: "#", label: "Band Score Estimator" },
   ]
 
-  const companyLinks = [
-    { href: "#", label: "About Us" },
-    { href: "#", label: "FAQ & Help" },
-    { href: "#", label: "Contact Support" },
-    { href: "#", label: "Terms of Service" },
-  ]
 
   return (
     <footer className="w-full border-t border-border/40 bg-muted/30 dark:bg-muted/10">
