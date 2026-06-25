@@ -1,7 +1,5 @@
 import { Geist_Mono, Inter } from "next/font/google"
 
-import { Footer } from "@/components/footer"
-import { Header } from "@/components/header"
 import { ThemeProvider } from "@/components/theme-provider"
 import "@workspace/ui/globals.css"
 import { cn } from "@workspace/ui/lib/utils"
@@ -30,9 +28,7 @@ export default function RootLayout({
       )}
     >
       <body>
-        <Header />
         <ThemeProvider>{children}</ThemeProvider>
-        <Footer />
       </body>
     </html>
   )

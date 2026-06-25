@@ -1,79 +1,349 @@
-# REAL IELTS: Software Requirements Specification (SRS)
+# IELTS Practice Platform - Frontend SRS
 
-This document outlines the architecture, routing, and synchronization strategy across the **Web frontend**, **API backend**, and **Admin panel** to support scale, additional book series, and dynamic IELTS mock test practice.
+## 1. Objective
 
----
+Develop a modern IELTS Computer Delivered Practice Platform that provides:
 
-## 1. Directory & Routing Architecture
+* Listening Practice
+* Reading Practice
+* Writing Practice
+* Speaking Practice (Future)
+* Module-based practice
+* Full-test simulation
+* Detailed result diagnostics
+* Responsive desktop and mobile experience
 
-To keep the application highly extensible, URLs are built using dynamic slug structures:
-- `[book-id]`: The book slug (e.g., `cambridge-20`, `barrons-1`).
-- `[test-id]`: The practice test (e.g., `test-1`, `test-2`).
-- `[part-id]`: The individual exam part (e.g., `part-1`, `part-2`, `part-3`, `part-4`).
-- `[skill]`: The exam skill category (`listening`, `reading`, `writing`, `speaking`).
+Primary focus:
 
----
-
-## 2. Web Frontend (Next.js App Router)
-
-### 2.1 Core Pages
-- **Home (`/`)**: High-converting landing page highlighting features, stats, and call-to-actions linking to individual skill preparation rooms.
-- **Listening Rooms (`/listening`)**: Directory listing of all listening practice tests (Cambridge 1-20+).
-- **Reading Rooms (`/reading`)**: Directory listing of reading sections.
-- **Writing Rooms (`/writing`)**: Directory listing of writing templates and evaluator prompts.
-- **Speaking Rooms (`/speaking`)**: Practice room with topics, recording triggers, and feedback loops (Disabled/Coming Soon).
-
-### 2.2 Test Simulator
-- **Test Practice Page (`/test/[book-id]/[test-id]/[part-id]/[skill]`)**:
-  - *Layout*: Splitted screen (Content/Questions & Media Player).
-  - *Features*: Interactive questions panel, audio player (for listening), text highlighters (for reading), dynamic countdown timer.
-  - *Future extension*: `/test/[book-id]/[test-id]/full` for full, continuous multi-skill practice tests.
-- **Result Diagnostics (`/test/[book-id]/[test-id]/[part-id]/[skill]/result`)**:
-  - Detailed diagnostic breakdown of scores, mistakes, and model answers.
-
-### 2.3 Tips & Support
-- **Tips & Tricks (`/test/[book-id]/[test-id]/[part-id]/[skill]/tips`)**:
-  - Skill-specific strategies, vocabulary lists, and walkthrough transcripts.
+* Exam-like environment
+* Fast navigation
+* Minimal distractions
+* High performance
 
 ---
 
-## 3. Backend API (Node.js Express / Fastify)
+## 2. Frontend Technology Stack
 
-To feed the frontend, the API endpoints match the frontend page parameters and hierarchy.
+Framework:
 
-### 3.1 Book & Test Management
-- `GET /api/v1/books`
-  - *Description*: Retrieve list of all practice books. Filters: `?series=cambridge`, `?skill=listening`.
-- `GET /api/v1/books/:bookId/tests/:testId`
-  - *Description*: Retrieve full test metadata.
-- `GET /api/v1/books/:bookId/tests/:testId/parts/:partId/:skill`
-  - *Description*: Fetch the dynamic quiz schema (questions, input types, audio URI, transcripts, resources).
+* Next.js App Router
 
-### 3.2 Submissions & Grading
-- `POST /api/v1/submissions/start`
-  - *Payload*: `{ bookId, testId, partId, skill }`
-  - *Response*: `{ submissionId, questions, timerLimit }`
-- `POST /api/v1/submissions/:submissionId/submit`
-  - *Payload*: `{ answers: { [questionId]: value } }`
-  - *Response*: `{ score, bandScore, mistakes: [...] }`
-- `GET /api/v1/submissions/:submissionId/result`
-  - *Description*: Fetch calculated score, band, correct answers, and feedback explanation.
+Language:
 
-### 3.3 Educational Content
-- `GET /api/v1/tips/:bookId/:testId/:partId/:skill`
-  - *Description*: Returns specific explanation hints, band descriptors, and vocabulary resources.
+* TypeScript
+
+Styling:
+
+* Tailwind CSS
+* Shadcn UI
+
+Authentication:
+
+* Better Auth
+
+State Management:
+
+* Zustand
+
+Data Fetching:
+
+* TanStack Query
+
+Forms:
+
+* React Hook Form
+
+Media:
+
+* HTML Audio API
 
 ---
 
-## 4. Admin Panel (Next.js / Dashboard)
+## 3. Routing Structure
 
-The Admin panel is designed to manage this relational structure so that content managers can easily seed and update exams.
+### Public Routes
 
-### 4.1 Content Directories
-- `/admin/books`: Create/delete practice books (title, cover colors, publisher series).
-- `/admin/books/:bookId/tests`: Manage tests under a specific book.
-- `/admin/books/:bookId/tests/:testId/parts`: Define exam parts, set timings, upload audio files, and write tips & tricks.
+/
+|-- /listening
+|-- /reading
+|-- /writing
+|-- /speaking
 
-### 4.2 Editor Suite
-- **Question Editor**: WYSIWYG editor to design split-screen layouts, insert gap-fills, multiple choice, matching headings, and input validation schemas.
-- **Answers Key Matrix**: Mapping questions to correct regex patterns and writing modular feedback explanation cards.
+### Book Routes
+
+/[skill]
+└── /[book-id]
+
+Example:
+
+/listening/cambridge-20
+
+### Test Routes
+
+/test/[book-id]/[test-id]
+
+Example:
+
+/test/cambridge-20/test-1
+
+### Module Practice
+
+/test/[book-id]/[test-id]/[skill]
+
+Examples:
+
+/test/cambridge-20/test-1/listening
+/test/cambridge-20/test-1/reading
+
+### Part Practice
+
+/test/[book-id]/[test-id]/[skill]/[part-id]
+
+Examples:
+
+/test/cambridge-20/test-1/listening/part-1
+/test/cambridge-20/test-1/reading/part-2
+
+### Full Test Simulation
+
+/test/[book-id]/[test-id]/full
+
+### Result Pages
+
+/result/[attempt-id]
+
+---
+
+## 4. Core Layouts
+
+### Public Layout
+
+Components:
+
+* Header
+* Footer
+* Navigation
+* Authentication Controls
+
+### Exam Layout
+
+Components:
+
+* Top Timer
+* Main Content Area
+* Question Panel
+* Audio Controller
+* Submit Button
+
+Rules:
+
+* No footer
+* No unnecessary navigation
+* Focus mode enabled
+
+---
+
+## 5. Home Page
+
+URL:
+
+/
+
+Sections:
+
+* Hero Section
+* Cambridge Book Listing
+* Feature Highlights
+* Why Computer Delivered Practice
+* Testimonials
+* CTA Section
+
+---
+
+## 6. Skill Pages
+
+### Listening
+
+/listening
+
+Features:
+
+* Book listing
+* Search
+* Pagination
+* Recent attempts
+
+### Reading
+
+/reading
+
+Features:
+
+* Book listing
+* Search
+* Pagination
+
+### Writing
+
+/writing
+
+Features:
+
+* Task 1
+* Task 2
+* Evaluation information
+
+### Speaking
+
+/ speaking
+
+Status:
+
+Coming Soon
+
+---
+
+## 7. Test Simulation Page
+
+Route:
+
+/test/[book-id]/[test-id]/[skill]
+
+Features:
+
+* Question navigation
+* Progress tracker
+* Timer
+* Answer persistence
+* Responsive layout
+
+### Listening Specific
+
+* Embedded audio player
+* Auto play support
+* Playback lock (future)
+* Question synchronization
+
+### Reading Specific
+
+* Split screen layout
+* Passage panel
+* Question panel
+* Text highlight support
+
+### Writing Specific
+
+* Word counter
+* Timer
+* Draft autosave
+
+---
+
+## 8. Full Test Mode
+
+Route:
+
+/test/[book-id]/[test-id]/full
+
+Flow:
+
+Listening
+↓
+Reading
+↓
+Writing
+
+Features:
+
+* Unified timer
+* Section transitions
+* Full exam simulation
+
+---
+
+## 9. Result Page
+
+Route:
+
+/result/[attempt-id]
+
+Features:
+
+* Overall score
+* Band score
+* Correct answers
+* Wrong answers
+* Performance analytics
+* Review mode
+
+---
+
+## 10. Authentication Experience
+
+Guest User:
+
+* Can browse tests
+* Can open simulator
+* Can answer questions
+
+Guest Restrictions:
+
+* Cannot submit
+* Cannot view results
+* Cannot save attempts
+
+Authenticated User:
+
+* Submit answers
+* View results
+* Save history
+* Access analytics
+
+---
+
+## 11. State Management
+
+Global State:
+
+* Current Test
+* Current Part
+* Current Answers
+* Remaining Time
+* Audio Status
+* Authentication State
+
+Local State:
+
+* Form Inputs
+* Question Navigation
+
+---
+
+## 12. Data Loading Strategy
+
+Server Components:
+
+* Book Lists
+* Test Lists
+
+Client Components:
+
+* Timer
+* Audio Player
+* Question Inputs
+* Navigation Panel
+
+---
+
+## 13. Future Features
+
+* AI Writing Evaluation
+* AI Speaking Evaluation
+* Bookmarks
+* Mistake Notebook
+* Performance Dashboard
+* Leaderboard
+* Dark Mode
+* Offline Practice
+* PWA Support
+* Multi-provider Test Sources

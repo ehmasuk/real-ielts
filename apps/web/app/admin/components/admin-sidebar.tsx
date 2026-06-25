@@ -1,0 +1,211 @@
+"use client"
+
+import * as React from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import {
+  LayoutDashboard,
+  BookOpen,
+  FileText,
+  Upload,
+  ShieldCheck,
+  GraduationCap,
+  ChevronLeft,
+} from "lucide-react"
+import { cn } from "@workspace/ui/lib/utils"
+import { Button } from "@workspace/ui/components/button"
+import { Separator } from "@workspace/ui/components/separator"
+import { ScrollArea } from "@workspace/ui/components/scroll-area"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@workspace/ui/components/tooltip"
+
+interface NavItem {
+  href: string
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+  badge?: string
+}
+
+interface NavGroup {
+  title: string
+  items: NavItem[]
+}
+
+const navGroups: NavGroup[] = [
+  {
+    title: "",
+    items: [
+      { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    ],
+  },
+  {
+    title: "Content",
+    items: [
+      { href: "/admin/books", label: "Books", icon: BookOpen },
+      { href: "/admin/tests", label: "Tests", icon: FileText },
+    ],
+  },
+  {
+    title: "Operations",
+    items: [
+      { href: "/admin/imports", label: "Imports", icon: Upload },
+    ],
+  },
+]
+
+interface AdminSidebarProps {
+  collapsed: boolean
+  onToggle: () => void
+}
+
+export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
+  const pathname = usePathname()
+
+  const isActive = (href: string) => {
+    if (href === "/admin") return pathname === "/admin"
+    return pathname.startsWith(href)
+  }
+
+  return (
+    <aside
+      className={cn(
+        "flex h-full flex-col border-r border-border/40 bg-sidebar transition-all duration-300 ease-in-out",
+        collapsed ? "w-[68px]" : "w-[260px]"
+      )}
+    >
+      {/* Logo */}
+      <div className="flex h-16 items-center justify-between px-4 border-b border-border/40">
+        <Link
+          href="/admin"
+          className={cn(
+            "flex items-center gap-2.5 font-bold tracking-tight transition-all",
+            collapsed && "justify-center"
+          )}
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/20">
+            <GraduationCap className="h-5 w-5" />
+          </span>
+          {!collapsed && (
+            <div className="flex flex-col">
+              <span className="text-sm font-bold text-sidebar-foreground">Real IELTS</span>
+              <span className="text-[10px] font-medium text-muted-foreground">Admin Panel</span>
+            </div>
+          )}
+        </Link>
+        {!collapsed && (
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={onToggle}
+            className="h-7 w-7 rounded-lg text-muted-foreground hover:text-foreground"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      {/* Navigation */}
+      <ScrollArea className="flex-1 px-3 py-4">
+        <nav className="flex flex-col gap-1">
+          {navGroups.map((group, groupIdx) => (
+            <div key={group.title || `group-${groupIdx}`}>
+              {group.title && !collapsed && (
+                <div className="mb-1.5 mt-4 px-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                  {group.title}
+                </div>
+              )}
+              {group.title && collapsed && groupIdx > 0 && (
+                <Separator className="my-3 opacity-30" />
+              )}
+              {group.items.map((item) => {
+                const Icon = item.icon
+                const active = isActive(item.href)
+                const isSoon = item.badge === "Soon"
+
+                const linkContent = (
+                  <Link
+                    href={isSoon ? "#" : item.href}
+                    className={cn(
+                      "group flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-all duration-150",
+                      active
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+                        : "text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
+                      isSoon && "pointer-events-none opacity-40",
+                      collapsed && "justify-center px-2"
+                    )}
+                    onClick={isSoon ? (e) => e.preventDefault() : undefined}
+                  >
+                    <Icon
+                      className={cn(
+                        "h-4 w-4 shrink-0 transition-colors",
+                        active
+                          ? "text-indigo-500 dark:text-indigo-400"
+                          : "text-muted-foreground/70 group-hover:text-foreground"
+                      )}
+                    />
+                    {!collapsed && (
+                      <>
+                        <span className="flex-1">{item.label}</span>
+                        {item.badge && (
+                          <span className="rounded-md bg-muted px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground/60">
+                            {item.badge}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </Link>
+                )
+
+                if (collapsed) {
+                  return (
+                    <Tooltip key={item.href} delayDuration={0}>
+                      <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
+                      <TooltipContent side="right" sideOffset={8}>
+                        <p>{item.label}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )
+                }
+
+                return <React.Fragment key={item.href}>{linkContent}</React.Fragment>
+              })}
+            </div>
+          ))}
+        </nav>
+      </ScrollArea>
+
+      {/* Collapse toggle (when collapsed) */}
+      {collapsed && (
+        <div className="border-t border-border/40 p-2">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={onToggle}
+            className="mx-auto flex h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
+          >
+            <ChevronLeft className="h-4 w-4 rotate-180" />
+          </Button>
+        </div>
+      )}
+
+      {/* Bottom section */}
+      {!collapsed && (
+        <div className="border-t border-border/40 p-3">
+          <div className="flex items-center gap-3 rounded-lg bg-muted/40 p-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 text-xs font-bold text-white">
+              A
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="truncate text-xs font-semibold text-foreground">Admin User</p>
+              <p className="truncate text-[10px] text-muted-foreground">super_admin</p>
+            </div>
+            <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+          </div>
+        </div>
+      )}
+    </aside>
+  )
+}
