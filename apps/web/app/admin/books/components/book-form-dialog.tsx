@@ -132,7 +132,7 @@ export function BookFormDialog({
             </Button>
             <Button
               type="submit"
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500"
+              className="bg-linear-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500"
             >
               {isEdit ? "Save Changes" : "Create Book"}
             </Button>

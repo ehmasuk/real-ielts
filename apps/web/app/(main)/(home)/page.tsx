@@ -10,7 +10,7 @@ export default function Page() {
     <div className="flex flex-col w-full pb-20">
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-indigo-50/50 via-background to-background dark:from-indigo-950/20 py-20 lg:py-28">
+      <section className="relative overflow-hidden bg-linear-to-b from-indigo-50/50 via-background to-background dark:from-indigo-950/20 py-20 lg:py-28">
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]" />
         
         {/* Subtle glowing elements */}
@@ -27,7 +27,7 @@ export default function Page() {
 
           {/* Heading */}
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground max-w-4xl mx-auto leading-[1.15] mb-6">
-            Practice for the <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400">Computer-Delivered</span> IELTS Exam
+            Practice for the <span className="bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400">Computer-Delivered</span> IELTS Exam
           </h1>
 
           {/* Subheading */}
@@ -38,7 +38,7 @@ export default function Page() {
           {/* Hero CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <Link href="/listening" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full h-12 px-8 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold shadow-lg shadow-indigo-600/10 rounded-xl transition-all hover:scale-[1.02]">
+              <Button size="lg" className="w-full h-12 px-8 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold shadow-lg shadow-indigo-600/10 rounded-xl transition-all hover:scale-[1.02]">
                 Start Free Practice
               </Button>
             </Link>

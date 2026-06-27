@@ -1,4 +1,4 @@
-# IELTS Practice Platform - SRS v3
+# IELTS Practice Platform - SRS
 
 ## Project Design Philosophy & Simplicity Policy
 
@@ -21,8 +21,6 @@ Test
 
 - contentJson
 - answerJson
-
-- version
 
 - createdAt
 - updatedAt
@@ -59,9 +57,7 @@ TestContent {
     | "writing"
     | "speaking"
 
-  version: string
-
-  modules: Module[]
+  sections: Section[]
 }
 ```
 
@@ -200,32 +196,6 @@ lastSavedAt
 
 ---
 
-# Versioning System
-
-Each test version is immutable.
-
-```txt
-Test
-- version
-```
-
-Example:
-
-```txt
-1.0
-1.1
-1.2
-```
-
-Attempt stores:
-
-```txt
-Attempt
-- testVersion
-```
-
-This guarantees old attempts always remain valid.
-
 ---
 
 # Updated Block Architecture
@@ -253,7 +223,7 @@ Example:
 {
   "id": "4f8abf3f-37d8-4dc8-b3aa-ef1234567890",
 
-  "type": "mcq",
+  "type": "mcq_single",
 
   "questionRange": {
     "start": 1,
@@ -339,7 +309,25 @@ Future-proof for:
 
 ---
 
-# Listening Audio Block
+# Listening Audio Source
+
+Each listening part (section) requires an `audio_url` field inside the section object.
+
+```ts
+"sections": [
+  {
+    "id": "part_1",
+    "title": "Part 1",
+    "audio_url": "https://res.cloudinary.com/.../part1.mp3",
+    ...
+  }
+]
+```
+
+The value is a direct URL to the audio stream for that specific part. Admins add it
+directly in the section object alongside `title`, `passage`, and `questionGroups`.
+
+For per-block audio, use:
 
 ```ts
 AudioBlock {
@@ -451,7 +439,6 @@ USER
 TEST
 ├── contentJson
 ├── answerJson
-├── version
 └── media assets
 
 Renderer
@@ -601,6 +588,9 @@ Content
 
 Operations
 └── Imports
+
+Reference
+└── Schemas
 ```
 
 ---
@@ -763,6 +753,14 @@ Edits:
 contentJson
 ```
 
+### Listening Audio Source
+
+When the test skill is `listening`, add `audio_url` inside each section object
+(alongside `title`, `passage`, and `questionGroups`).
+
+Validation checks warn if a listening part is missing `audio_url`.
+The Preview tab renders a playable audio player when the field is set.
+
 ---
 
 ## Answers Tab
@@ -827,29 +825,155 @@ Preview uses the same renderer engine as the student application.
 
 ---
 
-## Versions Tab
+---
 
-Displays version history.
+# 16.8 Schema Reference
 
-Example:
-
-```txt
-1.0
-1.1
-1.2
-```
-
-Actions:
+### Route
 
 ```txt
-View
-Compare
-Restore
+/admin/schemas
 ```
+
+### Purpose
+
+Provides a quick reference for standard `contentJson` and `answerJson` structures. Admins can copy-paste example schemas directly into the Test Editor.
+
+### Schema Structure
+
+Each section (part) contains `questionGroups[]` — a layer between the section and its questions.
+Each group has `instructions` (e.g. "Choose the correct letter, A, B or C.") and
+`questionRange` (e.g. "1-5") that maps to the IELTS question block format.
+
+```txt
+sections[]
+  └── questionGroups[]
+        ├── type: "sentence_completion" | "mcq_single" | "mcq_multiple" | "table_completion" | "notes_completion" | "diagram_labeling" | "statement_judgement"
+       ├── instructions: string
+       ├── questionRange: string
+        └── questions[]
+             ├── questionId: string
+            ├── number: number
+            ├── question: string
+            └── options: string[]
+```
+
+For `table_completion` groups, use `layout` instead of `questions[]`. Each cell is an **array** of inline items:
+
+```txt
+table_completion group
+  └── layout
+       ├── columns: string[]
+       └── rows: array of arrays
+            └── cells: array of items
+                 ├── { type: "text", text: string }
+                 └── { type: "question", questionId, number }
+```
+
+For `notes_completion` groups, use `layout` with `blocks[]`:
+
+```txt
+notes_completion group
+  └── layout
+       └── blocks[]
+                 ├── { type: "heading", text: string }
+                 └── { type: "paragraph", content: array }
+                      ├── { type: "text", text: string }
+                      └── { type: "question", questionId, number, question }
+```
+
+For `diagram_labeling` groups, use `image_src` + shared `options`:
+
+```txt
+diagram_labeling group
+  ├── image_src: string
+  ├── options: string[]
+  └── questions[]
+       ├── questionId, number
+       └── question: label text
+```
+
+For `mcq_multiple` groups, use a shared question stem with a group-level `questionId`:
+
+```txt
+mcq_multiple group
+  ├── questionId: string (e.g. "q17_q18")
+  ├── select: number (e.g. 2)
+  ├── questionNumbers: number[] (e.g. [17, 18])
+  ├── question: string (shared stem)
+  └── options: string[] (shared choices)
+```
+
+Answer is an array: `"q17_q18": ["Climate change", "Urban planning"]`
+
+| Module    | Question Types                         |
+|-----------|----------------------------------------|
+| Listening | `sentence_completion`, `mcq_single`, `mcq_multiple`, `table_completion`, `notes_completion`, `diagram_labeling` |
+| Reading   | `statement_judgement`, `sentence_completion`, `mcq_single`, `mcq_multiple` |
+
+### Reading Schema Reference (`/admin/schemas`)
+
+Same Structure page as Listening, but the full JSON example uses a **reading** test:
+
+```json
+{
+  "title": "Cambridge IELTS 20 Test 1 Reading",
+  "sections": [
+    {
+      "id": "passage_1",
+      "title": "Reading Passage 1",
+      "instructions": "You should spend about 20 minutes on Questions 1–13...",
+      "passage": {
+        "title": "The History of Tennis",
+        "blocks": [
+          { "type": "heading", "text": "Introduction" },
+          { "type": "paragraph", "text": "The game originated in 12th century France..." },
+          { "type": "image", "src": "/images/tennis-court.png", "caption": "Figure 1" },
+          {
+            "type": "table",
+            "columns": ["Year", "Event"],
+            "rows": [["1877", "First Wimbledon"], ["1968", "Open Era"]]
+          }
+        ]
+      },
+      "questionGroups": [
+        {
+          "id": "group_1",
+          "type": "statement_judgement",
+          "instructions": "Do the following statements agree with the information in the passage?",
+          "questionRange": "1-5",
+          "options": ["True", "False", "Not Given"],
+          "questions": [
+            { "questionId": "q1", "number": 1, "question": "The first written record of the sport dates from the 1700s." },
+            { "questionId": "q2", "number": 2, "question": "The scoring system was originally designed to slow the game down." }
+          ]
+        },
+        {
+          "id": "group_2",
+          "type": "sentence_completion",
+          "instructions": "Complete the sentences below. Choose NO MORE THAN TWO WORDS...",
+          "questionRange": "6-9",
+          "questions": [
+            { "questionId": "q6", "number": 6, "question": "The tournament was first held at a venue in ______.", "options": [] }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+Key differences from Listening:
+- No `audio_url` — reading is text-based.
+- Sections use `passage_1` / `passage_2` / `passage_3` IDs.
+- Each section has `instructions` (string) and `passage` (object with `title` + `blocks[]` of type heading/paragraph/image/table).
+- `statement_judgement` uses shared `options` (e.g. True/False/Not Given or Yes/No/Not Given) with individual statement `question` text.
+
+Each type shows the exact JSON shape with field descriptions. The page also includes a full content JSON example, the corresponding answer JSON, and schema notes.
 
 ---
 
-# 16.8 Test Import System
+# 16.9 Media Imports
 
 ### Route
 
@@ -857,41 +981,37 @@ Restore
 /admin/imports
 ```
 
+### Purpose
+
+Upload media assets (audio, image, video) directly to Cloudinary and retrieve a secure URL for embedding in test content.
+
 ### Supported Upload Types
 
 ```txt
-JSON
-
-Future:
-ZIP
-Batch Upload
+audio (.mp3, .wav)
+image (.jpg, .png, .webp)
+video
 ```
 
-### Import Workflow
+### Workflow
 
 ```txt
-Upload
+Upload File
  ↓
-Validate
+Cloudinary Upload
  ↓
-Preview
+Secure URL returned
  ↓
-Save
- ↓
-Publish
+Copy URL → paste into contentJson in Test Editor
 ```
 
-### Import Result
+### Note
 
-```txt
-Success
-Warning
-Failed
-```
+JSON test content is managed directly inside the Test Editor (`/admin/tests/[id]/edit`), not via this import page.
 
 ---
 
-# 16.9 Import Logs
+# 16.10 Import Logs
 
 ### Structure
 
@@ -915,84 +1035,32 @@ failed
 
 ---
 
-# 16.10 Media Library
+# 16.11 Media Library (Removed)
 
-### Route
-
-```txt
-/admin/media
-```
-
-### Purpose
-
-Centralized management of audio and image assets.
-
-### Features
-
-```txt
-Upload Audio
-Upload Image
-
-Preview
-Replace
-Delete
-
-Search
-Filter
-Sort
-```
-
-### Media Types
-
-```txt
-audio
-image
-document
-```
-
-### Storage
-
-```txt
-MediaAsset
-- _id
-- type
-- url
-- filename
-- uploadedBy
-- createdAt
-```
-
-### Usage
-
-Blocks reference assets using:
-
-```json
-{
-  "assetId": "asset_123"
-}
-```
+The separate `/admin/media` route has been consolidated into `/admin/imports`.
+All media upload and management is handled there.
 
 ---
 
-# 16.11 User Management (Omitted)
+# 16.12 User Management (Omitted)
 
 Omitted under the Simplicity Policy.
 
 ---
 
-# 16.12 Role Management (Omitted)
+# 16.13 Role Management (Omitted)
 
 Omitted under the Simplicity Policy.
 
 ---
 
-# 16.13 Settings (Omitted)
+# 16.14 Settings (Omitted)
 
 Omitted under the Simplicity Policy.
 
 ---
 
-# 16.14 Admin APIs
+# 16.15 Admin APIs
 
 ### Dashboard
 
@@ -1072,7 +1140,7 @@ PUT /api/admin/users/:id/role
 
 ---
 
-# 16.15 Admin State Management
+# 16.16 Admin State Management
 
 Admin Zustand Store
 
@@ -1093,7 +1161,7 @@ Media Library State
 
 ---
 
-# 16.16 Admin Security
+# 16.17 Admin Security
 
 All admin routes require:
 
@@ -1116,7 +1184,7 @@ Unauthorized users are redirected to:
 
 ---
 
-# 16.17 Future Enhancements
+# 16.18 Future Enhancements
 
 Optional future modules:
 
@@ -1136,8 +1204,10 @@ Audit Logs
 
 These are not part of MVP but the architecture must remain compatible with them.
 
-Next Tasks to be done:
+Completed tasks:
 
-- instead of archive for book in admin , make it published/draft
-- remove Import logs & history from IMPORTS in admin
-- lets start the backend api according to the SRS which is the core part of our project , start creating the book creation related apies so that i can add book through admin
+- [x] Moved `audio_url` from top-level to per-section in listening test `contentJson`
+- [x] Added /admin/schemas reference page with listening sentence_completion, mcq_single, mcq_multiple schemas + answer JSON examples
+- [x] Added `questionGroups[]` layer with `type`, `instructions`, and `questionRange` fields to the schema
+- [x] Updated validation and preview in Test Editor to support `questionGroups` structure
+- [x] Updated default content JSON for listening to generate 4 parts with question groups

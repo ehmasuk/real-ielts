@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   BookOpen,
   FileText,
+  Headphones,
   Upload,
   ShieldCheck,
   GraduationCap,
@@ -54,6 +55,13 @@ const navGroups: NavGroup[] = [
       { href: "/admin/imports", label: "Imports", icon: Upload },
     ],
   },
+  {
+    title: "Schemas",
+    items: [
+      { href: "/admin/schemas/listening", label: "Listening Schema", icon: Headphones },
+      { href: "/admin/schemas/reading", label: "Reading Schema", icon: BookOpen },
+    ],
+  },
 ]
 
 interface AdminSidebarProps {
@@ -85,7 +93,7 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
             collapsed && "justify-center"
           )}
         >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/20">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/20">
             <GraduationCap className="h-5 w-5" />
           </span>
           {!collapsed && (
@@ -195,7 +203,7 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
       {!collapsed && (
         <div className="border-t border-border/40 p-3">
           <div className="flex items-center gap-3 rounded-lg bg-muted/40 p-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 text-xs font-bold text-white">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-indigo-500 to-purple-500 text-xs font-bold text-white">
               A
             </div>
             <div className="flex-1 min-w-0">

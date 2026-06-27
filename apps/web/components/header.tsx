@@ -28,8 +28,8 @@ export function Header() {
 
   const navLinks: NavLink[] = [
     { href: "/listening", label: "Listening", icon: Headphones },
-    { href: "/reading", label: "Reading", icon: BookOpen },
-    { href: "/writing", label: "Writing", icon: PenTool },
+    { href: "/reading", label: "Reading", icon: BookOpen, disabled: true },
+    { href: "/writing", label: "Writing", icon: PenTool, disabled: true },
     { href: "/speaking", label: "Speaking", icon: Mic, disabled: true },
   ]
 
@@ -40,10 +40,10 @@ export function Header() {
         {/* Logo */}
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tight">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/20">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/20">
               <GraduationCap className="h-5 w-5" />
             </span>
-            <span className="bg-gradient-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent">
               Real IELTS
             </span>
           </Link>
@@ -107,7 +107,7 @@ export function Header() {
           <Button variant="ghost" size="sm" className="font-semibold text-sm">
             Sign In
           </Button>
-          <Button size="sm" className="bg-gradient-to-r from-indigo-600 to-purple-600 font-semibold text-white shadow-md hover:from-indigo-500 hover:to-purple-500 dark:from-indigo-500 dark:to-purple-500">
+          <Button size="sm" className="bg-linear-to-r from-indigo-600 to-purple-600 font-semibold text-white shadow-md hover:from-indigo-500 hover:to-purple-500 dark:from-indigo-500 dark:to-purple-500">
             Start Free Practice
           </Button>
         </div>
@@ -180,7 +180,7 @@ export function Header() {
               <Button variant="outline" size="lg" className="w-full justify-center">
                 Sign In
               </Button>
-              <Button size="lg" className="w-full justify-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+              <Button size="lg" className="w-full justify-center bg-linear-to-r from-indigo-600 to-purple-600 text-white">
                 Start Free Practice
               </Button>
             </div>

@@ -129,7 +129,7 @@ export default function ReadingPage() {
               className="group flex flex-col md:flex-row rounded-2xl border border-border/40 bg-card/30 hover:bg-card/70 hover:border-purple-500/30 transition-all duration-300 shadow-sm hover:shadow-md overflow-hidden"
             >
               {/* Cover - Left Side */}
-              <div className={`w-full md:w-56 shrink-0 p-6 text-white bg-gradient-to-br ${book.color} flex flex-col justify-between relative min-h-[160px] md:min-h-0`}>
+              <div className={`w-full md:w-56 shrink-0 p-6 text-white bg-linear-to-br ${book.color} flex flex-col justify-between relative min-h-[160px] md:min-h-0`}>
                 <div className="absolute right-0 bottom-0 top-0 left-1/3 bg-white/5 skew-x-12 transform origin-top-right transition-transform group-hover:scale-110" />
                 
                 <div className="flex justify-between items-start mb-3">

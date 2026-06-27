@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { Button } from "@workspace/ui/components/button"
 import {
   Dialog,
@@ -18,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
+import * as React from "react"
 import type { BookItem } from "../../lib/mock-data"
 
 interface TestFormDialogProps {
@@ -40,16 +40,18 @@ export function TestFormDialog({
 }: TestFormDialogProps) {
   const [selectedBookId, setSelectedBookId] = React.useState("")
   const [testNumber, setTestNumber] = React.useState("1")
-  const [skill, setSkill] = React.useState<"reading" | "listening" | "writing" | "speaking">("reading")
+  const [skill, setSkill] = React.useState<
+    "reading" | "listening" | "writing" | "speaking"
+  >("reading")
   const [errors, setErrors] = React.useState<Record<string, string>>({})
 
   React.useEffect(() => {
     if (open) {
-      // Default select the first active book
-      const activeBooks = books.filter(b => b.status === "active")
-      const firstActive = activeBooks[0]
-      if (firstActive) {
-        setSelectedBookId(firstActive.id)
+      // Default select the first published book
+      const publishedBooks = books.filter((b) => b.status === "published")
+      const firstPublished = publishedBooks[0]
+      if (firstPublished) {
+        setSelectedBookId(firstPublished.id)
       } else {
         setSelectedBookId("")
       }
@@ -72,7 +74,7 @@ export function TestFormDialog({
     e.preventDefault()
     if (!validate()) return
 
-    const book = books.find(b => b.id === selectedBookId)
+    const book = books.find((b) => b.id === selectedBookId)
     if (!book) return
 
     onSave({
@@ -90,7 +92,8 @@ export function TestFormDialog({
         <DialogHeader>
           <DialogTitle className="text-lg font-bold">Create Test</DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
-            Initialize a new IELTS practice test. You can edit content and answer keys on the next page.
+            Initialize a new IELTS practice test. You can edit content and
+            answer keys on the next page.
           </DialogDescription>
         </DialogHeader>
 
@@ -104,7 +107,7 @@ export function TestFormDialog({
               </SelectTrigger>
               <SelectContent>
                 {books
-                  .filter((b) => b.status === "active")
+                  .filter((b) => b.status === "published")
                   .map((book) => (
                     <SelectItem key={book.id} value={book.id}>
                       Cambridge IELTS {book.number}
@@ -140,7 +143,9 @@ export function TestFormDialog({
             <Select
               value={skill}
               onValueChange={(val) =>
-                setSkill(val as "reading" | "listening" | "writing" | "speaking")
+                setSkill(
+                  val as "reading" | "listening" | "writing" | "speaking"
+                )
               }
             >
               <SelectTrigger className="w-full capitalize">
@@ -168,7 +173,7 @@ export function TestFormDialog({
             </Button>
             <Button
               type="submit"
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500"
+              className="bg-linear-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500"
             >
               Create and Edit
             </Button>

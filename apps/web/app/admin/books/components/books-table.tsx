@@ -32,13 +32,13 @@ import type { BookItem } from "../../lib/mock-data"
 interface BooksTableProps {
   books: BookItem[]
   onEdit: (book: BookItem) => void
-  onToggleArchive: (book: BookItem) => void
+  onToggleStatus: (book: BookItem) => void
 }
 
 type SortField = "number" | "title" | "status" | "testsCount"
 type SortDir = "asc" | "desc"
 
-export function BooksTable({ books, onEdit, onToggleArchive }: BooksTableProps) {
+export function BooksTable({ books, onEdit, onToggleStatus }: BooksTableProps) {
   const [sortField, setSortField] = React.useState<SortField>("number")
   const [sortDir, setSortDir] = React.useState<SortDir>("desc")
 
@@ -124,15 +124,15 @@ export function BooksTable({ books, onEdit, onToggleArchive }: BooksTableProps) 
               </TableCell>
               <TableCell>
                 <Badge
-                  variant={book.status === "active" ? "default" : "secondary"}
+                  variant={book.status === "published" ? "default" : "secondary"}
                   className={cn(
                     "text-[10px] font-semibold",
-                    book.status === "active"
+                    book.status === "published"
                       ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 dark:text-emerald-400 border-emerald-500/20"
                       : "bg-muted text-muted-foreground border-border/40"
                   )}
                 >
-                  {book.status === "active" ? "Active" : "Archived"}
+                  {book.status === "published" ? "Published" : "Draft"}
                 </Badge>
               </TableCell>
               <TableCell>
@@ -162,17 +162,17 @@ export function BooksTable({ books, onEdit, onToggleArchive }: BooksTableProps) 
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      onClick={() => onToggleArchive(book)}
+                      onClick={() => onToggleStatus(book)}
                     >
-                      {book.status === "active" ? (
+                      {book.status === "published" ? (
                         <>
                           <Archive className="mr-2 h-3.5 w-3.5" />
-                          Archive
+                          Move to Draft
                         </>
                       ) : (
                         <>
                           <RotateCcw className="mr-2 h-3.5 w-3.5" />
-                          Restore
+                          Publish
                         </>
                       )}
                     </DropdownMenuItem>

@@ -1,16 +1,50 @@
 "use client"
 
 import * as React from "react"
-import { Plus, BookOpen } from "lucide-react"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
-import { booksData, type BookItem } from "../lib/mock-data"
-import { BooksTable } from "./components/books-table"
+import { BookOpen, Loader2, Plus } from "lucide-react"
+import type { BookItem } from "../lib/mock-data"
 import { BookFormDialog } from "./components/book-form-dialog"
+import { BooksTable } from "./components/books-table"
+import { fetchBooks, createBook, updateBook } from "@/lib/api"
+
+function mapBook(b: any): BookItem {
+  return {
+    id: b._id,
+    number: b.number,
+    title: b.title,
+    slug: b.slug,
+    status: b.status,
+    testsCount: b.testsCount || 0,
+    createdAt: new Date(b.createdAt).toISOString().slice(0, 10),
+    updatedAt: new Date(b.updatedAt).toISOString().slice(0, 10),
+  }
+}
 
 export default function BooksPage() {
-  const [books, setBooks] = React.useState<BookItem[]>(booksData)
+  const queryClient = useQueryClient()
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const [editingBook, setEditingBook] = React.useState<BookItem | null>(null)
+
+  const { data: rawBooks, isLoading } = useQuery({
+    queryKey: ["books"],
+    queryFn: fetchBooks,
+  })
+
+  const books: BookItem[] = rawBooks ? rawBooks.map(mapBook) : []
+
+  const updateMutation = useMutation({
+    mutationFn: updateBook,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["books"] }),
+    onError: (err) => console.error(err),
+  })
+
+  const createMutation = useMutation({
+    mutationFn: createBook,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["books"] }),
+    onError: (err) => console.error(err),
+  })
 
   const handleEdit = (book: BookItem) => {
     setEditingBook(book)
@@ -22,55 +56,16 @@ export default function BooksPage() {
     setDialogOpen(true)
   }
 
-  const handleToggleArchive = (book: BookItem) => {
-    setBooks((prev) =>
-      prev.map((b) =>
-        b.id === book.id
-          ? {
-              ...b,
-              status: b.status === "active" ? ("archived" as const) : ("active" as const),
-              updatedAt: new Date().toISOString().slice(0, 10),
-            }
-          : b
-      )
-    )
+  const handleToggleStatus = (book: BookItem) => {
+    const newStatus = book.status === "published" ? "draft" : "published"
+    updateMutation.mutate({ id: book.id, data: { status: newStatus } })
   }
 
-  const handleSave = (data: {
-    number: number
-    title: string
-  }) => {
-    const generatedSlug = data.title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "")
-
+  const handleSave = (data: { number: number; title: string }) => {
     if (editingBook) {
-      // Update existing
-      setBooks((prev) =>
-        prev.map((b) =>
-          b.id === editingBook.id
-            ? {
-                ...b,
-                ...data,
-                slug: generatedSlug,
-                updatedAt: new Date().toISOString().slice(0, 10),
-              }
-            : b
-        )
-      )
+      updateMutation.mutate({ id: editingBook.id, data })
     } else {
-      // Create new
-      const newBook: BookItem = {
-        id: `b${Date.now()}`,
-        ...data,
-        slug: generatedSlug,
-        status: "active",
-        testsCount: 0,
-        createdAt: new Date().toISOString().slice(0, 10),
-        updatedAt: new Date().toISOString().slice(0, 10),
-      }
-      setBooks((prev) => [newBook, ...prev])
+      createMutation.mutate({ ...data, status: "draft" })
     }
   }
 
@@ -88,7 +83,7 @@ export default function BooksPage() {
         </div>
         <Button
           onClick={handleCreate}
-          className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:from-indigo-500 hover:to-purple-500"
+          className="bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:from-indigo-500 hover:to-purple-500"
         >
           <Plus className="mr-1.5 h-4 w-4" />
           Create Book
@@ -96,11 +91,18 @@ export default function BooksPage() {
       </div>
 
       {/* Table */}
-      {books.length > 0 ? (
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/60 bg-muted/20 py-16">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground/40" />
+          <h3 className="mt-4 text-sm font-semibold text-foreground">
+            Loading books...
+          </h3>
+        </div>
+      ) : books.length > 0 ? (
         <BooksTable
           books={books}
           onEdit={handleEdit}
-          onToggleArchive={handleToggleArchive}
+          onToggleStatus={handleToggleStatus}
         />
       ) : (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/60 bg-muted/20 py-16">
@@ -116,7 +118,7 @@ export default function BooksPage() {
           <Button
             onClick={handleCreate}
             size="sm"
-            className="mt-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+            className="mt-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white"
           >
             <Plus className="mr-1.5 h-3.5 w-3.5" />
             Create Book
@@ -134,3 +136,4 @@ export default function BooksPage() {
     </div>
   )
 }
+

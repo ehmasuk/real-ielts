@@ -59,7 +59,6 @@ export function TestsTable({ tests, onTogglePublish, onDelete }: TestsTableProps
             <TableHead>Test Details</TableHead>
             <TableHead>Book</TableHead>
             <TableHead>Skill</TableHead>
-            <TableHead className="hidden sm:table-cell">Version</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="hidden md:table-cell">Updated</TableHead>
             <TableHead className="w-[50px]" />
@@ -90,11 +89,6 @@ export function TestsTable({ tests, onTogglePublish, onDelete }: TestsTableProps
                   {test.skill}
                 </Badge>
               </TableCell>
-              <TableCell className="hidden sm:table-cell">
-                <code className="rounded bg-muted/60 px-1.5 py-0.5 text-[11px] font-mono text-muted-foreground">
-                  v{test.version}
-                </code>
-              </TableCell>
               <TableCell>
                 <Badge
                   variant={test.status === "published" ? "default" : "secondary"}
@@ -123,14 +117,12 @@ export function TestsTable({ tests, onTogglePublish, onDelete }: TestsTableProps
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-44">
-                    <Link href={`/admin/tests/${test.id}/edit`} passHref legacyBehavior>
-                      <DropdownMenuItem asChild>
-                        <a className="flex items-center w-full">
-                          <Edit className="mr-2 h-3.5 w-3.5" />
-                          Edit Content & QA
-                        </a>
-                      </DropdownMenuItem>
-                    </Link>
+                    <DropdownMenuItem asChild>
+                      <Link href={`/admin/tests/${test.id}/edit`} className="flex items-center w-full">
+                        <Edit className="mr-2 h-3.5 w-3.5" />
+                        Edit Content & QA
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onTogglePublish(test)}>
                       {test.status === "published" ? (
                         <>

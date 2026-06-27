@@ -5,7 +5,7 @@ export interface BookItem {
   number: number
   title: string
   slug: string
-  status: "active" | "archived"
+  status: "published" | "draft"
   testsCount: number
   createdAt: string
   updatedAt: string
@@ -99,7 +99,7 @@ export const booksData: BookItem[] = [
     number: 20,
     title: "Cambridge IELTS 20",
     slug: "cambridge-ielts-20",
-    status: "active",
+    status: "published",
     testsCount: 4,
     createdAt: "2025-11-15",
     updatedAt: "2026-06-20",
@@ -109,7 +109,7 @@ export const booksData: BookItem[] = [
     number: 19,
     title: "Cambridge IELTS 19",
     slug: "cambridge-ielts-19",
-    status: "active",
+    status: "published",
     testsCount: 4,
     createdAt: "2025-06-10",
     updatedAt: "2026-06-18",
@@ -119,7 +119,7 @@ export const booksData: BookItem[] = [
     number: 18,
     title: "Cambridge IELTS 18",
     slug: "cambridge-ielts-18",
-    status: "active",
+    status: "published",
     testsCount: 4,
     createdAt: "2024-11-20",
     updatedAt: "2026-05-12",
@@ -129,7 +129,7 @@ export const booksData: BookItem[] = [
     number: 17,
     title: "Cambridge IELTS 17",
     slug: "cambridge-ielts-17",
-    status: "active",
+    status: "published",
     testsCount: 4,
     createdAt: "2024-05-15",
     updatedAt: "2026-04-01",
@@ -139,7 +139,7 @@ export const booksData: BookItem[] = [
     number: 16,
     title: "Cambridge IELTS 16",
     slug: "cambridge-ielts-16",
-    status: "active",
+    status: "published",
     testsCount: 4,
     createdAt: "2023-11-10",
     updatedAt: "2026-03-15",
@@ -149,7 +149,7 @@ export const booksData: BookItem[] = [
     number: 15,
     title: "Cambridge IELTS 15",
     slug: "cambridge-ielts-15",
-    status: "active",
+    status: "published",
     testsCount: 4,
     createdAt: "2023-06-20",
     updatedAt: "2026-02-28",
@@ -159,7 +159,7 @@ export const booksData: BookItem[] = [
     number: 14,
     title: "Cambridge IELTS 14",
     slug: "cambridge-ielts-14",
-    status: "active",
+    status: "published",
     testsCount: 4,
     createdAt: "2023-01-15",
     updatedAt: "2026-01-20",
@@ -169,7 +169,7 @@ export const booksData: BookItem[] = [
     number: 13,
     title: "Cambridge IELTS 13",
     slug: "cambridge-ielts-13",
-    status: "archived",
+    status: "draft",
     testsCount: 4,
     createdAt: "2022-08-10",
     updatedAt: "2025-12-15",
@@ -179,7 +179,7 @@ export const booksData: BookItem[] = [
     number: 12,
     title: "Cambridge IELTS 12",
     slug: "cambridge-ielts-12",
-    status: "archived",
+    status: "draft",
     testsCount: 4,
     createdAt: "2022-03-05",
     updatedAt: "2025-11-01",
@@ -193,7 +193,6 @@ export interface TestItem {
   testNumber: number
   skill: "reading" | "listening" | "writing" | "speaking"
   status: "draft" | "published" | "archived"
-  version: string
   createdAt: string
   updatedAt: string
   contentJson: string
@@ -217,7 +216,6 @@ export const testsData: TestItem[] = [
     testNumber: 1,
     skill: "reading",
     status: "published",
-    version: "1.0",
     createdAt: "2026-06-20",
     updatedAt: "2026-06-20",
     contentJson: JSON.stringify({
@@ -228,8 +226,8 @@ export const testsData: TestItem[] = [
           title: "Reading Passage 1",
           passage: "This is the first reading passage. It contains information about language development...",
           questions: [
-            { id: "q1", number: 1, type: "true-false-not-given", question: "Language acquisition is entirely biological.", options: [] },
-            { id: "q2", number: 2, type: "true-false-not-given", question: "Environment plays a role in syntax learning.", options: [] }
+            { questionId: "q1", number: 1, type: "true-false-not-given", question: "Language acquisition is entirely biological.", options: [] },
+            { questionId: "q2", number: 2, type: "true-false-not-given", question: "Environment plays a role in syntax learning.", options: [] }
           ]
         }
       ]
@@ -248,7 +246,6 @@ export const testsData: TestItem[] = [
     testNumber: 1,
     skill: "listening",
     status: "draft",
-    version: "1.0",
     createdAt: "2026-06-21",
     updatedAt: "2026-06-21",
     contentJson: JSON.stringify({
@@ -259,7 +256,7 @@ export const testsData: TestItem[] = [
           id: "sec_1",
           title: "Section 1",
           questions: [
-            { id: "q1", number: 1, type: "fill-in-blank", question: "Name of the caller: [blank]", options: [] }
+            { questionId: "q1", number: 1, type: "sentence_completion", question: "Name of the caller: [blank]", options: [] }
           ]
         }
       ]
