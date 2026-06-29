@@ -11,9 +11,22 @@ import {
   Sun,
   ChevronRight,
   ExternalLink,
+  LogOut,
+  ChevronDown,
+  Mail,
 } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
+import { useAuth } from "@/lib/use-auth"
 
 // SSR-safe client detection
 const subscribe = () => () => {}
@@ -39,6 +52,7 @@ interface AdminHeaderProps {
 export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
   const { resolvedTheme, setTheme } = useTheme()
   const mounted = useIsClient()
+  const { user, signOut } = useAuth()
   const breadcrumbs = useBreadcrumbs()
 
   return (
@@ -79,6 +93,37 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
       {/* Right actions */}
       <div className="ml-auto flex items-center gap-1.5">
 
+        {/* User menu */}
+        {user && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex items-center gap-2 rounded-lg border border-border/40 px-2">
+                <Avatar className="size-7">
+                  <AvatarImage src={user.picture || user.image} alt={user.name} />
+                  <AvatarFallback className="text-xs">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <span className="hidden sm:block text-sm text-muted-foreground">{user.name}</span>
+                <ChevronDown className="size-3.5 text-muted-foreground" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col gap-1">
+                  <p className="text-sm font-medium">{user.name}</p>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                    <Mail className="size-3" />
+                    {user.email}
+                  </p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive focus:text-destructive">
+                <LogOut className="size-4" />
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
 
         {/* Theme toggle */}
         <Button

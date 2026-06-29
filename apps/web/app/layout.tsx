@@ -30,7 +30,9 @@ export default function RootLayout({
     >
       <body>
         <QueryProvider>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
         </QueryProvider>
       </body>
     </html>

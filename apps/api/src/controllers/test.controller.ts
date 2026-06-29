@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import type { CustomRequest } from "../types/index.js";
 import testServices from "../services/test/index.js";
 
 // ─── Admin Endpoints ────────────────────────────────────────────────────────
@@ -161,19 +162,60 @@ export const getTestPartHandler = async (req: Request, res: Response, next: Next
 
 // @desc    Submit answers for a single part and get results
 // @route   POST /api/tests/:id/part/:partNum/submit
-// @access  Public
-export const submitTestPartHandler = async (req: Request, res: Response, next: NextFunction) => {
+// @access  Authenticated
+export const submitTestPartHandler = async (req: CustomRequest, res: Response, next: NextFunction) => {
   try {
+    if (!req.user?.id) {
+      res.status(401);
+      throw new Error("Please login first");
+    }
     const partIndex = parseInt(req.params.partNum, 10) - 1;
     const { answers } = req.body;
     if (!answers || typeof answers !== "object") {
       res.status(400);
       throw new Error("Missing or invalid 'answers' object in request body");
     }
-    const result = await testServices.submitPart(req.params.id, partIndex, answers);
+    const result = await testServices.submitPart(req.user.id, req.params.id, partIndex, answers);
     if (!result) {
       res.status(404);
       throw new Error("Test or part not found");
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get all results for the current user
+// @route   GET /api/tests/user-results
+// @access  Authenticated
+export const getUserResultsHandler = async (req: CustomRequest, res: Response, next: NextFunction) => {
+  try {
+    if (!req.user?.id) {
+      res.status(401);
+      throw new Error("Please login first");
+    }
+    const results = await testServices.getUserResults(req.user.id);
+    res.status(200).json(results);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get saved result for a test part
+// @route   GET /api/tests/:id/part/:partNum/result
+// @access  Authenticated
+export const getPartResultHandler = async (req: CustomRequest, res: Response, next: NextFunction) => {
+  try {
+    if (!req.user?.id) {
+      res.status(401);
+      throw new Error("Please login first");
+    }
+    const partIndex = parseInt(req.params.partNum, 10) - 1;
+    const result = await testServices.getPartResult(req.user.id, req.params.id, partIndex);
+    if (!result) {
+      res.status(200).json(null);
+      return;
     }
     res.status(200).json(result);
   } catch (error) {

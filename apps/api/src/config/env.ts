@@ -5,6 +5,8 @@ dotenv.config();
 
 const envSchema = z.object({
   MONGODB_URI: z.string(),
+  JWT_SECRET: z.string().min(32),
+  GOOGLE_CLIENT_ID: z.string(),
 });
 
 const result = envSchema.safeParse(process.env);

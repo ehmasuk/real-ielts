@@ -3,7 +3,9 @@
 import * as React from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { CheckCircle2, XCircle, ArrowLeft, RotateCcw } from "lucide-react"
+import { Loader2, ArrowLeft, RotateCcw } from "lucide-react"
+import { fetchPartResult } from "@/lib/api"
+import { Header } from "@/components/header"
 
 interface ResultItem {
   questionId: string
@@ -29,13 +31,33 @@ export default function ResultPage() {
   const partNum = parseInt(params.partNum as string, 10)
 
   const [data, setData] = React.useState<ResultData | null>(null)
+  const [loading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
     const stored = sessionStorage.getItem(`part-result-${testId}-${partNum}`)
     if (stored) {
       setData(JSON.parse(stored))
+      setLoading(false)
+      return
     }
+
+    fetchPartResult(testId, partNum)
+      .then((res) => {
+        if (res) {
+          setData(res)
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [testId, partNum])
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground/40" />
+      </div>
+    )
+  }
 
   if (!data) {
     return (
@@ -52,7 +74,9 @@ export default function ResultPage() {
   const resultMap = new Map(data.results.map((r) => [r.questionId, r]))
 
   return (
-    <div className="mx-auto max-w-4xl w-full px-4 sm:px-6 py-8 pb-24">
+    <>
+      <Header />
+      <div className="mx-auto max-w-4xl w-full px-4 sm:px-6 py-8 pb-24">
       {/* Score Card */}
       <div className="mb-8 rounded-2xl border border-border/40 bg-card/50 p-8 text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-4 py-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-4">
@@ -78,7 +102,7 @@ export default function ResultPage() {
         </div>
         <div className="mt-6 flex items-center justify-center gap-3">
           <button
-            onClick={() => router.push(`/test/${testId}/part/${partNum}`)}
+            onClick={() => router.push(`/test/${testId}/part/${partNum}?retry=1`)}
             className="inline-flex items-center gap-1.5 rounded-lg border border-border/30 px-4 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
           >
             <RotateCcw className="h-3.5 w-3.5" />
@@ -103,9 +127,6 @@ export default function ResultPage() {
                   <p className="text-xs font-medium text-muted-foreground">{group.instructions}</p>
                 )}
               </div>
-              <span className="shrink-0 rounded-md bg-muted px-2 py-0.5 text-[10px] font-mono text-muted-foreground uppercase">
-                {group.type}
-              </span>
             </div>
 
             {/* Render by type */}
@@ -120,14 +141,8 @@ export default function ResultPage() {
         ))}
       </div>
 
-      {/* Back link */}
-      <div className="mt-8 text-center">
-        <Link href="/listening" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back to Listening
-        </Link>
-      </div>
     </div>
+    </>
   )
 }
 

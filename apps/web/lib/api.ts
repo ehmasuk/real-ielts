@@ -5,6 +5,13 @@
  */
 import api from "@/lib/axios"
 
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
+export const syncUserWithBackend = async (payload: { sub: string; email?: string; name?: string; picture?: string }) => {
+  const res = await api.post("/auth/sync", payload)
+  return res.data
+}
+
 // ─── Public ───────────────────────────────────────────────────────────────────
 
 export const fetchPublicBooks = async () => {
@@ -24,6 +31,16 @@ export const fetchPublicTestPart = async (testId: string, partNum: number) => {
 
 export const submitTestPart = async (testId: string, partNum: number, answers: Record<string, any>) => {
   const res = await api.post(`/tests/${testId}/part/${partNum}/submit`, { answers })
+  return res.data
+}
+
+export const fetchUserResults = async () => {
+  const res = await api.get("/tests/user-results")
+  return res.data
+}
+
+export const fetchPartResult = async (testId: string, partNum: number) => {
+  const res = await api.get(`/tests/${testId}/part/${partNum}/result`)
   return res.data
 }
 

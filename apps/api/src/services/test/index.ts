@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Test, type ITest } from "../../models/test.model.js";
+import { UserTestResult } from "../../models/user-test-result.model.js";
 
 const testServices = {
   getAll: (filters?: { bookId?: string; skill?: string }): Promise<ITest[]> => {
@@ -36,6 +37,7 @@ const testServices = {
   },
 
   submitPart: async (
+    userId: string,
     testId: string,
     partIndex: number,
     userAnswers: Record<string, any>
@@ -65,7 +67,56 @@ const testServices = {
       return { questionId: qId, correct, userAnswer: userAnswer ?? null, correctAnswer };
     });
 
-    return { results, score: results.filter((r) => r.correct).length, total: results.length };
+    const score = results.filter((r) => r.correct).length;
+    const total = results.length;
+
+    await UserTestResult.findOneAndUpdate(
+      { userId: new mongoose.Types.ObjectId(userId), testId: new mongoose.Types.ObjectId(testId), partNum: partIndex + 1 },
+      { answers: userAnswers, results, score, total, submittedAt: new Date() },
+      { upsert: true, new: true }
+    );
+
+    return { results, score, total };
+  },
+
+  getUserResults: async (userId: string) => {
+    const results = await UserTestResult.find(
+      { userId: new mongoose.Types.ObjectId(userId) },
+      { testId: 1, partNum: 1, score: 1, total: 1, _id: 0 }
+    ).lean();
+
+    return results.map((r) => ({
+      testId: r.testId.toString(),
+      partNum: r.partNum,
+      score: r.score,
+      total: r.total,
+    }));
+  },
+
+  getPartResult: async (userId: string, testId: string, partIndex: number) => {
+    const test = await Test.findById(testId).select("-answerJson");
+    if (!test) return null;
+    const sections = (test.contentJson as any)?.sections as any[] | undefined;
+    if (!sections || partIndex < 0 || partIndex >= sections.length) return null;
+
+    const result = await UserTestResult.findOne({
+      userId: new mongoose.Types.ObjectId(userId),
+      testId: new mongoose.Types.ObjectId(testId),
+      partNum: partIndex + 1,
+    });
+
+    if (!result) return null;
+
+    return {
+      results: result.results,
+      score: result.score,
+      total: result.total,
+      submittedAt: result.submittedAt,
+      testNumber: test.testNumber,
+      title: (test.contentJson as any)?.title,
+      sectionTitle: sections[partIndex]?.title,
+      section: sections[partIndex],
+    };
   },
 
   getByIdAdmin: (id: string): Promise<ITest | null> =>

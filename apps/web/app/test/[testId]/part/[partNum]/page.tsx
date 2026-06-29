@@ -1,10 +1,10 @@
 "use client"
 
-import { fetchPublicTestPart, submitTestPart } from "@/lib/api"
+import { fetchPublicTestPart, submitTestPart, fetchPartResult } from "@/lib/api"
 import { useQuery } from "@tanstack/react-query"
 import { Loader2, Settings, User, Volume2, VolumeX } from "lucide-react"
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import * as React from "react"
 
 const TEST_DURATION = 60 * 60
@@ -12,12 +12,14 @@ const TEST_DURATION = 60 * 60
 export default function TestPartPage() {
   const router = useRouter()
   const params = useParams()
+  const searchParams = useSearchParams()
   const testId = params.testId as string
   const partNum = parseInt(params.partNum as string, 10)
   const audioRef = React.useRef<HTMLAudioElement>(null)
   const [timeLeft, setTimeLeft] = React.useState(TEST_DURATION)
   const [volume, setVolume] = React.useState(0.8)
   const [muted, setMuted] = React.useState(false)
+  const [retrying, setRetrying] = React.useState(searchParams.get("retry") === "1")
 
   const { data, isLoading } = useQuery({
     queryKey: ["public", "test-part", testId, partNum],
@@ -25,6 +27,13 @@ export default function TestPartPage() {
     enabled: !!testId && !!partNum,
   })
 
+  const { data: existingResult } = useQuery({
+    queryKey: ["part-result", testId, partNum],
+    queryFn: () => fetchPartResult(testId, partNum),
+    enabled: !!testId && !!partNum && !retrying,
+  })
+
+  const [redirecting, setRedirecting] = React.useState(false)
   const [answers, setAnswers] = React.useState<Record<string, any>>({})
   const [submitting, setSubmitting] = React.useState(false)
 
@@ -53,6 +62,21 @@ export default function TestPartPage() {
     }, 1000)
     return () => clearInterval(interval)
   }, [timeLeft])
+
+  React.useEffect(() => {
+    if (existingResult && !retrying && data) {
+      setRedirecting(true)
+      const partResult = {
+        ...existingResult,
+        testNumber: data?.testNumber,
+        title: data?.title,
+        sectionTitle: data?.section?.title,
+        section: data?.section,
+      }
+      sessionStorage.setItem(`part-result-${testId}-${partNum}`, JSON.stringify(partResult))
+      router.replace(`/test/${testId}/part/${partNum}/result`)
+    }
+  }, [existingResult, retrying, data, testId, partNum, router])
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
@@ -90,7 +114,7 @@ export default function TestPartPage() {
     }
   }
 
-  if (isLoading) {
+  if (isLoading || redirecting) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
         <div className="flex flex-col items-center gap-3">

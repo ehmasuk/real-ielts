@@ -1,12 +1,12 @@
-import { Router } from "express";
-import authControllers from "../controllers/auth.js";
+import { Router } from "express"
+import authControllers from "../controllers/auth.js"
+import isAuthenticated from "../middlewares/isAuthenticated.js"
 
-const router: Router = Router();
+const router: Router = Router()
 
-// register
-router.post("/register", authControllers.registerUser);
+router.post("/sync", authControllers.sync)
+router.post("/google", authControllers.googleSignIn)
+router.post("/logout", authControllers.logout)
+router.get("/me", isAuthenticated, authControllers.me)
 
-// login
-router.post("/login", authControllers.loginUser);
-
-export default router;
+export default router

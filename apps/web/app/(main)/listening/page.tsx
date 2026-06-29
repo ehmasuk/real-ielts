@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
 import { Search, Headphones, BookOpen, Play } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
-import { fetchPublicBooks, fetchPublicTests } from "@/lib/api"
+import { fetchPublicBooks, fetchPublicTests, fetchUserResults } from "@/lib/api"
 
 interface TestItem {
   _id: string
@@ -30,6 +30,24 @@ const gradients = [
   "from-teal-600 to-teal-900",
 ]
 
+function rawScoreToBand(score: number): string {
+  if (score >= 39) return "9.0"
+  if (score >= 37) return "8.5"
+  if (score >= 35) return "8.0"
+  if (score >= 32) return "7.5"
+  if (score >= 30) return "7.0"
+  if (score >= 26) return "6.5"
+  if (score >= 23) return "6.0"
+  if (score >= 18) return "5.5"
+  if (score >= 16) return "5.0"
+  if (score >= 13) return "4.5"
+  if (score >= 10) return "4.0"
+  if (score >= 7) return "3.5"
+  if (score >= 5) return "3.0"
+  if (score >= 3) return "2.5"
+  return "2.0"
+}
+
 export default function ListeningPage() {
   const [searchTerm, setSearchTerm] = React.useState("")
 
@@ -42,6 +60,19 @@ export default function ListeningPage() {
     queryKey: ["public", "tests", "listening"],
     queryFn: () => fetchPublicTests({ skill: "listening" }),
   })
+
+  const { data: userResults = [] } = useQuery({
+    queryKey: ["user-results"],
+    queryFn: fetchUserResults,
+  })
+
+  const resultsMap = React.useMemo(() => {
+    const map: Record<string, { score: number; total: number }> = {}
+    for (const r of userResults as Array<{ testId: string; partNum: number; score: number; total: number }>) {
+      map[`${r.testId}-${r.partNum}`] = { score: r.score, total: r.total }
+    }
+    return map
+  }, [userResults])
 
   const testsByBook = React.useMemo(() => {
     const map: Record<string, TestItem[]> = {}
@@ -136,20 +167,41 @@ export default function ListeningPage() {
                           <span>Practice Test {testNum}</span>
                         </div>
                         <div className="flex flex-col gap-2">
-                          {Array.from({ length: sectionCount }, (_, i) => i + 1).map((partNum) => (
-                            <Link
-                              key={partNum}
-                              href={test ? `/test/${test._id}/part/${partNum}` : "#"}
-                              className={`flex items-center justify-between rounded-lg border px-3 py-2 text-[11px] font-semibold transition-all shadow-sm cursor-pointer ${
-                                test
-                                  ? "border-border/40 bg-background/50 hover:bg-indigo-600 hover:border-indigo-600 hover:text-white text-muted-foreground"
-                                  : "border-border/20 bg-background/20 text-muted-foreground/30 pointer-events-none"
-                              }`}
-                            >
-                              <span>Part {partNum}</span>
-                              <span className="text-[9px] opacity-70 font-normal">{test ? "Practice Now" : "Unavailable"}</span>
-                            </Link>
-                          ))}
+                          {Array.from({ length: sectionCount }, (_, i) => i + 1).map((partNum) => {
+                            const result = test ? resultsMap[`${test._id}-${partNum}`] : null
+                            return (
+                              <Link
+                                key={partNum}
+                                href={test ? `/test/${test._id}/part/${partNum}` : "#"}
+                                className={`flex items-center justify-between rounded-lg border px-3 py-2 text-[11px] font-semibold transition-all shadow-sm cursor-pointer ${
+                                  test
+                                    ? "border-border/40 bg-background/50 hover:bg-indigo-600 hover:border-indigo-600 hover:text-white text-muted-foreground"
+                                    : "border-border/20 bg-background/20 text-muted-foreground/30 pointer-events-none"
+                                }`}
+                              >
+                                <span>Part {partNum}</span>
+                                {result ? (
+                                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">{result.score}/{result.total}</span>
+                                ) : (
+                                  <span className="text-[9px] opacity-70 font-normal">{test ? "Practice Now" : "Unavailable"}</span>
+                                )}
+                              </Link>
+                            )
+                          })}
+                          {(() => {
+                            if (!test) return null
+                            const partsDone = Array.from({ length: sectionCount }, (_, i) => i + 1)
+                              .every((pn) => resultsMap[`${test._id}-${pn}`])
+                            if (!partsDone) return null
+                            const totalScore = Array.from({ length: sectionCount }, (_, i) => i + 1)
+                              .reduce((sum, pn) => sum + (resultsMap[`${test._id}-${pn}`]?.score ?? 0), 0)
+                            return (
+                              <div className="mt-2 flex items-center justify-between rounded-lg border border-indigo-500/30 bg-indigo-500/5 px-3 py-2 text-[11px] font-semibold">
+                                <span className="text-indigo-700 dark:text-indigo-300">Overall Band</span>
+                                <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{rawScoreToBand(totalScore)}</span>
+                              </div>
+                            )
+                          })()}
                         </div>
                       </div>
                     )

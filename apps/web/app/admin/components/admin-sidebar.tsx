@@ -17,6 +17,8 @@ import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
 import { Separator } from "@workspace/ui/components/separator"
 import { ScrollArea } from "@workspace/ui/components/scroll-area"
+import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
+import { useAuth } from "@/lib/use-auth"
 import {
   Tooltip,
   TooltipContent,
@@ -71,6 +73,7 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
   const pathname = usePathname()
+  const { user } = useAuth()
 
   const isActive = (href: string) => {
     if (href === "/admin") return pathname === "/admin"
@@ -203,12 +206,13 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
       {!collapsed && (
         <div className="border-t border-border/40 p-3">
           <div className="flex items-center gap-3 rounded-lg bg-muted/40 p-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-indigo-500 to-purple-500 text-xs font-bold text-white">
-              A
-            </div>
+            <Avatar className="size-8">
+              <AvatarImage src={user?.picture || user?.image} alt={user?.name} />
+              <AvatarFallback className="text-xs font-bold">{user?.name?.charAt(0)?.toUpperCase() || "A"}</AvatarFallback>
+            </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="truncate text-xs font-semibold text-foreground">Admin User</p>
-              <p className="truncate text-[10px] text-muted-foreground">super_admin</p>
+              <p className="truncate text-xs font-semibold text-foreground">{user?.name || "Admin"}</p>
+              <p className="truncate text-[10px] text-muted-foreground">{user?.role || "admin"}</p>
             </div>
             <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
           </div>
