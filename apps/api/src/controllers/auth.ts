@@ -3,9 +3,15 @@ import authServices from "../services/auth/index.js"
 import type { CustomRequest } from "../types/index.js"
 import newError from "../utils/newError.js"
 import successResponse from "../utils/successResponse.js"
+import env from "../config/env.js"
 
 const sync = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const apiKey = req.headers["x-internal-api-key"]
+    if (apiKey !== env.INTERNAL_API_KEY) {
+      throw newError({ message: "Forbidden", statusCode: 403 })
+    }
+
     const { sub, email, name, picture } = req.body
     if (!sub) throw newError({ message: "sub is required", statusCode: 400 })
 
@@ -15,23 +21,6 @@ const sync = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     next(error)
   }
-}
-
-const googleSignIn = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { idToken } = req.body
-    if (!idToken) throw newError({ message: "idToken is required", statusCode: 400 })
-
-    const result = await authServices.googleSignIn({ idToken })
-
-    successResponse({ res, data: { token: result.token, user: result.user }, message: "Signed in successfully" })
-  } catch (error) {
-    next(error)
-  }
-}
-
-const logout = async (_req: Request, res: Response, _next: NextFunction) => {
-  res.status(204).end()
 }
 
 const me = async (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -46,7 +35,5 @@ const me = async (req: CustomRequest, res: Response, next: NextFunction) => {
 
 export default {
   sync,
-  googleSignIn,
-  logout,
   me,
 }

@@ -7,11 +7,15 @@ export async function proxy(request: NextRequest) {
     headers: await headers(),
   })
 
+
   if (!session) {
     return NextResponse.redirect(new URL("/sign-in", request.url))
   }
 
   const role = (session.user as any)?.role
+
+  console.log(role)
+
   if (!role || role !== "admin") {
     return NextResponse.redirect(new URL("/", request.url))
   }

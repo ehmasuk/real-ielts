@@ -170,12 +170,12 @@ export const submitTestPartHandler = async (req: CustomRequest, res: Response, n
       throw new Error("Please login first");
     }
     const partIndex = parseInt(req.params.partNum, 10) - 1;
-    const { answers } = req.body;
+    const { answers, timeTaken } = req.body;
     if (!answers || typeof answers !== "object") {
       res.status(400);
       throw new Error("Missing or invalid 'answers' object in request body");
     }
-    const result = await testServices.submitPart(req.user.id, req.params.id, partIndex, answers);
+    const result = await testServices.submitPart(req.user.id, req.params.id, partIndex, answers, timeTaken);
     if (!result) {
       res.status(404);
       throw new Error("Test or part not found");

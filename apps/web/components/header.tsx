@@ -32,17 +32,22 @@ function useIsClient() {
 }
 
 
+
+
+
+
+
 export function Header() {
   const { resolvedTheme, setTheme } = useTheme()
   const mounted = useIsClient()
-  const { isAuthenticated, user, signOut,signIn } = useAuth()
+  const { isAuthenticated, user, signIn, signOut } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
   const navLinks: NavLink[] = [
     { href: "/listening", label: "Listening", icon: Headphones },
-    { href: "/reading", label: "Reading", icon: BookOpen, disabled: true },
+    { href: "/reading", label: "Reading", icon: BookOpen },
     { href: "/writing", label: "Writing", icon: PenTool, disabled: true },
-    { href: "/speaking", label: "Speaking", icon: Mic, disabled: true },
+    { href: "/speaking", label: "Speaking", icon: Mic },
   ]
 
   return (
@@ -156,7 +161,7 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button variant="ghost" size="sm" className="font-semibold text-sm" onClick={signIn}>
+            <Button variant="ghost" size="sm" className="font-semibold text-sm" onClick={() => signIn()}>
               Sign In
             </Button>
           )}
@@ -255,7 +260,7 @@ export function Header() {
                   </Button>
                 </>
               ) : (
-                <Button variant="outline" size="lg" className="w-full justify-center" onClick={signIn}>
+                <Button variant="outline" size="lg" className="w-full justify-center" onClick={() => signIn()}>
                   Sign In
                 </Button>
               )}

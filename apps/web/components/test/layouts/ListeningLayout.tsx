@@ -1,0 +1,47 @@
+"use client"
+
+import { QuestionGroup } from "../question-types"
+import { SubmitButton } from "../shared/SubmitButton"
+
+export function ListeningLayout({
+  sectionTitle,
+  questionGroups,
+  answers,
+  onAnswerChange,
+  handleSubmit,
+  submitting,
+  isAuthenticated,
+}: {
+  sectionTitle: string
+  questionGroups: any[]
+  answers: Record<string, any>
+  onAnswerChange: (questionId: string, value: any) => void
+  handleSubmit: () => void
+  submitting: boolean
+  isAuthenticated: boolean
+}) {
+  return (
+    <div className="w-full px-4 py-8 pb-24 sm:px-6">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+          {sectionTitle}
+        </h1>
+      </div>
+
+      <div className="space-y-10">
+        {questionGroups.map((group: any) => (
+          <QuestionGroup
+            key={group.id}
+            group={group}
+            answers={answers}
+            onAnswerChange={onAnswerChange}
+          />
+        ))}
+      </div>
+
+      {isAuthenticated && (
+        <SubmitButton submitting={submitting} onClick={handleSubmit} />
+      )}
+    </div>
+  )
+}

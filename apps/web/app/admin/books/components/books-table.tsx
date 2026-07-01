@@ -4,6 +4,7 @@ import * as React from "react"
 import {
   MoreHorizontal,
   Edit,
+  Trash2,
   Archive,
   RotateCcw,
   FileText,
@@ -33,12 +34,13 @@ interface BooksTableProps {
   books: BookItem[]
   onEdit: (book: BookItem) => void
   onToggleStatus: (book: BookItem) => void
+  onDelete: (book: BookItem) => void
 }
 
 type SortField = "number" | "title" | "status" | "testsCount"
 type SortDir = "asc" | "desc"
 
-export function BooksTable({ books, onEdit, onToggleStatus }: BooksTableProps) {
+export function BooksTable({ books, onEdit, onToggleStatus, onDelete }: BooksTableProps) {
   const [sortField, setSortField] = React.useState<SortField>("number")
   const [sortDir, setSortDir] = React.useState<SortDir>("desc")
 
@@ -175,6 +177,14 @@ export function BooksTable({ books, onEdit, onToggleStatus }: BooksTableProps) {
                           Publish
                         </>
                       )}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => onDelete(book)}
+                      className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/30"
+                    >
+                      <Trash2 className="mr-2 h-3.5 w-3.5" />
+                      Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

@@ -5,13 +5,6 @@
  */
 import api from "@/lib/axios"
 
-// ─── Auth ─────────────────────────────────────────────────────────────────────
-
-export const syncUserWithBackend = async (payload: { sub: string; email?: string; name?: string; picture?: string }) => {
-  const res = await api.post("/auth/sync", payload)
-  return res.data
-}
-
 // ─── Public ───────────────────────────────────────────────────────────────────
 
 export const fetchPublicBooks = async () => {
@@ -24,13 +17,18 @@ export const fetchPublicTests = async (params?: { bookId?: string; skill?: strin
   return res.data
 }
 
+export const fetchPublicTest = async (testId: string) => {
+  const res = await api.get(`/tests/${testId}`)
+  return res.data
+}
+
 export const fetchPublicTestPart = async (testId: string, partNum: number) => {
   const res = await api.get(`/tests/${testId}/part/${partNum}`)
   return res.data
 }
 
-export const submitTestPart = async (testId: string, partNum: number, answers: Record<string, any>) => {
-  const res = await api.post(`/tests/${testId}/part/${partNum}/submit`, { answers })
+export const submitTestPart = async (testId: string, partNum: number, answers: Record<string, any>, timeTaken?: number) => {
+  const res = await api.post(`/tests/${testId}/part/${partNum}/submit`, { answers, timeTaken })
   return res.data
 }
 
@@ -58,6 +56,11 @@ export const createBook = async (data: { number: number; title: string; status?:
 
 export const updateBook = async ({ id, data }: { id: string; data: Record<string, unknown> }) => {
   const res = await api.put(`/admin/books/${id}`, data)
+  return res.data
+}
+
+export const deleteBook = async (id: string) => {
+  const res = await api.delete(`/admin/books/${id}`)
   return res.data
 }
 

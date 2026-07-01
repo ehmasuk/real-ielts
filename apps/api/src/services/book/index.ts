@@ -1,4 +1,6 @@
 import { Book, type IBook } from "../../models/book.model.js"
+import { Test } from "../../models/test.model.js"
+import { UserTestResult } from "../../models/user-test-result.model.js"
 
 const generateSlug = (title: string): string => {
   const slug = title
@@ -45,7 +47,18 @@ const bookServices = {
   ): Promise<IBook | null> =>
     Book.findByIdAndUpdate(id, data, { new: true, runValidators: true }),
 
-  remove: (id: string): Promise<IBook | null> => Book.findByIdAndDelete(id),
+  remove: async (id: string): Promise<IBook | null> => {
+    const testIds = (await Test.find({ bookId: id }).select("_id")).map(
+      (t) => t._id
+    )
+
+    if (testIds.length > 0) {
+      await UserTestResult.deleteMany({ testId: { $in: testIds } })
+      await Test.deleteMany({ bookId: id })
+    }
+
+    return Book.findByIdAndDelete(id)
+  },
 }
 
 export default bookServices

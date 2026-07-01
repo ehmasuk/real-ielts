@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Loader2, ArrowLeft, RotateCcw } from "lucide-react"
 import { fetchPartResult } from "@/lib/api"
 import { Header } from "@/components/header"
+import { formatString } from "@/components/test/shared/formatString"
 
 interface ResultItem {
   questionId: string
@@ -22,6 +23,7 @@ interface ResultData {
   title?: string
   sectionTitle?: string
   section?: any
+  skill?: string
 }
 
 export default function ResultPage() {
@@ -58,6 +60,8 @@ export default function ResultPage() {
       </div>
     )
   }
+
+  const skill = data?.skill
 
   if (!data) {
     return (
@@ -102,7 +106,12 @@ export default function ResultPage() {
         </div>
         <div className="mt-6 flex items-center justify-center gap-3">
           <button
-            onClick={() => router.push(`/test/${testId}/part/${partNum}?retry=1`)}
+            onClick={() => {
+              const base = skill === "listening" ? `/test/${testId}/listening/${partNum}`
+                : skill === "reading" ? `/test/${testId}/reading/${partNum}`
+                : `/test/${testId}/part/${partNum}`
+              router.push(`${base}?retry=1`)
+            }}
             className="inline-flex items-center gap-1.5 rounded-lg border border-border/30 px-4 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
           >
             <RotateCcw className="h-3.5 w-3.5" />
@@ -124,7 +133,7 @@ export default function ResultPage() {
                   </span>
                 )}
                 {group.instructions && (
-                  <p className="text-xs font-medium text-muted-foreground">{group.instructions}</p>
+                  <p className="text-xs font-medium text-muted-foreground">{formatString(group.instructions)}</p>
                 )}
               </div>
             </div>
@@ -137,6 +146,12 @@ export default function ResultPage() {
             {group.type === "table_completion" && renderTableCompletion(group, resultMap)}
             {group.type === "diagram_labeling" && renderDiagramLabeling(group, resultMap)}
             {group.type === "statement_judgement" && renderStatementJudgement(group, resultMap)}
+            {group.type === "matching_headings" && renderMatchingHeadings(group, resultMap)}
+            {group.type === "matching_information" && renderMatchingInformation(group, resultMap)}
+            {group.type === "matching_features" && renderMatchingFeatures(group, resultMap)}
+            {group.type === "matching_sentence_endings" && renderMatchingSentenceEndings(group, resultMap)}
+            {group.type === "completion" && renderCompletion(group, resultMap)}
+            {group.type === "completion_layout" && renderCompletionLayout(group, resultMap)}
           </div>
         ))}
       </div>
@@ -155,7 +170,7 @@ function renderMcqSingle(group: any, resultMap: Map<string, ResultItem>) {
           <div key={q.questionId}>
             <p className="text-sm font-medium text-foreground mb-2">
               <span className="text-muted-foreground mr-1">{q.number}.</span>
-              {q.question}
+              {formatString(q.question)}
             </p>
             <div className="flex flex-wrap gap-2">
               {q.options?.map((opt: string, oi: number) => {
@@ -196,7 +211,7 @@ function renderMcqMultiple(group: any, resultMap: Map<string, ResultItem>) {
         {group.questionNumbers?.length ? (
           <span className="text-muted-foreground mr-1">{group.questionNumbers.join(" and ")}.</span>
         ) : null}
-        {group.question}
+        {formatString(group.question)}
       </p>
       <div className="flex flex-wrap gap-2">
         {group.options?.map((opt: string, oi: number) => {
@@ -265,13 +280,13 @@ function renderNotesCompletion(group: any, resultMap: Map<string, ResultItem>) {
     <div className="space-y-2 font-serif">
       {group.layout?.blocks?.map((block: any, bi: number) => {
         if (block.type === "heading") {
-          return <h4 key={bi} className="text-sm font-bold text-foreground mt-3 first:mt-0">{block.text}</h4>
+          return <h4 key={bi} className="text-sm font-bold text-foreground mt-3 first:mt-0">{formatString(block.text)}</h4>
         }
         if (block.type === "paragraph") {
           return (
             <p key={bi} className="text-sm leading-relaxed text-foreground">
               {block.content?.map((item: any, ci: number) => {
-                if (item.type === "text") return <span key={ci}>{item.text}</span>
+                if (item.type === "text") return <span key={ci}>{formatString(item.text)}</span>
                 if (item.type === "question") {
                   const r = resultMap.get(item.questionId)
                   const showAnswer = r && !r.correct
@@ -327,7 +342,7 @@ function renderTableCompletion(group: any, resultMap: Map<string, ResultItem>) {
               {row.map((cell: any[], ci: number) => (
                 <td key={ci} className="border border-border/30 px-3 py-2 text-xs text-foreground">
                   {cell?.map((item: any, ii: number) => {
-                    if (item.type === "text") return <span key={ii}>{item.text}</span>
+                    if (item.type === "text") return <span key={ii}>{formatString(item.text)}</span>
                     if (item.type === "question") {
                       const r = resultMap.get(item.questionId)
                       const showAnswer = r && !r.correct
@@ -381,7 +396,7 @@ function renderDiagramLabeling(group: any, resultMap: Map<string, ResultItem>) {
           return (
             <div key={q.questionId} className="flex items-center gap-2">
               <span className="text-xs font-medium text-muted-foreground w-6 shrink-0">{q.number}.</span>
-              <span className="text-xs text-foreground flex-1">{q.question}</span>
+              <span className="text-xs text-foreground flex-1">{formatString(q.question)}</span>
               <span className={`rounded-lg border px-3 py-1 text-xs font-medium ${
                 r?.correct
                   ? "border-emerald-500 bg-emerald-500/10 text-emerald-700"
@@ -411,7 +426,7 @@ function renderStatementJudgement(group: any, resultMap: Map<string, ResultItem>
           <div key={q.questionId}>
             <p className="text-sm text-foreground leading-relaxed mb-2">
               <span className="text-muted-foreground mr-1">{q.number}.</span>
-              {q.question}
+              {formatString(q.question)}
             </p>
             <div className="flex flex-wrap gap-2">
               {group.options?.map((opt: string, oi: number) => {
@@ -437,6 +452,208 @@ function renderStatementJudgement(group: any, resultMap: Map<string, ResultItem>
             )}
           </div>
         )
+      })}
+    </div>
+  )
+}
+
+function renderMatchingHeadings(group: any, resultMap: Map<string, ResultItem>) {
+  return (
+    <div className="space-y-2">
+      {group.questions?.map((q: any) => {
+        const qId = `q_${q.number}`
+        const r = resultMap.get(qId)
+        return (
+          <div key={qId} className="flex items-center gap-3">
+            <span className="text-xs font-medium text-muted-foreground w-6 shrink-0">{q.number}.</span>
+            <span className="text-xs text-foreground">Section {q.sectionId?.replace("section_", "")}</span>
+            <span className={`rounded-lg border px-3 py-1 text-xs font-medium ${
+              r?.correct
+                ? "border-emerald-500 bg-emerald-500/10 text-emerald-700"
+                : "border-red-500 bg-red-500/10 text-red-700"
+            }`}>
+              {r?.userAnswer ? String(r.userAnswer) : "(empty)"}
+            </span>
+            {r && !r.correct && (
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                ({formatAnswer(r.correctAnswer)})
+              </span>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function renderMatchingInformation(group: any, resultMap: Map<string, ResultItem>) {
+  return (
+    <div className="space-y-2">
+      {group.questions?.map((q: any) => {
+        const qId = `q_${q.number}`
+        const r = resultMap.get(qId)
+        return (
+          <div key={qId} className="flex items-start gap-3">
+            <span className="text-xs font-medium text-muted-foreground w-6 shrink-0 pt-0.5">{q.number}.</span>
+          <p className="flex-1 text-xs text-foreground">{formatString(q.question)}</p>
+          <span className={`rounded-lg border px-3 py-1 text-xs font-medium ${
+              r?.correct
+                ? "border-emerald-500 bg-emerald-500/10 text-emerald-700"
+                : "border-red-500 bg-red-500/10 text-red-700"
+            }`}>
+              {r?.userAnswer ? String(r.userAnswer) : "(empty)"}
+            </span>
+            {r && !r.correct && (
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                ({formatAnswer(r.correctAnswer)})
+              </span>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function renderMatchingFeatures(group: any, resultMap: Map<string, ResultItem>) {
+  return (
+    <div className="space-y-2">
+      {group.questions?.map((q: any) => {
+        const qId = `q_${q.number}`
+        const r = resultMap.get(qId)
+        return (
+          <div key={qId} className="flex items-start gap-3">
+            <span className="text-xs font-medium text-muted-foreground w-6 shrink-0 pt-0.5">{q.number}.</span>
+            <p className="flex-1 text-xs text-foreground">{formatString(q.question)}</p>
+            <span className={`rounded-lg border px-3 py-1 text-xs font-medium ${
+              r?.correct
+                ? "border-emerald-500 bg-emerald-500/10 text-emerald-700"
+                : "border-red-500 bg-red-500/10 text-red-700"
+            }`}>
+              {r?.userAnswer ? String(r.userAnswer) : "(empty)"}
+            </span>
+            {r && !r.correct && (
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                ({formatAnswer(r.correctAnswer)})
+              </span>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function renderMatchingSentenceEndings(group: any, resultMap: Map<string, ResultItem>) {
+  return (
+    <div className="space-y-2">
+      {group.questions?.map((q: any) => {
+        const qId = `q_${q.number}`
+        const r = resultMap.get(qId)
+        return (
+          <div key={qId} className="flex items-start gap-3">
+            <span className="text-xs font-medium text-muted-foreground w-6 shrink-0 pt-0.5">{q.number}.</span>
+            <p className="flex-1 text-xs text-foreground">{formatString(q.question)}</p>
+            <span className={`rounded-lg border px-3 py-1 text-xs font-medium ${
+              r?.correct
+                ? "border-emerald-500 bg-emerald-500/10 text-emerald-700"
+                : "border-red-500 bg-red-500/10 text-red-700"
+            }`}>
+              {r?.userAnswer ? String(r.userAnswer) : "(empty)"}
+            </span>
+            {r && !r.correct && (
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                ({formatAnswer(r.correctAnswer)})
+              </span>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function renderCompletion(group: any, resultMap: Map<string, ResultItem>) {
+  return (
+    <div className="space-y-3">
+      {group.questions?.map((q: any) => {
+        const r = resultMap.get(q.questionId)
+        return (
+          <div key={q.questionId}>
+            <p className="text-sm leading-relaxed text-foreground">
+              <span className="text-muted-foreground mr-1">{q.number}.</span>
+              {q.question?.split("______").map((part: string, pi: number, arr: string[]) => (
+                <React.Fragment key={pi}>
+                  <span>{part}</span>
+                  {pi < arr.length - 1 && (
+                    <span className={`inline-block mx-1 px-1.5 py-0.5 rounded border text-sm font-medium ${
+                      r?.correct
+                        ? "border-emerald-500 bg-emerald-500/10 text-emerald-700"
+                        : "border-red-500 bg-red-500/10 text-red-700"
+                    }`}>
+                      {r?.userAnswer ? String(r.userAnswer) : ""}
+                    </span>
+                  )}
+                </React.Fragment>
+              ))}
+              {r && !r.correct && (
+                <span className="ml-1 text-[10px] text-emerald-600 dark:text-emerald-400">
+                  (correct: <span className="font-semibold">{formatAnswer(r.correctAnswer)}</span>)
+                </span>
+              )}
+            </p>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function renderCompletionLayout(group: any, resultMap: Map<string, ResultItem>) {
+  return (
+    <div className="space-y-2 font-serif">
+      {group.layout?.blocks?.map((block: any, bi: number) => {
+        if (block.type === "heading") {
+          return <h4 key={bi} className="text-sm font-bold text-foreground mt-3 first:mt-0">{formatString(block.text)}</h4>
+        }
+        if (block.type === "paragraph") {
+          return (
+            <p key={bi} className="text-sm leading-relaxed text-foreground">
+              {block.content?.map((item: any, ci: number) => {
+                if (item.type === "text") return <span key={ci}>{formatString(item.text)}</span>
+                if (item.type === "question") {
+                  const r = resultMap.get(item.questionId)
+                  const showAnswer = r && !r.correct
+                  return (
+                    <React.Fragment key={ci}>
+                      {item.question?.split("______").map((part: string, pi: number, arr: string[]) => (
+                        <React.Fragment key={pi}>
+                          <span>{formatString(part)}</span>
+                          {pi < arr.length - 1 && (
+                            <span className={`inline-block mx-1 px-1.5 py-0.5 rounded border text-sm font-medium ${
+                              r?.correct
+                                ? "border-emerald-500 bg-emerald-500/10 text-emerald-700"
+                                : "border-red-500 bg-red-500/10 text-red-700"
+                            }`}>
+                              {r?.userAnswer ? String(r.userAnswer) : ""}
+                            </span>
+                          )}
+                        </React.Fragment>
+                      ))}
+                      {showAnswer && (
+                        <span className="ml-1 text-[10px] text-emerald-600 dark:text-emerald-400">
+                          (correct: <span className="font-semibold">{formatAnswer(r.correctAnswer)}</span>)
+                        </span>
+                      )}
+                    </React.Fragment>
+                  )
+                }
+                return null
+              })}
+            </p>
+          )
+        }
+        return null
       })}
     </div>
   )

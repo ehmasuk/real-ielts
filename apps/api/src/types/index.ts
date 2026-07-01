@@ -8,6 +8,7 @@ export interface CustomRequest extends Request {
 
 export interface DecodedTokenType {
   id: string;
+  role: string;
   iat?: number;
   exp?: number;
 }

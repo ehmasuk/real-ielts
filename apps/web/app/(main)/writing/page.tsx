@@ -8,13 +8,11 @@ import { Button } from "@workspace/ui/components/button"
 interface Book {
   id: number
   title: string
-  version: "Academic" | "General" | "Both"
   color: string
   isNew?: boolean
 }
 
 const generateBooks = (): Book[] => {
-  const versions: ("Academic" | "General" | "Both")[] = ["Both", "Academic", "Academic", "General", "Both"]
   const gradients = [
     "from-pink-600 to-pink-900",
     "from-rose-600 to-rose-900",
@@ -24,14 +22,12 @@ const generateBooks = (): Book[] => {
 
   return Array.from({ length: 21 }, (_, index) => {
     const bookNum = 20 - index
-    const version = versions[bookNum % versions.length] ?? "Both"
     const color = gradients[bookNum % gradients.length] ?? "from-pink-600 to-pink-900"
     const isNew = bookNum >= 17
 
     return {
       id: bookNum,
       title: `Cambridge IELTS ${bookNum}`,
-      version,
       isNew,
       color,
     }
@@ -74,7 +70,7 @@ export default function WritingPage() {
             Official Cambridge Writing Prompts
           </h1>
           <p className="text-sm text-muted-foreground mt-2 max-w-2xl leading-relaxed">
-            Select any writing task to practice Academic and General Writing. Each full test contains 2 universal writing tasks (Task 1 for chart/letter, Task 2 for essay writing).
+            Select any writing task to practice IELTS Academic Writing. Each full test contains 2 tasks (Task 1 for chart description, Task 2 for essay writing).
           </p>
         </div>
         
@@ -133,9 +129,6 @@ export default function WritingPage() {
                 <div className="absolute right-0 bottom-0 top-0 left-1/3 bg-white/5 skew-x-12 transform origin-top-right transition-transform group-hover:scale-110" />
                 
                 <div className="flex justify-between items-start mb-3">
-                  <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-semibold text-white/90 backdrop-blur-md">
-                    {book.version}
-                  </span>
                   {book.isNew && (
                     <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[9px] font-bold text-white shadow-sm">
                       NEW

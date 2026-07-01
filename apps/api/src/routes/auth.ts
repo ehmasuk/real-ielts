@@ -5,8 +5,6 @@ import isAuthenticated from "../middlewares/isAuthenticated.js"
 const router: Router = Router()
 
 router.post("/sync", authControllers.sync)
-router.post("/google", authControllers.googleSignIn)
-router.post("/logout", authControllers.logout)
 router.get("/me", isAuthenticated, authControllers.me)
 
 export default router

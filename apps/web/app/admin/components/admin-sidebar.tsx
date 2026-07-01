@@ -8,6 +8,8 @@ import {
   BookOpen,
   FileText,
   Headphones,
+  MessageSquare,
+  PenLine,
   Upload,
   ShieldCheck,
   GraduationCap,
@@ -62,6 +64,8 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/admin/schemas/listening", label: "Listening Schema", icon: Headphones },
       { href: "/admin/schemas/reading", label: "Reading Schema", icon: BookOpen },
+      { href: "/admin/schemas/writing", label: "Writing Schema", icon: PenLine },
+      { href: "/admin/schemas/speaking", label: "Speaking Schema", icon: MessageSquare },
     ],
   },
 ]

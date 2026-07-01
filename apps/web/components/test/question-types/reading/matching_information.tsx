@@ -1,0 +1,44 @@
+"use client"
+
+import { formatString } from "../../shared/formatString"
+
+interface Props {
+  group: any
+  answers: Record<string, any>
+  onAnswerChange: (questionId: string, value: any) => void
+}
+
+export function MatchingInformation({ group, answers, onAnswerChange }: Props) {
+  const { questionRange, instructions, options, questions } = group
+  const placeholder = options?.length > 1
+    ? `${options[0]}–${options[options.length - 1]}`
+    : "A–Z"
+  return (
+    <div className="space-y-4">
+      {questionRange && (
+        <p className="font-bold">Questions {questionRange}</p>
+      )}
+      {instructions && <p className="font-medium">{formatString(instructions)}</p>}
+      <div className="space-y-3">
+        {questions?.map((q: any) => {
+          const qId = `q_${q.number}`
+          return (
+            <div key={q.number} className="flex items-start gap-3">
+              <span className="w-8 shrink-0 pt-0.5 font-bold">
+                {q.number}.
+              </span>
+              <p className="flex-1">{formatString(q.question)}</p>
+              <input
+                className="w-16 border border-black px-2 py-1 text-center uppercase outline-none"
+                maxLength={1}
+                placeholder={placeholder}
+                value={answers[qId] ?? ""}
+                onChange={(e) => onAnswerChange(qId, e.target.value)}
+              />
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}

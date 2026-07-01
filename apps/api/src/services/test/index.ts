@@ -40,7 +40,8 @@ const testServices = {
     userId: string,
     testId: string,
     partIndex: number,
-    userAnswers: Record<string, any>
+    userAnswers: Record<string, any>,
+    timeTaken?: number
   ) => {
     const test = await Test.findById(testId);
     if (!test || test.status !== "published") return null;
@@ -72,7 +73,7 @@ const testServices = {
 
     await UserTestResult.findOneAndUpdate(
       { userId: new mongoose.Types.ObjectId(userId), testId: new mongoose.Types.ObjectId(testId), partNum: partIndex + 1 },
-      { answers: userAnswers, results, score, total, submittedAt: new Date() },
+      { answers: userAnswers, results, score, total, timeTaken, submittedAt: new Date() },
       { upsert: true, new: true }
     );
 

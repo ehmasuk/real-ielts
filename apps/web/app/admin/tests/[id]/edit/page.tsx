@@ -18,6 +18,9 @@ import { Button } from "@workspace/ui/components/button"
 import { Badge } from "@workspace/ui/components/badge"
 import type { TestItem } from "../../../lib/mock-data"
 import { fetchTestById, updateTest, publishTest } from "@/lib/api"
+import { formatString } from "@/components/test/shared/formatString"
+import CodeMirror, { EditorView } from "@uiw/react-codemirror"
+import { json } from "@codemirror/lang-json"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -215,125 +218,150 @@ export default function TestEditorPage({ params }: PageProps) {
           if (test.skill === "reading" && !sec.instructions) {
             issues.push({ type: "warning", message: `Section #${sIdx + 1} is missing section 'instructions'` })
           }
-          const sectionQuestions = sec.questionGroups
-            ? sec.questionGroups.flatMap((g: any, gIdx: number) => {
-                if (!g.type) {
-                  issues.push({ type: "warning", message: `Question group #${gIdx + 1} in Section #${sIdx + 1} ('${sec.title || sIdx}') is missing 'type'` })
+          if (test.skill === "speaking") {
+            // Speaking uses a different schema — no questionGroups/questionId
+            if (sec.id === "part_1" && sec.topics) {
+              sec.topics.forEach((topic: any, tIdx: number) => {
+                if (!topic.title) {
+                  issues.push({ type: "warning", message: `Topic #${tIdx + 1} in '${sec.id}' is missing a 'title'` })
                 }
-                if (!g.instructions) {
-                  issues.push({ type: "warning", message: `Question group #${gIdx + 1} in Section #${sIdx + 1} ('${sec.title || sIdx}') is missing 'instructions'` })
+                if (!topic.questions || !Array.isArray(topic.questions) || topic.questions.length === 0) {
+                  issues.push({ type: "warning", message: `Topic #${tIdx + 1} in '${sec.id}' has no 'questions'` })
                 }
-                if (!g.questionRange) {
-                  issues.push({ type: "warning", message: `Question group #${gIdx + 1} in Section #${sIdx + 1} is missing 'questionRange'` })
-                }
-                if (g.type === "table_completion") {
-                  if (!g.layout || !g.layout.columns || !g.layout.rows) {
-                    issues.push({ type: "error", message: `Table completion group #${gIdx + 1} is missing 'layout' with 'columns' and 'rows'` })
-                    return []
+              })
+            } else if (sec.id === "part_2" && sec.cueCard) {
+              if (!sec.cueCard.task) {
+                issues.push({ type: "error", message: `Cue card in '${sec.id}' is missing a 'task'` })
+              }
+              if (!sec.cueCard.points || !Array.isArray(sec.cueCard.points) || sec.cueCard.points.length === 0) {
+                issues.push({ type: "warning", message: `Cue card in '${sec.id}' has no 'points'` })
+              }
+            } else if (sec.id === "part_3") {
+              if (!sec.questions || !Array.isArray(sec.questions) || sec.questions.length === 0) {
+                issues.push({ type: "warning", message: `Section '${sec.id}' has no 'questions'` })
+              }
+            }
+          } else {
+            const sectionQuestions = sec.questionGroups
+              ? sec.questionGroups.flatMap((g: any, gIdx: number) => {
+                  if (!g.type) {
+                    issues.push({ type: "warning", message: `Question group #${gIdx + 1} in Section #${sIdx + 1} ('${sec.title || sIdx}') is missing 'type'` })
                   }
-                  const ids: { questionId: string; number: number }[] = []
-                  g.layout.rows.forEach((row: any[], rIdx: number) => {
-                    if (row.length !== g.layout.columns.length) {
-                      issues.push({ type: "error", message: `Row #${rIdx + 1} in table completion group #${gIdx + 1} has ${row.length} cells, expected ${g.layout.columns.length}` })
+                  if (!g.instructions) {
+                    issues.push({ type: "warning", message: `Question group #${gIdx + 1} in Section #${sIdx + 1} ('${sec.title || sIdx}') is missing 'instructions'` })
+                  }
+                  if (!g.questionRange) {
+                    issues.push({ type: "warning", message: `Question group #${gIdx + 1} in Section #${sIdx + 1} is missing 'questionRange'` })
+                  }
+                  if (g.type === "table_completion") {
+                    if (!g.layout || !g.layout.columns || !g.layout.rows) {
+                      issues.push({ type: "error", message: `Table completion group #${gIdx + 1} is missing 'layout' with 'columns' and 'rows'` })
+                      return []
                     }
-                    row.forEach((cell: any[], cIdx: number) => {
-                      if (!Array.isArray(cell)) {
-                        issues.push({ type: "error", message: `Cell #${cIdx + 1} in row #${rIdx + 1} must be an array of items` })
-                        return
+                    const ids: { questionId: string; number: number }[] = []
+                    g.layout.rows.forEach((row: any[], rIdx: number) => {
+                      if (row.length !== g.layout.columns.length) {
+                        issues.push({ type: "error", message: `Row #${rIdx + 1} in table completion group #${gIdx + 1} has ${row.length} cells, expected ${g.layout.columns.length}` })
                       }
-                      cell.forEach((item: any) => {
-                        if (item.type === "question") {
-                          if (!item.questionId) {
-                            issues.push({ type: "error", message: `Question item in cell #${cIdx + 1} row #${rIdx + 1} is missing 'questionId'` })
-                          } else {
-                            ids.push({ questionId: item.questionId, number: item.number || 0 })
-                          }
+                      row.forEach((cell: any[], cIdx: number) => {
+                        if (!Array.isArray(cell)) {
+                          issues.push({ type: "error", message: `Cell #${cIdx + 1} in row #${rIdx + 1} must be an array of items` })
+                          return
                         }
+                        cell.forEach((item: any) => {
+                          if (item.type === "question") {
+                            if (!item.questionId) {
+                              issues.push({ type: "error", message: `Question item in cell #${cIdx + 1} row #${rIdx + 1} is missing 'questionId'` })
+                            } else {
+                              ids.push({ questionId: item.questionId, number: item.number || 0 })
+                            }
+                          }
+                        })
                       })
                     })
-                  })
-                  return ids
-                }
-                if (g.type === "notes_completion") {
-                  if (!g.layout || !g.layout.blocks) {
-                    issues.push({ type: "error", message: `Notes completion group #${gIdx + 1} is missing 'layout' with 'blocks'` })
-                    return []
+                    return ids
                   }
-                  const ids: { questionId: string; number: number }[] = []
-                  g.layout.blocks.forEach((block: any, bIdx: number) => {
-                    if (block.type === "paragraph" && block.content) {
-                      block.content.forEach((item: any, iIdx: number) => {
-                        if (item.type === "question") {
-                          if (!item.questionId) {
-                            issues.push({ type: "error", message: `Question item #${iIdx + 1} in paragraph block #${bIdx + 1} of group #${gIdx + 1} is missing 'questionId'` })
-                          } else {
-                            ids.push({ questionId: item.questionId, number: item.number || 0 })
-                          }
-                        }
-                      })
+                  if (g.type === "notes_completion") {
+                    if (!g.layout || !g.layout.blocks) {
+                      issues.push({ type: "error", message: `Notes completion group #${gIdx + 1} is missing 'layout' with 'blocks'` })
+                      return []
                     }
-                  })
-                  return ids
-                }
-                if (g.type === "diagram_labeling") {
-                  if (!g.image_src) {
-                    issues.push({ type: "error", message: `Diagram labeling group #${gIdx + 1} is missing 'image_src'` })
+                    const ids: { questionId: string; number: number }[] = []
+                    g.layout.blocks.forEach((block: any, bIdx: number) => {
+                      if (block.type === "paragraph" && block.content) {
+                        block.content.forEach((item: any, iIdx: number) => {
+                          if (item.type === "question") {
+                            if (!item.questionId) {
+                              issues.push({ type: "error", message: `Question item #${iIdx + 1} in paragraph block #${bIdx + 1} of group #${gIdx + 1} is missing 'questionId'` })
+                            } else {
+                              ids.push({ questionId: item.questionId, number: item.number || 0 })
+                            }
+                          }
+                        })
+                      }
+                    })
+                    return ids
                   }
-                  if (!g.options || !Array.isArray(g.options) || g.options.length === 0) {
-                    issues.push({ type: "error", message: `Diagram labeling group #${gIdx + 1} is missing 'options'` })
+                  if (g.type === "diagram_labeling") {
+                    if (!g.image_src) {
+                      issues.push({ type: "error", message: `Diagram labeling group #${gIdx + 1} is missing 'image_src'` })
+                    }
+                    if (!g.options || !Array.isArray(g.options) || g.options.length === 0) {
+                      issues.push({ type: "error", message: `Diagram labeling group #${gIdx + 1} is missing 'options'` })
+                    }
+                    if (!g.questions || !Array.isArray(g.questions) || g.questions.length === 0) {
+                      issues.push({ type: "warning", message: `Diagram labeling group #${gIdx + 1} has no questions` })
+                    }
+                    const ids: { id: string; number: number }[] = (g.questions || []).map((q: any) => ({ id: q.questionId, number: q.number || 0 }))
+                    return ids
+                  }
+                  if (g.type === "mcq_multiple") {
+                    if (!g.select || typeof g.select !== "number" || g.select < 1) {
+                      issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} is missing valid 'select' (number of answers to pick)` })
+                    }
+                    if (!g.questionNumbers || !Array.isArray(g.questionNumbers) || g.questionNumbers.length === 0) {
+                      issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} is missing 'questionNumbers'` })
+                    }
+                    if (!g.questionId) {
+                      issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} is missing 'questionId'` })
+                    }
+                    if (!g.question) {
+                      issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} is missing 'question'` })
+                    }
+                    if (!g.options || !Array.isArray(g.options) || g.options.length < (g.select || 1)) {
+                      issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} must have at least 'select' options` })
+                    }
+                    const ids: { questionId: string; number: number }[] = g.questionId ? [{ questionId: g.questionId, number: 0 }] : []
+                    return ids
+                  }
+                  if (g.type === "statement_judgement") {
+                    if (!g.options || !Array.isArray(g.options) || g.options.length < 2) {
+                      issues.push({ type: "error", message: `Statement judgement group #${gIdx + 1} is missing 'options' (e.g. True/False/Not Given)` })
+                    }
+                    if (!g.questions || !Array.isArray(g.questions) || g.questions.length === 0) {
+                      issues.push({ type: "warning", message: `Statement judgement group #${gIdx + 1} has no questions` })
+                    }
+                    const ids: { questionId: string; number: number }[] = (g.questions || []).map((q: any) => ({ questionId: q.questionId, number: q.number || 0 }))
+                    return ids
                   }
                   if (!g.questions || !Array.isArray(g.questions) || g.questions.length === 0) {
-                    issues.push({ type: "warning", message: `Diagram labeling group #${gIdx + 1} has no questions` })
+                    issues.push({ type: "warning", message: `Question group #${gIdx + 1} in Section #${sIdx + 1} has no questions` })
                   }
-                  const ids: { id: string; number: number }[] = (g.questions || []).map((q: any) => ({ id: q.questionId, number: q.number || 0 }))
-                  return ids
+                  return g.questions || []
+                })
+              : sec.questions
+            if (!sectionQuestions || !Array.isArray(sectionQuestions) || sectionQuestions.length === 0) {
+              issues.push({ type: "warning", message: `Section #${sIdx + 1} ('${sec.title || sIdx}') has no questions` })
+            } else {
+              sectionQuestions.forEach((q: any, qIdx: number) => {
+                const id = q.questionId
+                if (!id) {
+                  issues.push({ type: "error", message: `Question #${qIdx + 1} in Section #${sIdx + 1} is missing 'questionId'` })
+                } else if (parsedAnswers && parsedAnswers.answers && !parsedAnswers.answers[id]) {
+                  issues.push({ type: "warning", message: `Question '${id}' is missing a corresponding answer key in Answers JSON` })
                 }
-                if (g.type === "mcq_multiple") {
-                  if (!g.select || typeof g.select !== "number" || g.select < 1) {
-                    issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} is missing valid 'select' (number of answers to pick)` })
-                  }
-                  if (!g.questionNumbers || !Array.isArray(g.questionNumbers) || g.questionNumbers.length === 0) {
-                    issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} is missing 'questionNumbers'` })
-                  }
-                  if (!g.questionId) {
-                    issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} is missing 'questionId'` })
-                  }
-                  if (!g.question) {
-                    issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} is missing 'question'` })
-                  }
-                  if (!g.options || !Array.isArray(g.options) || g.options.length < (g.select || 1)) {
-                    issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} must have at least 'select' options` })
-                  }
-                  const ids: { questionId: string; number: number }[] = g.questionId ? [{ questionId: g.questionId, number: 0 }] : []
-                  return ids
-                }
-                if (g.type === "statement_judgement") {
-                  if (!g.options || !Array.isArray(g.options) || g.options.length < 2) {
-                    issues.push({ type: "error", message: `Statement judgement group #${gIdx + 1} is missing 'options' (e.g. True/False/Not Given)` })
-                  }
-                  if (!g.questions || !Array.isArray(g.questions) || g.questions.length === 0) {
-                    issues.push({ type: "warning", message: `Statement judgement group #${gIdx + 1} has no questions` })
-                  }
-                  const ids: { questionId: string; number: number }[] = (g.questions || []).map((q: any) => ({ questionId: q.questionId, number: q.number || 0 }))
-                  return ids
-                }
-                if (!g.questions || !Array.isArray(g.questions) || g.questions.length === 0) {
-                  issues.push({ type: "warning", message: `Question group #${gIdx + 1} in Section #${sIdx + 1} has no questions` })
-                }
-                return g.questions || []
               })
-            : sec.questions
-          if (!sectionQuestions || !Array.isArray(sectionQuestions) || sectionQuestions.length === 0) {
-            issues.push({ type: "warning", message: `Section #${sIdx + 1} ('${sec.title || sIdx}') has no questions` })
-          } else {
-            sectionQuestions.forEach((q: any, qIdx: number) => {
-              const id = q.questionId
-              if (!id) {
-                issues.push({ type: "error", message: `Question #${qIdx + 1} in Section #${sIdx + 1} is missing 'questionId'` })
-              } else if (parsedAnswers && parsedAnswers.answers && !parsedAnswers.answers[id]) {
-                issues.push({ type: "warning", message: `Question '${id}' is missing a corresponding answer key in Answers JSON` })
-              }
-            })
+            }
           }
         })
       }
@@ -460,16 +488,19 @@ export default function TestEditorPage({ params }: PageProps) {
             </div>
 
             <div className="relative">
-              <textarea
+              <CodeMirror
                 value={contentJson}
-                onChange={(e) => setContentJson(e.target.value)}
+                onChange={(val) => setContentJson(val)}
+                height="540px"
+                extensions={[json(), EditorView.lineWrapping]}
+                theme="light"
+                basicSetup={{ lineNumbers: true, foldGutter: true, bracketMatching: true, closeBrackets: true }}
                 className={cn(
-                  "w-full h-[540px] p-4 rounded-xl border font-mono text-xs shadow-sm bg-card transition-all focus:outline-none focus:ring-1",
+                  "rounded-xl border shadow-sm overflow-hidden",
                   contentError
-                    ? "border-destructive focus:ring-destructive"
-                    : "border-border/40 focus:ring-indigo-500"
+                    ? "border-destructive"
+                    : "border-border/40"
                 )}
-                placeholder="Paste content JSON schema here..."
               />
               {contentError && (
                 <div className="mt-2 flex items-center gap-1.5 text-xs text-destructive bg-destructive/5 border border-destructive/20 p-2.5 rounded-lg">
@@ -491,16 +522,19 @@ export default function TestEditorPage({ params }: PageProps) {
               </Button>
             </div>
             <div className="relative">
-              <textarea
+              <CodeMirror
                 value={answerJson}
-                onChange={(e) => setAnswerJson(e.target.value)}
+                onChange={(val) => setAnswerJson(val)}
+                height="540px"
+                extensions={[json(), EditorView.lineWrapping]}
+                theme="light"
+                basicSetup={{ lineNumbers: true, foldGutter: true, bracketMatching: true, closeBrackets: true }}
                 className={cn(
-                  "w-full h-[540px] p-4 rounded-xl border font-mono text-xs shadow-sm bg-card transition-all focus:outline-none focus:ring-1",
+                  "rounded-xl border shadow-sm overflow-hidden",
                   answerError
-                    ? "border-destructive focus:ring-destructive"
-                    : "border-border/40 focus:ring-indigo-500"
+                    ? "border-destructive"
+                    : "border-border/40"
                 )}
-                placeholder="Paste answer key JSON schema here..."
               />
               {answerError && (
                 <div className="mt-2 flex items-center gap-1.5 text-xs text-destructive bg-destructive/5 border border-destructive/20 p-2.5 rounded-lg">
@@ -591,20 +625,30 @@ export default function TestEditorPage({ params }: PageProps) {
                     )}
                     {sec.instructions && (
                       <div className="text-xs leading-relaxed text-muted-foreground bg-muted/10 p-4 border border-border/20 rounded-xl font-serif">
-                        {sec.instructions}
+                        {formatString(sec.instructions)}
                       </div>
                     )}
                     {sec.passage?.blocks && (
                       <div className="space-y-3 p-4 border border-border/20 rounded-xl bg-card/30">
                         {sec.passage.title && (
-                          <h5 className="text-sm font-bold text-foreground">{sec.passage.title}</h5>
+                          <h5 className="text-sm font-bold text-foreground">{formatString(sec.passage.title)}</h5>
+                        )}
+                        {sec.passage.subtitle && (
+                          <p className="text-[11px] text-muted-foreground">{formatString(sec.passage.subtitle)}</p>
                         )}
                         {sec.passage.blocks.map((block: any, bIdx: number) => {
                           if (block.type === "heading") {
-                            return <h6 key={bIdx} className="text-xs font-bold text-foreground">{block.text}</h6>
+                            return (
+                              <h6
+                                key={bIdx}
+                                className={`text-xs font-bold text-foreground ${block.alignment === "center" ? "text-center" : ""}`}
+                              >
+                                {formatString(block.text)}
+                              </h6>
+                            )
                           }
                           if (block.type === "paragraph") {
-                            return <p key={bIdx} className="text-xs leading-relaxed text-muted-foreground">{block.text}</p>
+                            return <p key={bIdx} className="text-xs leading-relaxed text-muted-foreground">{formatString(block.text)}</p>
                           }
                           if (block.type === "image") {
                             return (
@@ -701,16 +745,16 @@ export default function TestEditorPage({ params }: PageProps) {
                                   </tbody>
                                 </table>
                               </div>
-                            ) : group.type === "notes_completion" && group.layout ? (
+                            ) : (group.type === "notes_completion" || group.type === "completion_layout") && group.layout ? (
                               <div className="rounded-lg border border-border/30 p-4 space-y-3 font-mono text-[13px] leading-relaxed">
                                 {group.layout.blocks.map((block: any, bIdx: number) =>
                                   block.type === "heading" ? (
-                                    <p key={bIdx} className="font-bold text-foreground text-sm pt-2 first:pt-0">{block.text}</p>
+                                    <p key={bIdx} className="font-bold text-foreground text-sm pt-2 first:pt-0">{formatString(block.text)}</p>
                                   ) : block.type === "paragraph" ? (
                                     <p key={bIdx} className="text-foreground">
                                       {block.content.map((item: any, iIdx: number) =>
                                         item.type === "text" ? (
-                                          <span key={iIdx} className="text-muted-foreground">{item.text}</span>
+                                          <span key={iIdx} className="text-muted-foreground">{formatString(item.text)}</span>
                                         ) : (
                                           <span key={iIdx} className="inline-flex items-baseline gap-1">
                                             <span className="text-[10px] font-bold text-indigo-500">{item.number}.</span>
@@ -747,7 +791,7 @@ export default function TestEditorPage({ params }: PageProps) {
                                   {group.questions && group.questions.map((q: any, qIdx: number) => (
                                     <div key={q.questionId || qIdx} className="flex items-center gap-3 text-xs">
                                       <span className="font-bold text-indigo-500 tabular-nums w-5">{q.number || qIdx + 1}.</span>
-                                      <span className="text-foreground flex-1">{q.question}</span>
+                                      <span className="text-foreground flex-1">{formatString(q.question)}</span>
                                       <span className="text-[10px] text-muted-foreground/50 font-mono border border-border/20 rounded px-1.5 py-0.5 bg-background/30 select-none">
                                         Select option
                                       </span>
@@ -757,7 +801,7 @@ export default function TestEditorPage({ params }: PageProps) {
                               </div>
                             ) : group.type === "mcq_multiple" ? (
                               <div className="space-y-3">
-                                <p className="text-xs text-foreground leading-normal">{group.question}</p>
+                                <p className="text-xs text-foreground leading-normal">{formatString(group.question)}</p>
                                 {group.select && (
                                   <p className="text-[10px] text-muted-foreground font-medium">
                                     Select {group.select} answer{group.select > 1 ? "s" : ""}
@@ -797,7 +841,7 @@ export default function TestEditorPage({ params }: PageProps) {
                                     <div key={q.questionId || qIdx} className="flex gap-2 text-xs">
                                       <span className="font-bold text-indigo-500 tabular-nums w-5">{q.number || qIdx + 1}.</span>
                                       <div className="space-y-1 flex-1">
-                                        <p className="text-foreground leading-normal">{q.question}</p>
+                                        <p className="text-foreground leading-normal">{formatString(q.question)}</p>
                                         <div className="flex gap-1.5">
                                           {group.options && group.options.map((opt: string, oIdx: number) => (
                                             <span key={oIdx} className="h-6 rounded border border-border/30 bg-background/20 px-2 text-[10px] text-muted-foreground/40 select-none flex items-center">
@@ -816,7 +860,7 @@ export default function TestEditorPage({ params }: PageProps) {
                                   <div key={q.questionId || qIdx} className="flex gap-2 text-xs">
                                     <span className="font-bold text-indigo-500 tabular-nums w-5">{q.number || qIdx + 1}.</span>
                                     <div className="space-y-1.5 flex-1">
-                                      <p className="text-foreground leading-normal">{q.question}</p>
+                                      <p className="text-foreground leading-normal">{formatString(q.question)}</p>
                                       <div className="h-8 max-w-xs border border-border/40 rounded-lg bg-background p-2 text-muted-foreground/30 select-none text-[10px]">
                                         Answer input area
                                       </div>
@@ -835,7 +879,7 @@ export default function TestEditorPage({ params }: PageProps) {
                                 <div key={q.questionId || qIdx} className="flex gap-2 text-xs">
                                   <span className="font-bold text-indigo-500 tabular-nums w-5">{q.number || qIdx + 1}.</span>
                                   <div className="space-y-1.5 flex-1">
-                                    <p className="text-foreground leading-normal">{q.question}</p>
+                                    <p className="text-foreground leading-normal">{formatString(q.question)}</p>
                                     <div className="h-8 max-w-xs border border-border/40 rounded-lg bg-background p-2 text-muted-foreground/30 select-none text-[10px]">
                                       Answer input area
                                     </div>

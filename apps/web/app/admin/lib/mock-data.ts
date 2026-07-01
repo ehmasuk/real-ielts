@@ -226,16 +226,16 @@ export const testsData: TestItem[] = [
           title: "Reading Passage 1",
           passage: "This is the first reading passage. It contains information about language development...",
           questions: [
-            { questionId: "q1", number: 1, type: "true-false-not-given", question: "Language acquisition is entirely biological.", options: [] },
-            { questionId: "q2", number: 2, type: "true-false-not-given", question: "Environment plays a role in syntax learning.", options: [] }
+            { questionId: "q_1", number: 1, type: "true-false-not-given", question: "Language acquisition is entirely biological.", options: [] },
+            { questionId: "q_2", number: 2, type: "true-false-not-given", question: "Environment plays a role in syntax learning.", options: [] }
           ]
         }
       ]
     }, null, 2),
     answerJson: JSON.stringify({
       answers: {
-        q1: "FALSE",
-        q2: "TRUE"
+        q_1: "FALSE",
+        q_2: "TRUE"
       }
     }, null, 2)
   },
@@ -256,7 +256,7 @@ export const testsData: TestItem[] = [
           id: "sec_1",
           title: "Section 1",
           questions: [
-            { questionId: "q1", number: 1, type: "sentence_completion", question: "Name of the caller: [blank]", options: [] }
+            { questionId: "q_1", number: 1, type: "sentence_completion", question: "Name of the caller: [blank]", options: [] }
           ]
         }
       ]

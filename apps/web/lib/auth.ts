@@ -24,8 +24,4 @@ export const auth = betterAuth({
       refreshCache: true,
     },
   },
-  account: {
-    storeStateStrategy: "cookie",
-    storeAccountCookie: true,
-  },
 })

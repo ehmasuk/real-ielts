@@ -172,7 +172,7 @@ export default function ListeningPage() {
                             return (
                               <Link
                                 key={partNum}
-                                href={test ? `/test/${test._id}/part/${partNum}` : "#"}
+                                href={test ? `/test/${test._id}/listening/${partNum}` : "#"}
                                 className={`flex items-center justify-between rounded-lg border px-3 py-2 text-[11px] font-semibold transition-all shadow-sm cursor-pointer ${
                                   test
                                     ? "border-border/40 bg-background/50 hover:bg-indigo-600 hover:border-indigo-600 hover:text-white text-muted-foreground"

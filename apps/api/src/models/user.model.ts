@@ -17,11 +17,11 @@ const userSchema = new Schema<IUser>(
     googleId: {
       type: String,
       required: true,
-      unique: true,
     },
     email: {
       type: String,
       required: true,
+      unique: true,
     },
     name: {
       type: String,

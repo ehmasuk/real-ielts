@@ -7,7 +7,7 @@ import { BookOpen, Loader2, Plus } from "lucide-react"
 import type { BookItem } from "../lib/mock-data"
 import { BookFormDialog } from "./components/book-form-dialog"
 import { BooksTable } from "./components/books-table"
-import { fetchBooks, createBook, updateBook } from "@/lib/api"
+import { fetchBooks, createBook, updateBook, deleteBook } from "@/lib/api"
 
 function mapBook(b: any): BookItem {
   return {
@@ -46,6 +46,12 @@ export default function BooksPage() {
     onError: (err) => console.error(err),
   })
 
+  const deleteMutation = useMutation({
+    mutationFn: deleteBook,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["books"] }),
+    onError: (err) => console.error(err),
+  })
+
   const handleEdit = (book: BookItem) => {
     setEditingBook(book)
     setDialogOpen(true)
@@ -59,6 +65,12 @@ export default function BooksPage() {
   const handleToggleStatus = (book: BookItem) => {
     const newStatus = book.status === "published" ? "draft" : "published"
     updateMutation.mutate({ id: book.id, data: { status: newStatus } })
+  }
+
+  const handleDelete = (book: BookItem) => {
+    if (window.confirm(`Delete "${book.title}" and all its tests? This cannot be undone.`)) {
+      deleteMutation.mutate(book.id)
+    }
   }
 
   const handleSave = (data: { number: number; title: string }) => {
@@ -103,6 +115,7 @@ export default function BooksPage() {
           books={books}
           onEdit={handleEdit}
           onToggleStatus={handleToggleStatus}
+          onDelete={handleDelete}
         />
       ) : (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/60 bg-muted/20 py-16">

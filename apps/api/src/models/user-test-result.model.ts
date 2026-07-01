@@ -13,6 +13,7 @@ export interface IUserTestResult extends Document {
   }>
   score: number
   total: number
+  timeTaken: number
   submittedAt: Date
 }
 
@@ -32,6 +33,7 @@ const userTestResultSchema = new Schema<IUserTestResult>(
     ],
     score: { type: Number, required: true },
     total: { type: Number, required: true },
+    timeTaken: { type: Number, default: 0 },
     submittedAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
