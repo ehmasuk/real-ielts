@@ -1,0 +1,251 @@
+{
+  "title": "Cambridge IELTS 19 Test 1 Listening",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "audio_url": "https://res.cloudinary.com/.../part1.mp3",
+      "passage": "You will hear a conversation between a park ranger and a teaching assistant about organising educational visits to Hinchingbrooke Country Park.",
+      "questionGroups": [
+        {
+          "id": "group_1",
+          "type": "notes_completion",
+          "title": "Hinchingbrooke Country Park",
+          "instructions": "Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+          "questionRange": "1-10",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Hinchingbrooke Country Park"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "**The park**\nArea: " },
+                  { "type": "question", "questionId": "q_1", "number": 1, "question": "Area: ______ hectares" },
+                  { "type": "text", "text": " hectares\nHabitats: wetland, grassland and woodland\nWetland: lakes, ponds and a " },
+                  { "type": "question", "questionId": "q_2", "number": 2, "question": "Wetland: lakes, ponds and a ______" },
+                  { "type": "text", "text": "\nWildlife includes birds, insects and animals\n\n**Subjects studied in educational visits include**\nScience: Children look at " },
+                  { "type": "question", "questionId": "q_3", "number": 3, "question": "Science: Children look at ______ about plants, etc." },
+                  { "type": "text", "text": " about plants, etc.\nGeography: includes learning to use a " },
+                  { "type": "question", "questionId": "q_4", "number": 4, "question": "Geography: includes learning to use a ______ and compass" },
+                  { "type": "text", "text": " and compass\nHistory: changes in land use\nLeisure and tourism: mostly concentrates on the park's " },
+                  { "type": "question", "questionId": "q_5", "number": 5, "question": "Leisure and tourism: mostly concentrates on the park's ______" },
+                  { "type": "text", "text": "\nMusic: Children make " },
+                  { "type": "question", "questionId": "q_6", "number": 6, "question": "Music: Children make ______ with natural materials" },
+                  { "type": "text", "text": " with natural materials, and experiment with rhythm and speed.\n\n**Benefits of outdoor educational visits**\nThey give children a feeling of " },
+                  { "type": "question", "questionId": "q_7", "number": 7, "question": "They give children a feeling of ______ that they may not have elsewhere" },
+                  { "type": "text", "text": " that they may not have elsewhere.\nChildren learn new " },
+                  { "type": "question", "questionId": "q_8", "number": 8, "question": "Children learn new ______ and gain self-confidence" },
+                  { "type": "text", "text": " and gain self-confidence.\n\n**Practical issues**\nCost per child: £" },
+                  { "type": "question", "questionId": "q_9", "number": 9, "question": "Cost per child: £______" },
+                  { "type": "text", "text": "\nAdults, such as " },
+                  { "type": "question", "questionId": "q_10", "number": 10, "question": "Adults, such as ______, free" },
+                  { "type": "text", "text": ", free" }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "audio_url": "https://res.cloudinary.com/.../part2.mp3",
+      "passage": "You will hear a talk about the Stanthorpe Twining Association and plans for a visit from a French group.",
+      "questionGroups": [
+        {
+          "id": "group_2",
+          "type": "mcq_single",
+          "instructions": "Choose the correct letter, A, B or C.",
+          "questionRange": "11-15",
+          "questions": [
+            {
+              "questionId": "q_11",
+              "number": 11,
+              "question": "During the visit to Malatte, in France, members especially enjoyed",
+              "options": [
+                { "id": "A", "text": "going to a theme park." },
+                { "id": "B", "text": "experiencing a river trip." },
+                { "id": "C", "text": "visiting a cheese factory." }
+              ]
+            },
+            {
+              "questionId": "q_12",
+              "number": 12,
+              "question": "What will happen in Stanthorpe to mark the 25th anniversary of the Twining Association?",
+              "options": [
+                { "id": "A", "text": "A tree will be planted." },
+                { "id": "B", "text": "A garden seat will be bought." },
+                { "id": "C", "text": "A footbridge will be built." }
+              ]
+            },
+            {
+              "questionId": "q_13",
+              "number": 13,
+              "question": "Which event raised most funds this year?",
+              "options": [
+                { "id": "A", "text": "the film show" },
+                { "id": "B", "text": "the pancake evening" },
+                { "id": "C", "text": "the cookery demonstration" }
+              ]
+            },
+            {
+              "questionId": "q_14",
+              "number": 14,
+              "question": "For the first evening with the French visitors host families are advised to",
+              "options": [
+                { "id": "A", "text": "take them for a walk round the town." },
+                { "id": "B", "text": "go to a local restaurant." },
+                { "id": "C", "text": "have a meal at home." }
+              ]
+            },
+            {
+              "questionId": "q_15",
+              "number": 15,
+              "question": "On Saturday evening there will be the chance to",
+              "options": [
+                { "id": "A", "text": "listen to a concert." },
+                { "id": "B", "text": "watch a match." },
+                { "id": "C", "text": "take part in a competition." }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "group_3",
+          "type": "diagram_labeling",
+          "instructions": "Label the map below. Write the correct letter, A–H, next to Questions 16–20.",
+          "questionRange": "16-20",
+          "image_src": "/maps/farley-house.png",
+          "options": ["A", "B", "C", "D", "E", "F", "G", "H"],
+          "questions": [
+            { "questionId": "q_16", "number": 16, "question": "Farm shop" },
+            { "questionId": "q_17", "number": 17, "question": "Disabled entry" },
+            { "questionId": "q_18", "number": 18, "question": "Adventure playground" },
+            { "questionId": "q_19", "number": 19, "question": "Kitchen gardens" },
+            { "questionId": "q_20", "number": 20, "question": "The Temple of the Four Winds" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "audio_url": "https://res.cloudinary.com/.../part3.mp3",
+      "passage": "You will hear two students, Colin and a female student, discussing Colin's project on reusing waste bread and other food-related topics.",
+      "questionGroups": [
+        {
+          "id": "group_4",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A–E.",
+          "questionRange": "21-22",
+          "questionId": "q_21_22",
+          "select": 2,
+          "questionNumbers": [21, 22],
+          "question": "Which TWO things did Colin find most satisfying about his bread reuse project?",
+          "options": [
+            { "id": "A", "text": "receiving support from local restaurants" },
+            { "id": "B", "text": "finding a good way to prevent waste" },
+            { "id": "C", "text": "overcoming problems in a basic process" },
+            { "id": "D", "text": "experimenting with designs and colours" },
+            { "id": "E", "text": "learning how to apply 3-D printing" }
+          ]
+        },
+        {
+          "id": "group_5",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A–E.",
+          "questionRange": "23-24",
+          "questionId": "q_23_24",
+          "select": 2,
+          "questionNumbers": [23, 24],
+          "question": "Which TWO ways do the students agree that touch-sensitive sensors for food labels could be developed in future?",
+          "options": [
+            { "id": "A", "text": "for use on medical products" },
+            { "id": "B", "text": "to show that food is no longer fit to eat" },
+            { "id": "C", "text": "for use with drinks as well as foods" },
+            { "id": "D", "text": "to provide applications for blind people" },
+            { "id": "E", "text": "to indicate the weight of certain foods" }
+          ]
+        },
+        {
+          "id": "group_6",
+          "type": "matching",
+          "instructions": "What is the students' opinion about each of the following food trends? Choose SIX answers from the box and write the correct letter, A–H, next to Questions 25–30.",
+          "questionRange": "25-30",
+          "optionsTitle": "Opinions",
+          "options": [
+            { "id": "A", "text": "This is only relevant to young people." },
+            { "id": "B", "text": "This may have disappointing results." },
+            { "id": "C", "text": "This already seems to be widespread." },
+            { "id": "D", "text": "Retailers should do more to encourage this." },
+            { "id": "E", "text": "More financial support is needed for this." },
+            { "id": "F", "text": "Most people know little about this." },
+            { "id": "G", "text": "There should be stricter regulations about this." },
+            { "id": "H", "text": "This could be dangerous." }
+          ],
+          "questions": [
+            { "questionId": "q_25", "number": 25, "question": "Use of local products" },
+            { "questionId": "q_26", "number": 26, "question": "Reduction in unnecessary packaging" },
+            { "questionId": "q_27", "number": 27, "question": "Gluten-free and lactose-free food" },
+            { "questionId": "q_28", "number": 28, "question": "Use of branded products related to celebrity chefs" },
+            { "questionId": "q_29", "number": 29, "question": "Development of 'ghost kitchens' for takeaway food" },
+            { "questionId": "q_30", "number": 30, "question": "Use of mushrooms for common health concerns" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_4",
+      "title": "Part 4",
+      "audio_url": "https://res.cloudinary.com/.../part4.mp3",
+      "passage": "You will hear a lecture about the Céide Fields, an important Neolithic archaeological site in the northwest of Ireland.",
+      "questionGroups": [
+        {
+          "id": "group_7",
+          "type": "notes_completion",
+          "title": "Céide Fields",
+          "instructions": "Complete the notes below. Write ONE WORD ONLY for each answer.",
+          "questionRange": "31-40",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Céide Fields"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "● an important Neolithic archaeological site in the northwest of Ireland\n\n**Discovery**\n● In the 1930s, a local teacher realised that stones beneath the bog surface were once " },
+                  { "type": "question", "questionId": "q_31", "number": 31, "question": "stones beneath the bog surface were once ______" },
+                  { "type": "text", "text": ".\n● His " },
+                  { "type": "question", "questionId": "q_32", "number": 32, "question": "His ______ became an archaeologist" },
+                  { "type": "text", "text": " became an archaeologist and undertook an investigation of the site:\n   - a traditional method used by local people to dig for " },
+                  { "type": "question", "questionId": "q_33", "number": 33, "question": "a traditional method used to dig for ______" },
+                  { "type": "text", "text": " was used to identify where stones were located\n   - carbon dating later proved the site was Neolithic.\n● Items are well preserved in the bog because of a lack of " },
+                  { "type": "question", "questionId": "q_34", "number": 34, "question": "Items are well preserved because of a lack of ______" },
+                  { "type": "text", "text": ".\n\n**Neolithic farmers**\n● Houses were " },
+                  { "type": "question", "questionId": "q_35", "number": 35, "question": "Houses were ______ in shape" },
+                  { "type": "text", "text": " in shape and had a hole in the roof.\n● Neolithic innovations include:\n   - cooking indoors\n   - pots used for storage and to make " },
+                  { "type": "question", "questionId": "q_36", "number": 36, "question": "pots used for storage and to make ______" },
+                  { "type": "text", "text": ".\n● Each field at Céide was large enough to support a big " },
+                  { "type": "question", "questionId": "q_37", "number": 37, "question": "Each field was large enough to support a big ______" },
+                  { "type": "text", "text": ".\n● The fields were probably used to restrict the grazing of animals – no evidence of structures to house them during " },
+                  { "type": "question", "questionId": "q_38", "number": 38, "question": "no evidence of structures to house them during ______" },
+                  { "type": "text", "text": ".\n\n**Reasons for the decline in farming**\n● a decline in " },
+                  { "type": "question", "questionId": "q_39", "number": 39, "question": "a decline in ______ quality" },
+                  { "type": "text", "text": " quality\n● an increase in " },
+                  { "type": "question", "questionId": "q_40", "number": 40, "question": "an increase in ______" },
+                  { "type": "text", "text": "" }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
 import { fetchPublicTestPart, submitTestPart, fetchPartResult } from "@/lib/api"
@@ -10,7 +10,11 @@ export function useTestPart(testId: string, partNum: number) {
   const searchParams = useSearchParams()
   const retrying = searchParams.get("retry") === "1"
 
-  const [elapsed, setElapsed] = useState(0)
+  const elapsedRef = useRef(0)
+  const answersRef = useRef<Record<string, any>>({})
+  const submittingRef = useRef(false)
+  const dataRef = useRef<any>(null)
+  const [tick, setTick] = useState(0)
   const [answers, setAnswers] = useState<Record<string, any>>({})
   const [submitting, setSubmitting] = useState(false)
 
@@ -19,6 +23,7 @@ export function useTestPart(testId: string, partNum: number) {
     queryFn: () => fetchPublicTestPart(testId, partNum),
     enabled: !!testId && !!partNum,
   })
+  dataRef.current = data
 
   const { data: existingResult } = useQuery({
     queryKey: ["part-result", testId, partNum],
@@ -30,60 +35,69 @@ export function useTestPart(testId: string, partNum: number) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setElapsed((prev) => prev + 1)
+      elapsedRef.current += 1
+      setTick((n) => n + 1)
     }, 1000)
     return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
-    if (existingResult && !retrying && data) {
+    if (existingResult && !retrying && dataRef.current) {
       setRedirecting(true)
+      const d = dataRef.current
       const partResult = {
         ...existingResult,
-        testNumber: data?.testNumber,
-        title: data?.title,
-        sectionTitle: data?.section?.title,
-        section: data?.section,
+        testNumber: d.testNumber,
+        title: d.title,
+        sectionTitle: d.section?.title,
+        section: d.section,
       }
-      sessionStorage.setItem(`part-result-${testId}-${partNum}`, JSON.stringify({ ...partResult, skill: data?.skill }))
+      sessionStorage.setItem(`part-result-${testId}-${partNum}`, JSON.stringify({ ...partResult, skill: d.skill }))
       router.replace(`/test/${testId}/part/${partNum}/result`)
     }
-  }, [existingResult, retrying, data, testId, partNum, router])
+  }, [existingResult, retrying, testId, partNum, router])
 
   const handleAnswerChange = useCallback(
     (questionId: string, value: any) => {
-      setAnswers((prev) => ({ ...prev, [questionId]: value }))
+      setAnswers((prev) => {
+        const next = { ...prev, [questionId]: value }
+        answersRef.current = next
+        return next
+      })
     },
     []
   )
 
-  const handleSubmit = async () => {
-    if (submitting) return
+  const handleSubmit = useCallback(async () => {
+    if (submittingRef.current) return
+    submittingRef.current = true
     setSubmitting(true)
     try {
-      const result = await submitTestPart(testId, partNum, answers, elapsed)
+      const d = dataRef.current
+      const result = await submitTestPart(testId, partNum, answersRef.current, elapsedRef.current)
       sessionStorage.setItem(
         `part-result-${testId}-${partNum}`,
         JSON.stringify({
           ...result,
-          testNumber: data?.testNumber,
-          title: data?.title,
-          sectionTitle: data?.section?.title,
-          section: data?.section,
-          skill: data?.skill,
+          testNumber: d?.testNumber,
+          title: d?.title,
+          sectionTitle: d?.section?.title,
+          section: d?.section,
+          skill: d?.skill,
         })
       )
       router.push(`/test/${testId}/part/${partNum}/result`)
     } catch {
+      submittingRef.current = false
       setSubmitting(false)
     }
-  }
+  }, [testId, partNum, router])
 
-  const formatTime = (seconds: number) => {
+  const formatTime = useCallback((seconds: number) => {
     const m = Math.floor(seconds / 60)
     const s = seconds % 60
     return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`
-  }
+  }, [])
 
   return {
     data,
@@ -91,7 +105,7 @@ export function useTestPart(testId: string, partNum: number) {
     redirecting,
     answers,
     submitting,
-    elapsed,
+    elapsed: elapsedRef.current,
     formatTime,
     handleAnswerChange,
     handleSubmit,

@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { formatString } from "../../shared/formatString"
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
   onAnswerChange: (questionId: string, value: any) => void
 }
 
-export function MatchingInformation({ group, answers, onAnswerChange }: Props) {
+export const MatchingInformation = React.memo(function MatchingInformation({ group, answers, onAnswerChange }: Props) {
   const { questionRange, instructions, options, questions } = group
   const placeholder = options?.length > 1
     ? `${options[0]}–${options[options.length - 1]}`
@@ -41,4 +42,4 @@ export function MatchingInformation({ group, answers, onAnswerChange }: Props) {
       </div>
     </div>
   )
-}
+})

@@ -1,6 +1,18 @@
 "use client"
 
+import * as React from "react"
 import { formatString } from "../../shared/formatString"
+
+function optValue(opt: any): string {
+  return typeof opt === "object" && opt !== null ? opt.id : opt
+}
+
+function optLabel(opt: any): string {
+  if (typeof opt === "object" && opt !== null) {
+    return `${opt.id}. ${opt.text}`
+  }
+  return opt
+}
 
 interface Props {
   group: any
@@ -8,7 +20,7 @@ interface Props {
   onAnswerChange: (questionId: string, value: any) => void
 }
 
-export function MCQMultiple({ group, answers, onAnswerChange }: Props) {
+export const MCQMultiple = React.memo(function MCQMultiple({ group, answers, onAnswerChange }: Props) {
   const { questionRange, instructions, options } = group
   return (
     <div className="space-y-2">
@@ -20,7 +32,8 @@ export function MCQMultiple({ group, answers, onAnswerChange }: Props) {
             {formatString(group.question)}
           </p>
           <div className="inline-block space-y-2 pl-2">
-            {options?.map((opt: string, oi: number) => {
+            {options?.map((opt: any, oi: number) => {
+              const val = optValue(opt)
               const selected: string[] = answers[group.questionId] ?? []
               return (
                 <label
@@ -29,16 +42,16 @@ export function MCQMultiple({ group, answers, onAnswerChange }: Props) {
                 >
                   <input
                     type="checkbox"
-                    value={opt}
-                    checked={selected.includes(opt)}
+                    value={val}
+                    checked={selected.includes(val)}
                     onChange={() => {
-                      const next = selected.includes(opt)
-                        ? selected.filter((v) => v !== opt)
-                        : [...selected, opt]
+                      const next = selected.includes(val)
+                        ? selected.filter((v) => v !== val)
+                        : [...selected, val]
                       onAnswerChange(group.questionId, next)
                     }}
                   />
-                  {opt}
+                  {optLabel(opt)}
                 </label>
               )
             })}
@@ -47,4 +60,4 @@ export function MCQMultiple({ group, answers, onAnswerChange }: Props) {
       )}
     </div>
   )
-}
+})

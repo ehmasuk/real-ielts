@@ -14,8 +14,6 @@ export async function proxy(request: NextRequest) {
 
   const role = (session.user as any)?.role
 
-  console.log(role)
-
   if (!role || role !== "admin") {
     return NextResponse.redirect(new URL("/", request.url))
   }

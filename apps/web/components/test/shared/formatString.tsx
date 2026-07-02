@@ -1,8 +1,9 @@
 import * as React from "react"
 
-export function formatString(text: string): React.ReactNode {
+export function formatString(text: string | undefined | null): React.ReactNode {
+  if (!text) return null
   const segments = text.split(/(\*\*.*?\*\*)/)
-  return segments.flatMap((segment, i) => {
+  const children = segments.flatMap((segment, i) => {
     if (segment.startsWith("**") && segment.endsWith("**")) {
       return <strong key={i}>{segment.slice(2, -2)}</strong>
     }
@@ -13,4 +14,5 @@ export function formatString(text: string): React.ReactNode {
       </React.Fragment>
     ))
   })
+  return <React.Fragment>{children}</React.Fragment>
 }

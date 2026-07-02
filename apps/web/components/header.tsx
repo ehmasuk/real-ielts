@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useSyncExternalStore } from "react"
 import Link from "next/link"
-import { useTheme } from "next-themes"
+import { useTheme } from "@/providers/theme-provider"
 import { BookOpen, Moon, Sun, Menu, X, GraduationCap, Headphones, PenTool, Mic, LogOut, User, ChevronDown, Mail } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -25,6 +25,13 @@ interface NavLink {
   badge?: string
 }
 
+const navLinks: NavLink[] = [
+  { href: "/listening", label: "Listening", icon: Headphones },
+  { href: "/reading", label: "Reading", icon: BookOpen },
+  { href: "/writing", label: "Writing", icon: PenTool, disabled: true },
+  { href: "/speaking", label: "Speaking", icon: Mic },
+]
+
 // SSR-safe client detection — avoids set-state-in-effect lint warning
 const subscribe = () => () => {}
 function useIsClient() {
@@ -37,18 +44,11 @@ function useIsClient() {
 
 
 
-export function Header() {
+export const Header = React.memo(function Header() {
   const { resolvedTheme, setTheme } = useTheme()
   const mounted = useIsClient()
   const { isAuthenticated, user, signIn, signOut } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
-
-  const navLinks: NavLink[] = [
-    { href: "/listening", label: "Listening", icon: Headphones },
-    { href: "/reading", label: "Reading", icon: BookOpen },
-    { href: "/writing", label: "Writing", icon: PenTool, disabled: true },
-    { href: "/speaking", label: "Speaking", icon: Mic },
-  ]
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
@@ -165,9 +165,6 @@ export function Header() {
               Sign In
             </Button>
           )}
-          <Button size="sm" className="bg-linear-to-r from-indigo-600 to-purple-600 font-semibold text-white shadow-md hover:from-indigo-500 hover:to-purple-500 dark:from-indigo-500 dark:to-purple-500">
-            Start Free Practice
-          </Button>
         </div>
 
         {/* Mobile menu button & Theme toggle */}
@@ -264,13 +261,10 @@ export function Header() {
                   Sign In
                 </Button>
               )}
-              <Button size="lg" className="w-full justify-center bg-linear-to-r from-indigo-600 to-purple-600 text-white">
-                Start Free Practice
-              </Button>
             </div>
           </nav>
         </div>
       )}
     </header>
   )
-}
+})

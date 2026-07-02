@@ -163,19 +163,23 @@ const testServices = {
     Test.findByIdAndUpdate(id, { status }, { new: true }),
 };
 
+function qid(item: any): string | undefined {
+  return item.questionId ?? (item.number != null ? `q_${item.number}` : undefined);
+}
+
 function collectQuestionIds(section: any): string[] {
   const ids = new Set<string>();
   for (const group of section.questionGroups ?? []) {
-    if (group.questionId) {
-      ids.add(group.questionId);
-    }
+    if (group.questionId) ids.add(group.questionId);
     for (const q of group.questions ?? []) {
-      if (q.questionId) ids.add(q.questionId);
+      const id = qid(q);
+      if (id) ids.add(id);
     }
     if (group.layout?.blocks) {
       for (const block of group.layout.blocks) {
         for (const item of block.content ?? []) {
-          if (item.questionId) ids.add(item.questionId);
+          const id = qid(item);
+          if (id) ids.add(id);
         }
       }
     }
@@ -183,7 +187,8 @@ function collectQuestionIds(section: any): string[] {
       for (const row of group.layout.rows) {
         for (const cell of row) {
           for (const item of cell ?? []) {
-            if (item.questionId) ids.add(item.questionId);
+            const id = qid(item);
+            if (id) ids.add(id);
           }
         }
       }

@@ -1,0 +1,51 @@
+{
+  "title": "Cambridge IELTS 20 Test 3 Writing",
+  "testType": "academic",
+  "sections": [
+    {
+      "id": "task_1",
+      "title": "Writing Task 1",
+      "timeLimit": 20,
+      "minimumWords": 150,
+      "instructions": "You should spend about 20 minutes on this task.",
+      "prompt": {
+        "text": "The charts below give information about a public library in a town called Little Chalfont. Summarise the information by selecting and reporting the main features, and make comparisons where relevant."
+      },
+      "visuals": [
+        {
+          "type": "mixed",
+          "src": "/images/c20-test3-writing-task1.png",
+          "caption": "Public library information, Little Chalfont"
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "task1",
+          "number": 1
+        }
+      ],
+      "answer": {
+        "type": "essay"
+      }
+    },
+    {
+      "id": "task_2",
+      "title": "Writing Task 2",
+      "timeLimit": 40,
+      "minimumWords": 250,
+      "instructions": "You should spend about 40 minutes on this task.",
+      "prompt": {
+        "text": "Some people have decided to reduce the number of times they fly every year or to stop flying altogether. Do you think the environmental benefits of this development outweigh the disadvantages for individuals and businesses? Give reasons for your answer and include any relevant examples from your own knowledge or experience."
+      },
+      "questions": [
+        {
+          "questionId": "task2",
+          "number": 2
+        }
+      ],
+      "answer": {
+        "type": "essay"
+      }
+    }
+  ]
+}

@@ -258,7 +258,7 @@ export default function ImportsPage() {
                     <TypeIcon type={asset.type} className="h-5 w-5 text-muted-foreground shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium text-foreground truncate max-w-[200px]">{asset.filename}</span>
+                        <span className="text-xs font-medium text-foreground line-clamp-1">{asset.filename}</span>
                         <span className={cn("text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md border", typeBadgeColor(asset.type))}>
                           {asset.type}
                         </span>

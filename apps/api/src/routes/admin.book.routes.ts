@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getAdminBooks,
+  getAdminBookById,
   createBookHandler,
   updateBookHandler,
   deleteBookHandler,
@@ -13,6 +14,7 @@ const router = express.Router();
 router.use(isAuthenticated, requireRole("admin"));
 
 router.get("/", getAdminBooks);
+router.get("/:id", getAdminBookById);
 router.post("/", createBookHandler);
 router.put("/:id", updateBookHandler);
 router.delete("/:id", deleteBookHandler);

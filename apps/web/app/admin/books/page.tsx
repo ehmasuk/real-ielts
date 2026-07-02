@@ -32,7 +32,10 @@ export default function BooksPage() {
     queryFn: fetchBooks,
   })
 
-  const books: BookItem[] = rawBooks ? rawBooks.map(mapBook) : []
+  const books: BookItem[] = React.useMemo(
+    () => (rawBooks ? rawBooks.map(mapBook) : []),
+    [rawBooks]
+  )
 
   const updateMutation = useMutation({
     mutationFn: updateBook,
@@ -52,34 +55,34 @@ export default function BooksPage() {
     onError: (err) => console.error(err),
   })
 
-  const handleEdit = (book: BookItem) => {
+  const handleEdit = React.useCallback((book: BookItem) => {
     setEditingBook(book)
     setDialogOpen(true)
-  }
+  }, [])
 
-  const handleCreate = () => {
+  const handleCreate = React.useCallback(() => {
     setEditingBook(null)
     setDialogOpen(true)
-  }
+  }, [])
 
-  const handleToggleStatus = (book: BookItem) => {
+  const handleToggleStatus = React.useCallback((book: BookItem) => {
     const newStatus = book.status === "published" ? "draft" : "published"
     updateMutation.mutate({ id: book.id, data: { status: newStatus } })
-  }
+  }, [])
 
-  const handleDelete = (book: BookItem) => {
+  const handleDelete = React.useCallback((book: BookItem) => {
     if (window.confirm(`Delete "${book.title}" and all its tests? This cannot be undone.`)) {
       deleteMutation.mutate(book.id)
     }
-  }
+  }, [])
 
-  const handleSave = (data: { number: number; title: string }) => {
+  const handleSave = React.useCallback((data: { number: number; title: string }) => {
     if (editingBook) {
       updateMutation.mutate({ id: editingBook.id, data })
     } else {
       createMutation.mutate({ ...data, status: "draft" })
     }
-  }
+  }, [editingBook])
 
   return (
     <div className="space-y-6">

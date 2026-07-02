@@ -848,7 +848,7 @@ Each group has `instructions` (e.g. "Choose the correct letter, A, B or C.") and
 ```txt
 sections[]
   └── questionGroups[]
-        ├── type: "sentence_completion" | "mcq_single" | "mcq_multiple" | "table_completion" | "notes_completion" | "diagram_labeling" | "statement_judgement"
+        ├──          type: "sentence_completion" | "mcq_single" | "mcq_multiple" | "table_completion" | "notes_completion" | "diagram_labeling" | "matching" | "statement_judgement"
        ├── instructions: string
        ├── questionRange: string
         └── questions[]
@@ -862,12 +862,13 @@ For `table_completion` groups, use `layout` instead of `questions[]`. Each cell 
 
 ```txt
 table_completion group
+  ├── title?: string
   └── layout
        ├── columns: string[]
        └── rows: array of arrays
             └── cells: array of items
                  ├── { type: "text", text: string }
-                 └── { type: "question", questionId, number }
+                 └── { type: "question", questionId, number, question?: string }
 ```
 
 For `notes_completion` groups, use `layout` with `blocks[]`:
@@ -880,6 +881,17 @@ notes_completion group
                  └── { type: "paragraph", content: array }
                       ├── { type: "text", text: string }
                       └── { type: "question", questionId, number, question }
+```
+
+For `matching` groups, use shared `options` (array of `{id, text}` objects):
+
+```txt
+matching group
+  ├── optionsTitle?: string
+  ├── options: { id, text }[]
+  └── questions[]
+       ├── questionId, number
+       └── question: string
 ```
 
 For `diagram_labeling` groups, use `image_src` + shared `options`:
@@ -908,7 +920,7 @@ Answer is an array: `"q17_q18": ["Climate change", "Urban planning"]`
 
 | Module    | Question Types                         |
 |-----------|----------------------------------------|
-| Listening | `sentence_completion`, `mcq_single`, `mcq_multiple`, `table_completion`, `notes_completion`, `diagram_labeling` |
+| Listening | `sentence_completion`, `mcq_single`, `mcq_multiple`, `table_completion`, `notes_completion`, `diagram_labeling`, `matching` |
 | Reading   | `statement_judgement`, `sentence_completion`, `mcq_single`, `mcq_multiple` |
 
 ### Reading Schema Reference (`/admin/schemas`)

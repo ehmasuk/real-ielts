@@ -28,6 +28,13 @@ export default function RootLayout({
         inter.variable
       )}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var e=localStorage.getItem("theme");var t=window.matchMedia("(prefers-color-scheme: dark)").matches;var n=e==="system"||!e?(t?"dark":"light"):e;document.documentElement.classList.add(n);document.documentElement.style.colorScheme=n}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body>
         <QueryProvider>
           <ThemeProvider>

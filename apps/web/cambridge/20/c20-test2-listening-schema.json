@@ -1,0 +1,270 @@
+{
+  "title": "Cambridge IELTS 20 Test 2 Listening",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "audio_url": "https://res.cloudinary.com/.../part1.mp3",
+      "passage": "You will hear a conversation between two friends about support available from local councils for people caring for elderly relatives at home.",
+      "questionGroups": [
+        {
+          "id": "group_1",
+          "type": "notes_completion",
+          "instructions": "Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+          "questionRange": "1-10",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Local councils can arrange practical support to help those caring for elderly people at home"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "This can give the carer:\n- time for other responsibilities\n- a " },
+                  { "type": "question", "questionId": "q_1", "number": 1, "question": "a ______" },
+                  { "type": "text", "text": "\n\n**Assessment of mother's needs**\nThis may include discussion of:\n- how much " },
+                  { "type": "question", "questionId": "q_2", "number": 2, "question": "how much ______ the caring involves" },
+                  { "type": "text", "text": "\n- what types of tasks are involved, e.g.\n  - help with dressing\n  - helping her have a " },
+                  { "type": "question", "questionId": "q_3", "number": 3, "question": "helping her have a ______" },
+                  { "type": "text", "text": "\n  - helping with meals\n  - dealing with " },
+                  { "type": "question", "questionId": "q_4", "number": 4, "question": "dealing with ______" },
+                  { "type": "text", "text": "\n- any aspects of caring that are especially difficult, e.g.\n  - loss of " },
+                  { "type": "question", "questionId": "q_5", "number": 5, "question": "loss of ______" },
+                  { "type": "text", "text": "\n  - " },
+                  { "type": "question", "questionId": "q_6", "number": 6, "question": "______ her" },
+                  { "type": "text", "text": "\n  - preventing a " },
+                  { "type": "question", "questionId": "q_7", "number": 7, "question": "preventing a ______" },
+                  { "type": "text", "text": "\n\n**Types of support that may be offered to carers**\n- transport costs, e.g. cost of a " },
+                  { "type": "question", "questionId": "q_8", "number": 8, "question": "cost of a ______" },
+                  { "type": "text", "text": "\n- car-related costs, e.g. fuel and " },
+                  { "type": "question", "questionId": "q_9", "number": 9, "question": "fuel and ______" },
+                  { "type": "text", "text": "\n- help with housework\n- help to reduce " },
+                  { "type": "question", "questionId": "q_10", "number": 10, "question": "help to reduce ______" }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "audio_url": "https://res.cloudinary.com/.../part2.mp3",
+      "passage": "You will hear a talk about community volunteering and local festival events.",
+      "questionGroups": [
+        {
+          "id": "group_2",
+          "type": "matching",
+          "instructions": "What is the role of the volunteers in each of the following activities? Choose SIX answers from the box and write the correct letter, A–I, next to Questions 11–16.",
+          "questionRange": "11-16",
+          "optionsTitle": "Role",
+          "options": [
+            { "id": "A", "text": "providing entertainment" },
+            { "id": "B", "text": "providing publicity about a council service" },
+            { "id": "C", "text": "contacting local businesses" },
+            { "id": "D", "text": "giving advice to visitors" },
+            { "id": "E", "text": "collecting feedback on events" },
+            { "id": "F", "text": "selling tickets" },
+            { "id": "G", "text": "introducing guest speakers at an event" },
+            { "id": "H", "text": "encouraging cooperation between local organisations" },
+            { "id": "I", "text": "helping people find their seats" }
+          ],
+          "questions": [
+            { "questionId": "q_11", "number": 11, "question": "walking around the town centre" },
+            { "questionId": "q_12", "number": 12, "question": "helping at concerts" },
+            { "questionId": "q_13", "number": 13, "question": "getting involved with community groups" },
+            { "questionId": "q_14", "number": 14, "question": "helping with a magazine" },
+            { "questionId": "q_15", "number": 15, "question": "participating at lunches for retired people" },
+            { "questionId": "q_16", "number": 16, "question": "helping with the website" }
+          ]
+        },
+        {
+          "id": "group_3",
+          "type": "mcq_single",
+          "instructions": "Choose the correct letter, A, B or C.",
+          "questionRange": "17-20",
+          "questions": [
+            {
+              "questionId": "q_17",
+              "number": 17,
+              "question": "Which event requires the largest number of volunteers?",
+              "options": [
+                { "id": "A", "text": "the music festival" },
+                { "id": "B", "text": "the science festival" },
+                { "id": "C", "text": "the book festival" }
+              ]
+            },
+            {
+              "questionId": "q_18",
+              "number": 18,
+              "question": "What is the most important requirement for volunteers at the festivals?",
+              "options": [
+                { "id": "A", "text": "interpersonal skills" },
+                { "id": "B", "text": "personal interest in the event" },
+                { "id": "C", "text": "flexibility" }
+              ]
+            },
+            {
+              "questionId": "q_19",
+              "number": 19,
+              "question": "New volunteers will start working in the week beginning",
+              "options": [
+                { "id": "A", "text": "2 September." },
+                { "id": "B", "text": "9 September." },
+                { "id": "C", "text": "23 September." }
+              ]
+            },
+            {
+              "questionId": "q_20",
+              "number": 20,
+              "question": "What is the next annual event for volunteers?",
+              "options": [
+                { "id": "A", "text": "a boat trip" },
+                { "id": "B", "text": "a barbecue" },
+                { "id": "C", "text": "a party" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "audio_url": "https://res.cloudinary.com/.../part3.mp3",
+      "passage": "You will hear two students, Rosie and Colin, discussing their human geography assignment.",
+      "questionGroups": [
+        {
+          "id": "group_4",
+          "type": "matching",
+          "instructions": "What is Rosie and Colin's opinion about each of the following aspects of human geography? Choose FIVE answers from the box and write the correct letter, A–G, next to Questions 21–25.",
+          "questionRange": "21-25",
+          "optionsTitle": "Opinion",
+          "options": [
+            { "id": "A", "text": "The information given about this was too vague." },
+            { "id": "B", "text": "This may not be relevant to their course." },
+            { "id": "C", "text": "This will involve only a small number of statistics." },
+            { "id": "D", "text": "It will be easy to find facts about this." },
+            { "id": "E", "text": "The facts about this may not be reliable." },
+            { "id": "F", "text": "No useful research has been done on this." },
+            { "id": "G", "text": "The information provided about this was interesting." }
+          ],
+          "questions": [
+            { "questionId": "q_21", "number": 21, "question": "Population" },
+            { "questionId": "q_22", "number": 22, "question": "Health" },
+            { "questionId": "q_23", "number": 23, "question": "Economies" },
+            { "questionId": "q_24", "number": 24, "question": "Culture" },
+            { "questionId": "q_25", "number": 25, "question": "Poverty" }
+          ]
+        },
+        {
+          "id": "group_5",
+          "type": "mcq_single",
+          "instructions": "Choose the correct letter, A, B or C.",
+          "questionRange": "26-30",
+          "questions": [
+            {
+              "questionId": "q_26",
+              "number": 26,
+              "question": "Rosie says that in her own city the main problem is",
+              "options": [
+                { "id": "A", "text": "crime." },
+                { "id": "B", "text": "housing." },
+                { "id": "C", "text": "unemployment." }
+              ]
+            },
+            {
+              "questionId": "q_27",
+              "number": 27,
+              "question": "What recent additions to the outskirts of their cities are both students happy about?",
+              "options": [
+                { "id": "A", "text": "conference centres" },
+                { "id": "B", "text": "sports centres" },
+                { "id": "C", "text": "retail centres" }
+              ]
+            },
+            {
+              "questionId": "q_28",
+              "number": 28,
+              "question": "The students agree that developing disused industrial sites may",
+              "options": [
+                { "id": "A", "text": "have unexpected costs." },
+                { "id": "B", "text": "damage the urban environment." },
+                { "id": "C", "text": "destroy valuable historical buildings." }
+              ]
+            },
+            {
+              "questionId": "q_29",
+              "number": 29,
+              "question": "The students will mention Masdar City as an example of an attempt to achieve",
+              "options": [
+                { "id": "A", "text": "daily collections for waste recycling." },
+                { "id": "B", "text": "sustainable energy use." },
+                { "id": "C", "text": "free transport for everyone." }
+              ]
+            },
+            {
+              "questionId": "q_30",
+              "number": 30,
+              "question": "When discussing the ecotown of Greenhill Abbots, Colin is uncertain about",
+              "options": [
+                { "id": "A", "text": "what its objectives were." },
+                { "id": "B", "text": "why there was opposition to it." },
+                { "id": "C", "text": "how much of it has actually been built." }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_4",
+      "title": "Part 4",
+      "audio_url": "https://res.cloudinary.com/.../part4.mp3",
+      "passage": "You will hear a lecture on developing food trends.",
+      "questionGroups": [
+        {
+          "id": "group_6",
+          "type": "notes_completion",
+          "instructions": "Complete the notes below. Write ONE WORD ONLY for each answer.",
+          "questionRange": "31-40",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Developing food trends"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "The growth in interest in food fashions started with " },
+                  { "type": "question", "questionId": "q_31", "number": 31, "question": "started with ______ of food being shared on social media" },
+                  { "type": "text", "text": "\nThe UK food industry is constantly developing products which are new or different.\nInfluencers on social media become 'ambassadors' for a brand.\nSales of " },
+                  { "type": "question", "questionId": "q_32", "number": 32, "question": "Sales of ______ food brands have grown rapidly this way" },
+                  { "type": "text", "text": "\nSupermarkets track demand for ingredients on social media.\nFamous " },
+                  { "type": "question", "questionId": "q_33", "number": 33, "question": "Famous ______ are influential" },
+                  { "type": "text", "text": "\n\n**Marketing campaigns**\nThe avocado:\n- " },
+                  { "type": "question", "questionId": "q_34", "number": 34, "question": "______ were invited to visit growers in South Africa" },
+                  { "type": "text", "text": "\n- Advertising focused on its " },
+                  { "type": "question", "questionId": "q_35", "number": 35, "question": "Advertising focused on its ______ benefits" },
+                  { "type": "text", "text": "\nOat milk:\n- A Swedish brand's media campaign received publicity by upsetting competitors.\n- Promotion in the USA through " },
+                  { "type": "question", "questionId": "q_36", "number": 36, "question": "Promotion in the USA through ______ shops reduced the need for advertising" },
+                  { "type": "text", "text": "\n- It appealed to consumers who are concerned about the " },
+                  { "type": "question", "questionId": "q_37", "number": 37, "question": "It appealed to consumers who are concerned about the ______" },
+                  { "type": "text", "text": "\nNorwegian skrei:\n- has helped strengthen the " },
+                  { "type": "question", "questionId": "q_38", "number": 38, "question": "has helped strengthen the ______ of Norwegian seafood" },
+                  { "type": "text", "text": "\nEthical concerns\nQuinoa:\n- Its success led to an increase in its " },
+                  { "type": "question", "questionId": "q_39", "number": 39, "question": "Its success led to an increase in its ______" },
+                  { "type": "text", "text": "\n- Overuse of resources resulted in poor quality " },
+                  { "type": "question", "questionId": "q_40", "number": 40, "question": "Overuse of resources resulted in poor quality ______" }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

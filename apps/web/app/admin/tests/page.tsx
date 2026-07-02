@@ -11,7 +11,16 @@ import { TestsTable } from "./components/tests-table"
 import { fetchBooks, fetchTests, createTest, updateTest, publishTest, deleteTest } from "@/lib/api"
 
 function mapBook(b: any): BookItem {
-  return { id: b._id, number: b.number, title: b.title, slug: b.slug, status: b.status }
+  return {
+    id: b._id,
+    number: b.number,
+    title: b.title,
+    slug: b.slug,
+    status: b.status,
+    testsCount: b.testsCount || 0,
+    createdAt: new Date(b.createdAt).toISOString().slice(0, 10),
+    updatedAt: new Date(b.updatedAt).toISOString().slice(0, 10),
+  }
 }
 
 function mapTest(t: any, books: BookItem[]): TestItem {
@@ -46,8 +55,16 @@ export default function TestsPage() {
     queryFn: fetchTests,
   })
 
-  const books: BookItem[] = rawBooks ? rawBooks.map(mapBook) : []
-  const tests: TestItem[] = rawTests ? rawTests.map((t: any) => mapTest(t, books)) : []
+  const books: BookItem[] = React.useMemo(
+    () => (rawBooks ? rawBooks.map(mapBook) : []),
+    [rawBooks]
+  )
+
+  const tests: TestItem[] = React.useMemo(
+    () => (rawTests ? rawTests.map((t: any) => mapTest(t, books)) : []),
+    [rawTests, books]
+  )
+
   const isLoading = booksLoading || testsLoading
 
   const togglePublishMutation = useMutation({
@@ -76,19 +93,19 @@ export default function TestsPage() {
     onError: (err) => console.error(err),
   })
 
-  const handleCreate = () => setDialogOpen(true)
+  const handleCreate = React.useCallback(() => setDialogOpen(true), [])
 
-  const handleTogglePublish = (test: TestItem) => {
+  const handleTogglePublish = React.useCallback((test: TestItem) => {
     togglePublishMutation.mutate(test)
-  }
+  }, [])
 
-  const handleDelete = (test: TestItem) => {
+  const handleDelete = React.useCallback((test: TestItem) => {
     if (confirm(`Are you sure you want to delete Test ${test.testNumber} for Cambridge ${test.bookNumber}?`)) {
       deleteMutation.mutate(test.id)
     }
-  }
+  }, [])
 
-  const handleSave = (data: {
+  const handleSave = React.useCallback((data: {
     bookId: string
     bookNumber: number
     testNumber: number
@@ -240,7 +257,7 @@ export default function TestsPage() {
       contentJson: defaultContentJson,
       answerJson: defaultAnswerJson,
     })
-  }
+  }, [])
 
   return (
     <div className="space-y-6">
@@ -248,10 +265,10 @@ export default function TestsPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            Tests
+            All Tests
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Manage practice exams and test questions
+            Browse and manage tests across all books
           </p>
         </div>
         <Button

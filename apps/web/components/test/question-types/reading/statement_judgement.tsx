@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { formatString } from "../../shared/formatString"
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
   onAnswerChange: (questionId: string, value: any) => void
 }
 
-export function StatementJudgement({ group, answers, onAnswerChange }: Props) {
+export const StatementJudgement = React.memo(function StatementJudgement({ group, answers, onAnswerChange }: Props) {
   const { questionRange, instructions, options, questions } = group
   return (
     <div>
@@ -65,4 +66,4 @@ export function StatementJudgement({ group, answers, onAnswerChange }: Props) {
       </div>
     </div>
   )
-}
+})

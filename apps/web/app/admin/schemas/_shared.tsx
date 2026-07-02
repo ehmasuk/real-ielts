@@ -128,6 +128,7 @@ export const questionTypes = [
     groupSchema: `{
   "id": "group_2",
   "type": "table_completion",
+  "title": "",
   "instructions": "Complete the table below. Write NO MORE THAN TWO WORDS for each answer.",
   "questionRange": "6-10",
   "layout": {
@@ -135,15 +136,15 @@ export const questionTypes = [
     "rows": [
       [
         [{ "type": "text", "text": "Name" }],
-        [{ "type": "question", "questionId": "q_6", "number": 6 }]
+        [{ "type": "question", "questionId": "q_6", "number": 6, "question": "Customer's full ______" }]
       ],
       [
         [{ "type": "text", "text": "Phone" }],
         [
           { "type": "text", "text": "Phone: " },
-          { "type": "question", "questionId": "q_7", "number": 7 },
+          { "type": "question", "questionId": "q_7", "number": 7, "question": "Phone ______" },
           { "type": "text", "text": " Ext: " },
-          { "type": "question", "questionId": "q_8", "number": 8 }
+          { "type": "question", "questionId": "q_8", "number": 8, "question": "Extension ______" }
         ]
       ]
     ]
@@ -158,8 +159,8 @@ export const questionTypes = [
     groupSchema: `{
   "id": "group_2",
   "type": "notes_completion",
-  "instructions": "Complete the notes below. Write NO MORE THAN TWO WORDS for each answer.",
-  "questionRange": "6-10",
+  "instructions": "Complete the notes below. Write **ONE WORD ONLY** for each answer.",
+  "questionRange": "31-40",
   "layout": {
     "blocks": [
       {
@@ -203,6 +204,33 @@ export const questionTypes = [
   ]
 }`,
     answerExample: '"q_11": "A"',
+  },
+  {
+    type: "matching",
+    description: "Match items from a list to the correct questions",
+    usedFor: "Listening — matching tasks where students select from a shared list of options",
+    groupSchema: `{
+  "id": "group_3",
+  "type": "matching",
+  "instructions": "Choose FOUR answers from the box and write the correct letter, A..F, next to Questions 27-30.",
+  "questionRange": "27-30",
+  "optionsTitle": "Comment about programme",
+  "options": [
+    { "id": "A", "text": "Its origin is somewhat controversial." },
+    { "id": "B", "text": "It is historically significant for a country." },
+    { "id": "C", "text": "It was effective at attracting audiences." },
+    { "id": "D", "text": "It is included in a recent project." },
+    { "id": "E", "text": "It contains insights into the show." },
+    { "id": "F", "text": "It resembles an artwork." }
+  ],
+  "questions": [
+    { "questionId": "q_27", "number": 27, "question": "Ruy Blas" },
+    { "questionId": "q_28", "number": 28, "question": "Man of La Mancha" },
+    { "questionId": "q_29", "number": 29, "question": "The Tragedy of Jane Shore" },
+    { "questionId": "q_30", "number": 30, "question": "The Sailors' Festival" }
+  ]
+}`,
+    answerExample: '"q_27": "C", "q_28": "A", "q_29": "E", "q_30": "F"',
   },
   {
     type: "statement_judgement",

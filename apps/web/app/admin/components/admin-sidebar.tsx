@@ -50,7 +50,7 @@ const navGroups: NavGroup[] = [
     title: "Content",
     items: [
       { href: "/admin/books", label: "Books", icon: BookOpen },
-      { href: "/admin/tests", label: "Tests", icon: FileText },
+      { href: "/admin/tests", label: "All Tests", icon: FileText },
     ],
   },
   {
@@ -75,14 +75,14 @@ interface AdminSidebarProps {
   onToggle: () => void
 }
 
-export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
+export const AdminSidebar = React.memo(function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
   const pathname = usePathname()
   const { user } = useAuth()
 
-  const isActive = (href: string) => {
+  const isActive = React.useCallback((href: string) => {
     if (href === "/admin") return pathname === "/admin"
     return pathname.startsWith(href)
-  }
+  }, [pathname])
 
   return (
     <aside
@@ -224,4 +224,4 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
       )}
     </aside>
   )
-}
+})

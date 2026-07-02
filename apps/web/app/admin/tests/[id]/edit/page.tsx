@@ -7,10 +7,8 @@ import {
   ArrowLeft,
   CheckCircle,
   XCircle,
-  FileCode,
   Sparkles,
   AlertTriangle,
-  Play,
   Loader2,
 } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
@@ -71,7 +69,7 @@ export default function TestEditorPage({ params }: PageProps) {
   const [test, setTest] = React.useState<TestItem | null>(null)
   const [contentJson, setContentJson] = React.useState("")
   const [answerJson, setAnswerJson] = React.useState("")
-  const [activeTab, setActiveTab] = React.useState<"content" | "answers" | "validation" | "preview">("content")
+  const [activeTab, setActiveTab] = React.useState<"content" | "answers" | "validation">("content")
   const [saveStatus, setSaveStatus] = React.useState<"idle" | "saving" | "success" | "error">("idle")
   
   // Live validation states
@@ -302,6 +300,16 @@ export default function TestEditorPage({ params }: PageProps) {
                     })
                     return ids
                   }
+                  if (g.type === "matching") {
+                    if (!g.options || !Array.isArray(g.options) || g.options.length === 0) {
+                      issues.push({ type: "error", message: `Matching group #${gIdx + 1} is missing 'options'` })
+                    }
+                    if (!g.questions || !Array.isArray(g.questions) || g.questions.length === 0) {
+                      issues.push({ type: "warning", message: `Matching group #${gIdx + 1} has no questions` })
+                    }
+                    const ids: { questionId: string; number: number }[] = (g.questions || []).map((q: any) => ({ questionId: q.questionId ?? (q.number != null ? `q_${q.number}` : undefined), number: q.number || 0 }))
+                    return ids
+                  }
                   if (g.type === "diagram_labeling") {
                     if (!g.image_src) {
                       issues.push({ type: "error", message: `Diagram labeling group #${gIdx + 1} is missing 'image_src'` })
@@ -312,7 +320,7 @@ export default function TestEditorPage({ params }: PageProps) {
                     if (!g.questions || !Array.isArray(g.questions) || g.questions.length === 0) {
                       issues.push({ type: "warning", message: `Diagram labeling group #${gIdx + 1} has no questions` })
                     }
-                    const ids: { id: string; number: number }[] = (g.questions || []).map((q: any) => ({ id: q.questionId, number: q.number || 0 }))
+                    const ids: { questionId: string; number: number }[] = (g.questions || []).map((q: any) => ({ questionId: q.questionId ?? (q.number != null ? `q_${q.number}` : undefined), number: q.number || 0 }))
                     return ids
                   }
                   if (g.type === "mcq_multiple") {
@@ -341,22 +349,24 @@ export default function TestEditorPage({ params }: PageProps) {
                     if (!g.questions || !Array.isArray(g.questions) || g.questions.length === 0) {
                       issues.push({ type: "warning", message: `Statement judgement group #${gIdx + 1} has no questions` })
                     }
-                    const ids: { questionId: string; number: number }[] = (g.questions || []).map((q: any) => ({ questionId: q.questionId, number: q.number || 0 }))
+                    const ids: { questionId: string; number: number }[] = (g.questions || []).map((q: any) => ({ questionId: q.questionId ?? (q.number != null ? `q_${q.number}` : undefined), number: q.number || 0 }))
                     return ids
                   }
                   if (!g.questions || !Array.isArray(g.questions) || g.questions.length === 0) {
                     issues.push({ type: "warning", message: `Question group #${gIdx + 1} in Section #${sIdx + 1} has no questions` })
+                    return []
                   }
-                  return g.questions || []
+                  const ids: { questionId: string; number: number }[] = (g.questions || []).map((q: any) => ({ questionId: q.questionId ?? (q.number != null ? `q_${q.number}` : undefined), number: q.number || 0 }))
+                  return ids
                 })
               : sec.questions
             if (!sectionQuestions || !Array.isArray(sectionQuestions) || sectionQuestions.length === 0) {
               issues.push({ type: "warning", message: `Section #${sIdx + 1} ('${sec.title || sIdx}') has no questions` })
             } else {
               sectionQuestions.forEach((q: any, qIdx: number) => {
-                const id = q.questionId
+                const id = q.questionId ?? (q.number != null ? `q_${q.number}` : undefined)
                 if (!id) {
-                  issues.push({ type: "error", message: `Question #${qIdx + 1} in Section #${sIdx + 1} is missing 'questionId'` })
+                  issues.push({ type: "error", message: `Question #${qIdx + 1} in Section #${sIdx + 1} is missing both 'questionId' and 'number'` })
                 } else if (parsedAnswers && parsedAnswers.answers && !parsedAnswers.answers[id]) {
                   issues.push({ type: "warning", message: `Question '${id}' is missing a corresponding answer key in Answers JSON` })
                 }
@@ -454,7 +464,7 @@ export default function TestEditorPage({ params }: PageProps) {
 
       {/* Navigation tabs */}
       <div className="flex border-b border-border/40">
-        {(["content", "answers", "validation", "preview"] as const).map((tab) => (
+          {(["content", "answers", "validation"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -580,321 +590,7 @@ export default function TestEditorPage({ params }: PageProps) {
           </div>
         )}
 
-        {activeTab === "preview" && (
-          <div className="space-y-4">
-            <h2 className="text-sm font-semibold text-foreground">Visual Engine Preview</h2>
-            {!parsedContent ? (
-              <div className="flex flex-col items-center justify-center border border-dashed border-border/40 bg-card rounded-xl py-12">
-                <FileCode className="h-10 w-10 text-destructive mb-3" />
-                <h3 className="text-xs font-semibold text-foreground">Unable to render preview</h3>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Please fix Content JSON compilation errors first.</p>
-              </div>
-            ) : (
-              <div className="border border-border/40 bg-card rounded-xl overflow-hidden p-6 space-y-6 max-w-4xl mx-auto shadow-sm">
-                <div>
-                  <h3 className="text-lg font-bold text-foreground">{parsedContent.title || "Cambridge IELTS Test"}</h3>
-                  <div className="h-[2px] w-12 bg-indigo-500 mt-2" />
-                </div>
-
-                {parsedContent.audio_url && (
-                  <div className="flex items-center gap-3 p-3 bg-muted/30 border border-border/40 rounded-xl max-w-md">
-                    <div className="h-8 w-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center shrink-0">
-                      <Play className="h-4 w-4 fill-white ml-0.5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-foreground truncate">Audio Stream Source</p>
-                      <p className="text-[10px] text-muted-foreground truncate">{parsedContent.audio_url}</p>
-                    </div>
-                  </div>
-                )}
-
-                {parsedContent.sections && parsedContent.sections.map((sec: any, sIdx: number) => (
-                  <div key={sec.id || sIdx} className="space-y-4 border-t border-border/20 pt-6 first:border-0 first:pt-0">
-                    <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">{sec.title || `Section ${sIdx + 1}`}</h4>
-
-                    {sec.audio_url && (
-                      <div className="flex items-center gap-3 p-3 bg-muted/30 border border-border/40 rounded-xl max-w-md">
-                        <div className="h-8 w-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center shrink-0">
-                          <Play className="h-4 w-4 fill-white ml-0.5" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-foreground truncate">Audio: {sec.title || `Part ${sIdx + 1}`}</p>
-                          <p className="text-[10px] text-muted-foreground truncate">{sec.audio_url}</p>
-                        </div>
-                      </div>
-                    )}
-                    {sec.instructions && (
-                      <div className="text-xs leading-relaxed text-muted-foreground bg-muted/10 p-4 border border-border/20 rounded-xl font-serif">
-                        {formatString(sec.instructions)}
-                      </div>
-                    )}
-                    {sec.passage?.blocks && (
-                      <div className="space-y-3 p-4 border border-border/20 rounded-xl bg-card/30">
-                        {sec.passage.title && (
-                          <h5 className="text-sm font-bold text-foreground">{formatString(sec.passage.title)}</h5>
-                        )}
-                        {sec.passage.subtitle && (
-                          <p className="text-[11px] text-muted-foreground">{formatString(sec.passage.subtitle)}</p>
-                        )}
-                        {sec.passage.blocks.map((block: any, bIdx: number) => {
-                          if (block.type === "heading") {
-                            return (
-                              <h6
-                                key={bIdx}
-                                className={`text-xs font-bold text-foreground ${block.alignment === "center" ? "text-center" : ""}`}
-                              >
-                                {formatString(block.text)}
-                              </h6>
-                            )
-                          }
-                          if (block.type === "paragraph") {
-                            return <p key={bIdx} className="text-xs leading-relaxed text-muted-foreground">{formatString(block.text)}</p>
-                          }
-                          if (block.type === "image") {
-                            return (
-                              <div key={bIdx} className="space-y-1">
-                                <div className="h-24 rounded-lg bg-muted/30 border border-border/20 flex items-center justify-center text-[10px] text-muted-foreground/40">
-                                  [Image: {block.src}]
-                                </div>
-                                {block.caption && <p className="text-[10px] text-muted-foreground/50 italic">{block.caption}</p>}
-                              </div>
-                            )
-                          }
-                          if (block.type === "table") {
-                            return (
-                              <div key={bIdx} className="overflow-x-auto">
-                                <table className="w-full text-[10px] border-collapse">
-                                  <thead>
-                                    <tr>
-                                      {block.columns.map((col: string, cIdx: number) => (
-                                        <th key={cIdx} className="border border-border/20 bg-muted/20 px-2 py-1 text-left font-semibold text-foreground">{col}</th>
-                                      ))}
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {block.rows.map((row: string[], rIdx: number) => (
-                                      <tr key={rIdx}>
-                                        {row.map((cell: string, cIdx: number) => (
-                                          <td key={cIdx} className="border border-border/20 px-2 py-1 text-muted-foreground">{cell}</td>
-                                        ))}
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            )
-                          }
-                          return null
-                        })}
-                      </div>
-                    )}
-
-                    {sec.questionGroups
-                      ? sec.questionGroups.map((group: any, gIdx: number) => (
-                          <div key={group.id || gIdx} className="space-y-3 pt-4 border-t border-border/10 first:border-0 first:pt-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              {group.questionRange && (
-                                <span className="inline-block rounded-md bg-indigo-500/10 px-2 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
-                                  Questions {group.questionRange}
-                                </span>
-                              )}
-                              {group.type && (
-                                <span className="inline-block rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase">
-                                  {group.type}
-                                </span>
-                              )}
-                            </div>
-                            {group.instructions && (
-                              <p className="text-[11px] font-medium text-muted-foreground italic">
-                                {group.instructions}
-                              </p>
-                            )}
-                            {group.type === "table_completion" && group.layout ? (
-                              <div className="overflow-x-auto rounded-lg border border-border/30">
-                                <table className="w-full text-xs font-mono">
-                                  <thead>
-                                    <tr className="border-b border-border/30 bg-muted/20">
-                                      {group.layout.columns.map((col: string, cIdx: number) => (
-                                        <th key={cIdx} className="px-3 py-2 text-left font-semibold text-foreground">{col}</th>
-                                      ))}
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {group.layout.rows.map((row: any[], rIdx: number) => (
-                                      <tr key={rIdx} className="border-b border-border/10 last:border-0">
-                                        {row.map((cell: any[], cIdx: number) => (
-                                          <td key={cIdx} className="px-3 py-2 text-foreground">
-                                            {Array.isArray(cell) ? cell.map((item: any, iIdx: number) =>
-                                              item.type === "text" ? (
-                                                <span key={iIdx} className="text-muted-foreground">{item.text}</span>
-                                              ) : (
-                                                <span key={iIdx} className="inline-flex items-baseline gap-1 mr-1">
-                                                  <span className="text-[10px] font-bold text-indigo-500">{item.number}.</span>
-                                                  <span className="inline-block min-w-[80px] border-b border-dashed border-border/60 bg-muted/10 px-1 text-muted-foreground/30 select-none text-[10px]">
-                                                    Answer
-                                                  </span>
-                                                </span>
-                                              )
-                                            ) : (
-                                              <span className="text-muted-foreground/30 text-[10px]">Invalid cell</span>
-                                            )}
-                                          </td>
-                                        ))}
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            ) : (group.type === "notes_completion" || group.type === "completion_layout") && group.layout ? (
-                              <div className="rounded-lg border border-border/30 p-4 space-y-3 font-mono text-[13px] leading-relaxed">
-                                {group.layout.blocks.map((block: any, bIdx: number) =>
-                                  block.type === "heading" ? (
-                                    <p key={bIdx} className="font-bold text-foreground text-sm pt-2 first:pt-0">{formatString(block.text)}</p>
-                                  ) : block.type === "paragraph" ? (
-                                    <p key={bIdx} className="text-foreground">
-                                      {block.content.map((item: any, iIdx: number) =>
-                                        item.type === "text" ? (
-                                          <span key={iIdx} className="text-muted-foreground">{formatString(item.text)}</span>
-                                        ) : (
-                                          <span key={iIdx} className="inline-flex items-baseline gap-1">
-                                            <span className="text-[10px] font-bold text-indigo-500">{item.number}.</span>
-                                            <span className="inline-block min-w-[100px] border-b border-dashed border-border/60 bg-muted/10 px-1 text-muted-foreground/30 select-none text-[10px]">
-                                              Answer
-                                            </span>
-                                          </span>
-                                        )
-                                      )}
-                                    </p>
-                                  ) : null
-                                )}
-                              </div>
-                            ) : group.type === "diagram_labeling" ? (
-                              <div className="space-y-3">
-                                {group.image_src && (
-                                  <div className="rounded-lg border border-border/30 overflow-hidden bg-muted/10">
-                                    <div className="aspect-video max-h-[200px] flex items-center justify-center text-muted-foreground/40 text-[11px] font-mono bg-muted/20">
-                                      <div className="text-center space-y-1">
-                                        <span className="block text-lg">🖼</span>
-                                        <span>{group.image_src}</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-                                <div className="flex flex-wrap gap-2">
-                                  {group.options && group.options.map((opt: string, oIdx: number) => (
-                                    <span key={oIdx} className="inline-flex items-center justify-center h-7 w-7 rounded-full border border-border/40 text-[11px] font-bold text-foreground bg-background/50">
-                                      {opt}
-                                    </span>
-                                  ))}
-                                </div>
-                                <div className="grid grid-cols-1 gap-2.5 pl-2 border-l border-indigo-500/20">
-                                  {group.questions && group.questions.map((q: any, qIdx: number) => (
-                                    <div key={q.questionId || qIdx} className="flex items-center gap-3 text-xs">
-                                      <span className="font-bold text-indigo-500 tabular-nums w-5">{q.number || qIdx + 1}.</span>
-                                      <span className="text-foreground flex-1">{formatString(q.question)}</span>
-                                      <span className="text-[10px] text-muted-foreground/50 font-mono border border-border/20 rounded px-1.5 py-0.5 bg-background/30 select-none">
-                                        Select option
-                                      </span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            ) : group.type === "mcq_multiple" ? (
-                              <div className="space-y-3">
-                                <p className="text-xs text-foreground leading-normal">{formatString(group.question)}</p>
-                                {group.select && (
-                                  <p className="text-[10px] text-muted-foreground font-medium">
-                                    Select {group.select} answer{group.select > 1 ? "s" : ""}
-                                  </p>
-                                )}
-                                {group.questionNumbers && (
-                                  <div className="flex gap-2 text-xs">
-                                    {group.questionNumbers.map((num: number, nIdx: number) => (
-                                      <span key={nIdx} className="font-bold text-indigo-500 tabular-nums">
-                                        {num}.
-                                      </span>
-                                    ))}
-                                  </div>
-                                )}
-                                <div className="flex flex-wrap gap-2">
-                                  {group.options && group.options.map((opt: string, oIdx: number) => (
-                                    <span key={oIdx} className="inline-flex items-center gap-1.5 rounded-lg border border-border/30 bg-background/40 px-2.5 py-1.5 text-[11px] text-foreground select-none">
-                                      <span className="h-4 w-4 rounded border border-border/50 flex items-center justify-center text-[9px] font-mono text-muted-foreground">
-                                        {String.fromCharCode(65 + oIdx)}
-                                      </span>
-                                      {opt}
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-                            ) : group.type === "statement_judgement" ? (
-                              <div className="space-y-3">
-                                <div className="flex flex-wrap gap-1.5">
-                                  {group.options && group.options.map((opt: string, oIdx: number) => (
-                                    <span key={oIdx} className="rounded-md border border-border/30 bg-background/40 px-2 py-1 text-[10px] font-mono text-foreground select-none">
-                                      {opt}
-                                    </span>
-                                  ))}
-                                </div>
-                                <div className="grid grid-cols-1 gap-2.5 pl-2 border-l border-indigo-500/20">
-                                  {group.questions && group.questions.map((q: any, qIdx: number) => (
-                                    <div key={q.questionId || qIdx} className="flex gap-2 text-xs">
-                                      <span className="font-bold text-indigo-500 tabular-nums w-5">{q.number || qIdx + 1}.</span>
-                                      <div className="space-y-1 flex-1">
-                                        <p className="text-foreground leading-normal">{formatString(q.question)}</p>
-                                        <div className="flex gap-1.5">
-                                          {group.options && group.options.map((opt: string, oIdx: number) => (
-                                            <span key={oIdx} className="h-6 rounded border border-border/30 bg-background/20 px-2 text-[10px] text-muted-foreground/40 select-none flex items-center">
-                                              {opt}
-                                            </span>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="grid grid-cols-1 gap-2.5 pl-2 border-l border-indigo-500/20">
-                                {group.questions && group.questions.map((q: any, qIdx: number) => (
-                                  <div key={q.questionId || qIdx} className="flex gap-2 text-xs">
-                                    <span className="font-bold text-indigo-500 tabular-nums w-5">{q.number || qIdx + 1}.</span>
-                                    <div className="space-y-1.5 flex-1">
-                                      <p className="text-foreground leading-normal">{formatString(q.question)}</p>
-                                      <div className="h-8 max-w-xs border border-border/40 rounded-lg bg-background p-2 text-muted-foreground/30 select-none text-[10px]">
-                                        Answer input area
-                                      </div>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        ))
-                      : sec.questions && (
-                          <div className="space-y-3 pt-2">
-                            <span className="text-xs font-bold text-foreground">Questions:</span>
-                            <div className="grid grid-cols-1 gap-2.5 pl-2 border-l border-indigo-500/20">
-                              {sec.questions.map((q: any, qIdx: number) => (
-                                <div key={q.questionId || qIdx} className="flex gap-2 text-xs">
-                                  <span className="font-bold text-indigo-500 tabular-nums w-5">{q.number || qIdx + 1}.</span>
-                                  <div className="space-y-1.5 flex-1">
-                                    <p className="text-foreground leading-normal">{formatString(q.question)}</p>
-                                    <div className="h-8 max-w-xs border border-border/40 rounded-lg bg-background p-2 text-muted-foreground/30 select-none text-[10px]">
-                                      Answer input area
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        {/* preview tab removed */}
       </div>
     </div>
   )

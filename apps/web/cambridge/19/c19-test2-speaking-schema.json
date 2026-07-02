@@ -1,0 +1,50 @@
+{
+  "title": "Cambridge IELTS 19 Test 2 Speaking",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "instructions": "The examiner asks you general questions about yourself and familiar topics.",
+      "topics": [
+        {
+          "title": "Travelling by plane",
+          "questions": [
+            "Have you travelled a lot by plane? [To where?/Why not?]",
+            "Why do you think some people enjoy travelling by plane?",
+            "Would you like to live near an airport? [Why/Why not?]",
+            "In the future, do you think that you will travel by plane more often? [Why/Why not?]"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "instructions": "You will have 1 minute to prepare and should speak for 1\u20132 minutes.",
+      "cueCard": {
+        "title": "Describe a person from your country who has won a prize, award or medal.",
+        "task": "Describe a person from your country who has won a prize, award or medal.",
+        "points": [
+          "Who this person is",
+          "Which prize, award or medal they received",
+          "What they did to win this",
+          "And explain whether you think it was right that this person received this prize, award or medal."
+        ],
+        "endingQuestion": "And explain whether you think it was right that this person received this prize, award or medal."
+      }
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "instructions": "The examiner and the candidate discuss issues related to the Part 2 topic.",
+      "questions": [
+        "What types of school prizes do children in your country receive?",
+        "What do you think are the advantages of rewarding schoolchildren for good work?",
+        "Do you agree that it's more important for children to receive rewards from their parents than from teachers?",
+        "Do you think that some sportspeople (e.g., top footballers) are paid too much money?",
+        "Should everyone on a team get the same prize money when they win?",
+        "Do you agree with the view that, in sport, taking part is more important than winning?"
+      ]
+    }
+  ]
+}

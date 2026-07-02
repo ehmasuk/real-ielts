@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { formatString } from "../../shared/formatString"
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
   onAnswerChange: (questionId: string, value: any) => void
 }
 
-export function MatchingSentenceEndings({
+export const MatchingSentenceEndings = React.memo(function MatchingSentenceEndings({
   group,
   answers,
   onAnswerChange,
@@ -51,4 +52,4 @@ export function MatchingSentenceEndings({
         ))}
     </div>
   )
-}
+})

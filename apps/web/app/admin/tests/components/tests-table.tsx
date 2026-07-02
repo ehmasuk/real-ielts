@@ -78,8 +78,13 @@ export function TestsTable({ tests, onTogglePublish, onDelete }: TestsTableProps
                   </span>
                 </div>
               </TableCell>
-              <TableCell className="font-medium text-foreground">
-                Cambridge {test.bookNumber}
+              <TableCell>
+                <Link
+                  href={`/admin/books/${test.bookId}`}
+                  className="font-medium text-foreground hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
+                  Cambridge {test.bookNumber}
+                </Link>
               </TableCell>
               <TableCell>
                 <Badge

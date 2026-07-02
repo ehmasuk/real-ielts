@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useTheme } from "next-themes"
+import { useTheme } from "@/providers/theme-provider"
 import { useSyncExternalStore } from "react"
 import {
   Menu,
@@ -37,19 +37,21 @@ function useIsClient() {
 // Generate breadcrumbs from pathname
 function useBreadcrumbs() {
   const pathname = usePathname()
-  const segments = pathname.split("/").filter(Boolean)
-  return segments.map((segment, idx) => ({
-    label: segment.charAt(0).toUpperCase() + segment.slice(1),
-    href: "/" + segments.slice(0, idx + 1).join("/"),
-    isLast: idx === segments.length - 1,
-  }))
+  return React.useMemo(() => {
+    const segments = pathname.split("/").filter(Boolean)
+    return segments.map((segment, idx) => ({
+      label: segment.charAt(0).toUpperCase() + segment.slice(1),
+      href: "/" + segments.slice(0, idx + 1).join("/"),
+      isLast: idx === segments.length - 1,
+    }))
+  }, [pathname])
 }
 
 interface AdminHeaderProps {
   onMenuToggle: () => void
 }
 
-export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
+export const AdminHeader = React.memo(function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
   const { resolvedTheme, setTheme } = useTheme()
   const mounted = useIsClient()
   const { user, signOut } = useAuth()
@@ -152,4 +154,4 @@ export function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
       </div>
     </header>
   )
-}
+})

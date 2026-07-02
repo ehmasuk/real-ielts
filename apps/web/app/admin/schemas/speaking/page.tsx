@@ -12,21 +12,12 @@ const speakingContentJson = `{
       "instructions": "The examiner asks you general questions about yourself and familiar topics.",
       "topics": [
         {
-          "title": "Home",
+          "title": "Walking",
           "questions": [
-            "Where do you live?",
-            "What do you like most about your home?",
-            "Would you like to move to another place in the future?",
-            "What changes would you like to make to your home?"
-          ]
-        },
-        {
-          "title": "Reading",
-          "questions": [
-            "Do you enjoy reading books?",
-            "What kind of books do you usually read?",
-            "Did you read more when you were a child?",
-            "Do you think people read less nowadays?"
+            "How much walking do you do in your daily life?",
+            "Did you walk more when you were at school than now?",
+            "What places are there to go for a walk near where you live?",
+            "Would you ever like to go on a walking holiday?"
           ]
         }
       ]
@@ -36,15 +27,15 @@ const speakingContentJson = `{
       "title": "Part 2",
       "instructions": "You will have 1 minute to prepare and should speak for 1\u20132 minutes.",
       "cueCard": {
-        "title": "Describe a person who inspired you",
-        "task": "Describe a person who has inspired you.",
+        "title": "Describe a play or a film you have seen that you would like to see again with friends.",
+        "task": "Describe a play or a film you have seen that you would like to see again with friends.",
         "points": [
-          "Who the person is",
-          "How you know this person",
-          "What this person did",
-          "Why this person inspired you"
+          "What play or film you'd like to go to see again",
+          "Who you would go with",
+          "What other people have said about this play or film",
+          "And explain why you would like to see this play or film again with friends."
         ],
-        "endingQuestion": "And explain why this person had such an influence on you."
+        "endingQuestion": "And explain why you would like to see this play or film again with friends."
       }
     },
     {
@@ -52,10 +43,12 @@ const speakingContentJson = `{
       "title": "Part 3",
       "instructions": "The examiner and the candidate discuss issues related to the Part 2 topic.",
       "questions": [
-        "Why do some people become role models?",
-        "Do young people today have different role models than previous generations?",
-        "Can famous people have a negative influence on society?",
-        "How important is family in shaping a person's values?"
+        "What are the most popular kinds of plays or shows at theatres in your country?",
+        "How easy is it to get tickets to the theatre?",
+        "Do you think theatres need to do more to attract younger audiences?",
+        "What do you think attracts people to working as an actor?",
+        "What are some of the qualities that a person needs to have if they want to become an actor?",
+        "Can you think of any disadvantages of working as an actor?"
       ]
     }
   ]

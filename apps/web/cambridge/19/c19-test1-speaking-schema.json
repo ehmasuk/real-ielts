@@ -1,0 +1,50 @@
+{
+  "title": "Cambridge IELTS 19 Test 1 Speaking",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "instructions": "The examiner asks you general questions about yourself and familiar topics.",
+      "topics": [
+        {
+          "title": "International food",
+          "questions": [
+            "Can you find food from many different countries where you live? [Why/Why not?]",
+            "How often do you eat typical food from other countries? [Why/Why not?]",
+            "Have you ever tried making food from another country? [Why/Why not?]",
+            "What food from your country would you recommend to people from other countries? [Why?]"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "instructions": "You will have 1 minute to prepare and should speak for 1\u20132 minutes.",
+      "cueCard": {
+        "title": "Describe a law that was introduced in your country and that you thought was a very good idea.",
+        "task": "Describe a law that was introduced in your country and that you thought was a very good idea.",
+        "points": [
+          "What the law was",
+          "Who introduced it",
+          "When and why it was introduced",
+          "And explain why you thought this law was such a good idea."
+        ],
+        "endingQuestion": "And explain why you thought this law was such a good idea."
+      }
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "instructions": "The examiner and the candidate discuss issues related to the Part 2 topic.",
+      "questions": [
+        "What kinds of rules are common in a school?",
+        "How important is it to have rules in a school?",
+        "What do you recommend should happen if children break school rules?",
+        "Can you suggest why many students decide to study law at university?",
+        "What are the key personal qualities needed to be a successful lawyer?",
+        "Do you agree that working in the legal profession is very stressful?"
+      ]
+    }
+  ]
+}

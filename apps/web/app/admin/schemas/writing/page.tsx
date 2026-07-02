@@ -14,13 +14,19 @@ const academicContentJson = `{
       "minimumWords": 150,
       "instructions": "You should spend about 20 minutes on this task.",
       "prompt": {
-        "text": "The chart below shows the percentage of household spending in five categories in the UK in 2020. Summarise the information by selecting and reporting the main features, and make comparisons where relevant."
+        "text": "The first table below shows changes in the total population of New York City from 1800 to 2000. The second and third tables show changes in the population of the five districts of the city (Manhattan, Brooklyn, Bronx, Queens, Staten Island) over the same period. Summarise the information by selecting and reporting the main features, and make comparisons where relevant."
       },
       "visuals": [
         {
-          "type": "bar_chart",
-          "src": "/images/bar.png",
-          "caption": "Average household spending by category, UK 2020"
+          "type": "table",
+          "src": "/images/c20-test1-writing-task1.png",
+          "caption": "Population of New York City 1800-2000"
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "task1",
+          "number": 1
         }
       ],
       "answer": {
@@ -34,8 +40,14 @@ const academicContentJson = `{
       "minimumWords": 250,
       "instructions": "You should spend about 40 minutes on this task.",
       "prompt": {
-        "text": "Some people believe that technological advancements have made people's lives more complicated rather than simpler. To what extent do you agree or disagree with this statement? Give reasons for your answer and include any relevant examples from your own knowledge or experience."
+        "text": "Access to clean water is a basic human right. Therefore every home should have a water supply that is provided free of charge. Do you agree or disagree? Give reasons for your answer and include any relevant examples from your own knowledge or experience."
       },
+      "questions": [
+        {
+          "questionId": "task2",
+          "number": 2
+        }
+      ],
       "answer": {
         "type": "essay"
       }

@@ -1,10 +1,11 @@
 "use client"
 
+import * as React from "react"
 import { QuestionGroup } from "../question-types"
 import { SubmitButton } from "../shared/SubmitButton"
 import { formatString } from "../shared/formatString"
 
-export function ReadingLayout({
+export const ReadingLayout = React.memo(function ReadingLayout({
   sectionTitle,
   passage,
   questionGroups,
@@ -70,6 +71,26 @@ export function ReadingLayout({
               </div>
             </div>
           ))}
+          {!passage.sections && (passage.blocks as any[])?.map((block: any, bi: number) => {
+            if (block.type === "heading") {
+              return (
+                <h4
+                  key={bi}
+                  className={`font-bold ${block.alignment === "center" ? "text-center" : ""}`}
+                >
+                  {formatString(block.text)}
+                </h4>
+              )
+            }
+            if (block.type === "paragraph") {
+              return (
+                <p key={bi} className="text-justify">
+                  {formatString(block.text)}
+                </p>
+              )
+            }
+            return null
+          })}
         </div>
       </div>
 
@@ -90,4 +111,4 @@ export function ReadingLayout({
       </div>
     </div>
   )
-}
+})

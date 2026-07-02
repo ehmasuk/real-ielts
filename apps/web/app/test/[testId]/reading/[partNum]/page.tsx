@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
 import { useAuth } from "@/lib/use-auth"
@@ -25,6 +26,25 @@ export default function ReadingPartPage() {
     handleSubmit,
   } = useTestPart(testId, partNum)
 
+  const sectionTitle = data?.section?.title
+  const instructions = data?.section?.instructions
+  const passage = data?.section?.passage
+  const questionGroups: any[] = data?.section?.questionGroups ?? []
+
+  const layout = useMemo(() => (
+    <ReadingLayout
+      sectionTitle={sectionTitle}
+      instructions={instructions}
+      passage={passage}
+      questionGroups={questionGroups}
+      answers={answers}
+      onAnswerChange={handleAnswerChange}
+      handleSubmit={handleSubmit}
+      submitting={submitting}
+      isAuthenticated={isAuthenticated}
+    />
+  ), [sectionTitle, instructions, passage, questionGroups, answers, handleAnswerChange, handleSubmit, submitting, isAuthenticated])
+
   if (authLoading || isLoading || redirecting) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
@@ -49,11 +69,6 @@ export default function ReadingPartPage() {
       </div>
     )
   }
-
-  const sectionTitle = data?.section?.title
-  const instructions = data?.section?.instructions
-  const passage = data?.section?.passage
-  const questionGroups: any[] = data?.section?.questionGroups ?? []
 
   return (
     <div className="min-h-screen bg-white">
@@ -93,17 +108,7 @@ export default function ReadingPartPage() {
       </div>
 
       <AuthGate>
-        <ReadingLayout
-          sectionTitle={sectionTitle}
-          instructions={instructions}
-          passage={passage}
-          questionGroups={questionGroups}
-          answers={answers}
-          onAnswerChange={handleAnswerChange}
-          handleSubmit={handleSubmit}
-          submitting={submitting}
-          isAuthenticated={isAuthenticated}
-        />
+        {layout}
       </AuthGate>
     </div>
   )

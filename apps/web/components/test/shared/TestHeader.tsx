@@ -1,11 +1,12 @@
 "use client"
 
+import * as React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { useAuth } from "@/lib/use-auth"
 import { Settings2, User } from "lucide-react"
 
-export function TestHeader({
+export const TestHeader = React.memo(function TestHeader({
   sectionTitle,
   partNum,
 }: {
@@ -69,4 +70,4 @@ export function TestHeader({
       </div>
     </header>
   )
-}
+})

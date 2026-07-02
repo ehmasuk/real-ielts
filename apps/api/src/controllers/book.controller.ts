@@ -25,6 +25,22 @@ export const getAdminBooks = async (req: Request, res: Response, next: NextFunct
   }
 };
 
+// @desc    Get a single book by ID (admin)
+// @route   GET /api/admin/books/:id
+// @access  Private (Admin)
+export const getAdminBookById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const book = await bookServices.getById(req.params.id);
+    if (!book) {
+      res.status(404);
+      throw new Error("Book not found");
+    }
+    res.status(200).json(book);
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @desc    Create a new book
 // @route   POST /api/admin/books
 // @access  Private (Admin)

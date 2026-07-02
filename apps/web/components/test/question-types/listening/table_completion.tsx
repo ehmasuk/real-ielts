@@ -10,17 +10,18 @@ interface Props {
   onAnswerChange: (questionId: string, value: any) => void
 }
 
-export function TableCompletion({ group, answers, onAnswerChange }: Props) {
-  const { questionRange, instructions, layout } = group
+export const TableCompletion = React.memo(function TableCompletion({ group, answers, onAnswerChange }: Props) {
+  const { title, questionRange, instructions, layout } = group
   if (!layout?.columns || !layout?.rows) return null
   return (
     <div>
+      {title && <p className="text-lg font-bold mb-1">{formatString(title)}</p>}
       {questionRange && (
         <p className="font-bold">Questions {questionRange}</p>
       )}
       {instructions && <p className="mb-2 font-medium">{formatString(instructions)}</p>}
       <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-sm">
+      <table className="w-full border-collapse">
         <thead>
           <tr>
             {layout.columns.map((col: string, ci: number) => (
@@ -37,14 +38,12 @@ export function TableCompletion({ group, answers, onAnswerChange }: Props) {
           {layout.rows.map((row: any[], ri: number) => (
             <tr key={ri}>
               {row.map((cell: any[], ci: number) => (
-                <td key={ci} className="border border-black p-3">
+                <td key={ci} className="border border-black p-3 leading-loose">
                   {cell?.map((item: any, ii: number) => {
                     if (item.type === "text")
                       return (
                         <span key={ii}>
                           {formatString(item.text)}
-                          <br />
-                          <br />
                         </span>
                       )
                     if (item.type === "question") {
@@ -57,8 +56,6 @@ export function TableCompletion({ group, answers, onAnswerChange }: Props) {
                               onAnswerChange(item.questionId, v)
                             }
                           />
-                          <br />
-                          <br />
                         </React.Fragment>
                       )
                     }
@@ -73,4 +70,4 @@ export function TableCompletion({ group, answers, onAnswerChange }: Props) {
       </div>
     </div>
   )
-}
+})

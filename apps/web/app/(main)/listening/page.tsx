@@ -172,11 +172,13 @@ export default function ListeningPage() {
                             return (
                               <Link
                                 key={partNum}
-                                href={test ? `/test/${test._id}/listening/${partNum}` : "#"}
+                                href={test ? (result ? `/test/${test._id}/part/${partNum}/result` : `/test/${test._id}/listening/${partNum}`) : "#"}
                                 className={`flex items-center justify-between rounded-lg border px-3 py-2 text-[11px] font-semibold transition-all shadow-sm cursor-pointer ${
-                                  test
-                                    ? "border-border/40 bg-background/50 hover:bg-indigo-600 hover:border-indigo-600 hover:text-white text-muted-foreground"
-                                    : "border-border/20 bg-background/20 text-muted-foreground/30 pointer-events-none"
+                                  result
+                                    ? "border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-600 hover:border-emerald-600 hover:text-white text-muted-foreground"
+                                    : test
+                                      ? "border-border/40 bg-background/50 hover:bg-indigo-600 hover:border-indigo-600 hover:text-white text-muted-foreground"
+                                      : "border-border/20 bg-background/20 text-muted-foreground/30 pointer-events-none"
                                 }`}
                               >
                                 <span>Part {partNum}</span>

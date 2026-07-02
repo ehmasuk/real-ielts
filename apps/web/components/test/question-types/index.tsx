@@ -1,11 +1,13 @@
 "use client"
 
+import * as React from "react"
 import { MCQSingle } from "./common/mcq_single"
 import { MCQMultiple } from "./common/mcq_multiple"
 import { GapFill } from "./common/gap_fill"
 import { LayoutBlocks } from "./common/layout_blocks"
 import { TableCompletion } from "./listening/table_completion"
 import { DiagramLabeling } from "./listening/diagram_labeling"
+import { Matching } from "./listening/matching"
 import { StatementJudgement } from "./reading/statement_judgement"
 import { MatchingHeadings } from "./reading/matching_headings"
 import { MatchingInformation } from "./reading/matching_information"
@@ -19,6 +21,7 @@ export const questionTypeMap: Record<string, React.ComponentType<any>> = {
   notes_completion: LayoutBlocks,
   table_completion: TableCompletion,
   diagram_labeling: DiagramLabeling,
+  matching: Matching,
   statement_judgement: StatementJudgement,
   matching_headings: MatchingHeadings,
   matching_information: MatchingInformation,
@@ -28,7 +31,7 @@ export const questionTypeMap: Record<string, React.ComponentType<any>> = {
   completion_layout: LayoutBlocks,
 }
 
-export function QuestionGroup({
+export const QuestionGroup = React.memo(function QuestionGroup({
   group,
   answers,
   onAnswerChange,
@@ -41,4 +44,4 @@ export function QuestionGroup({
   if (!Component) return null
 
   return <Component group={group} answers={answers} onAnswerChange={onAnswerChange} />
-}
+})

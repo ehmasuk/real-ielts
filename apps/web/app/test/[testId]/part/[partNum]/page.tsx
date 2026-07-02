@@ -1,6 +1,6 @@
 "use client"
 
-import { Loader2 } from "lucide-react"
+import { Loader2, Users, Settings } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import * as React from "react"
@@ -9,7 +9,6 @@ import { useTestPart } from "@/components/test/shared/useTestPart"
 import { AuthGate } from "@/components/test/shared/AuthGate"
 import { ReadingLayout } from "@/components/test/layouts/ReadingLayout"
 import { ListeningLayout } from "@/components/test/layouts/ListeningLayout"
-import { Users, Settings } from "lucide-react"
 
 export default function TestPartPage() {
   const params = useParams()
@@ -40,6 +39,50 @@ export default function TestPartPage() {
     router.replace(target + qs)
   }, [data?.skill, testId, partNum, router, searchParams])
 
+  const sectionTitle = data?.section?.title
+  const audio_url = data?.section?.audio_url
+  const passage = data?.section?.passage
+  const questionGroups: any[] = data?.section?.questionGroups ?? []
+  const isListening = data?.skill === "listening"
+  const isReading = data?.skill === "reading"
+
+  const audioRef = React.useRef<HTMLAudioElement>(null)
+
+  React.useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.play().catch(() => {
+      audio.muted = true
+      audio.play().catch(() => {})
+    })
+  }, [audio_url])
+
+  const layout = React.useMemo(() =>
+    isReading && passage ? (
+      <ReadingLayout
+        sectionTitle={sectionTitle}
+        passage={passage}
+        questionGroups={questionGroups}
+        answers={answers}
+        onAnswerChange={handleAnswerChange}
+        handleSubmit={handleSubmit}
+        submitting={submitting}
+        isAuthenticated={isAuthenticated}
+      />
+    ) : (
+      <ListeningLayout
+        sectionTitle={sectionTitle}
+        questionGroups={questionGroups}
+        answers={answers}
+        onAnswerChange={handleAnswerChange}
+        handleSubmit={handleSubmit}
+        submitting={submitting}
+        isAuthenticated={isAuthenticated}
+      />
+    ),
+  [isReading, passage, sectionTitle, questionGroups, answers, handleAnswerChange, handleSubmit, submitting, isAuthenticated]
+  )
+
   if (authLoading || isLoading || redirecting) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
@@ -65,16 +108,9 @@ export default function TestPartPage() {
     )
   }
 
-  const sectionTitle = data?.section?.title
-  const audio_url = data?.section?.audio_url
-  const passage = data?.section?.passage
-  const questionGroups: any[] = data?.section?.questionGroups ?? []
-  const isListening = data?.skill === "listening"
-  const isReading = data?.skill === "reading"
-
   return (
     <div className="min-h-screen bg-white">
-      <div className="sticky top-0 z-50 flex h-12 items-center bg-[#1a1a1a] px-4 text-xs text-white">
+      <div className="sticky top-0 z-50 flex h-14 items-center gap-4 bg-[#1a1a1a] px-4 text-xs text-white">
         <div className="flex min-w-0 items-center gap-2">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10">
             <Users className="h-3.5 w-3.5 text-white/80" />
@@ -84,13 +120,16 @@ export default function TestPartPage() {
           </span>
         </div>
 
-        <div className="flex flex-1 justify-center">
+        <div className="flex flex-1 items-center justify-center gap-8">
           <div className="flex items-center gap-1.5 font-mono text-sm font-bold tracking-wider text-white">
             <span className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-current">
               <span className="h-1.5 w-1.5 rounded-full bg-current" />
             </span>
             {formatTime(elapsed)}
           </div>
+          {isListening && audio_url && (
+            <audio ref={audioRef} controls autoPlay controlsList="noplaybackrate nodownload" className="h-8 w-72" src={audio_url} />
+          )}
         </div>
 
         <div className="flex items-center gap-1">
@@ -109,38 +148,8 @@ export default function TestPartPage() {
         </div>
       </div>
 
-      {isListening && audio_url && (
-        <div className="flex justify-center bg-[#1a1a1a] px-4 pb-3">
-          <audio controls className="w-full max-w-lg">
-            <source src={audio_url} type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio>
-        </div>
-      )}
-
       <AuthGate>
-        {isReading && passage ? (
-          <ReadingLayout
-            sectionTitle={sectionTitle}
-            passage={passage}
-            questionGroups={questionGroups}
-            answers={answers}
-            onAnswerChange={handleAnswerChange}
-            handleSubmit={handleSubmit}
-            submitting={submitting}
-            isAuthenticated={isAuthenticated}
-          />
-        ) : (
-          <ListeningLayout
-            sectionTitle={sectionTitle}
-            questionGroups={questionGroups}
-            answers={answers}
-            onAnswerChange={handleAnswerChange}
-            handleSubmit={handleSubmit}
-            submitting={submitting}
-            isAuthenticated={isAuthenticated}
-          />
-        )}
+        {layout}
       </AuthGate>
     </div>
   )

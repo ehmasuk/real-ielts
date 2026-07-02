@@ -1,9 +1,10 @@
 "use client"
 
+import * as React from "react"
 import { QuestionGroup } from "../question-types"
 import { SubmitButton } from "../shared/SubmitButton"
 
-export function ListeningLayout({
+export const ListeningLayout = React.memo(function ListeningLayout({
   sectionTitle,
   questionGroups,
   answers,
@@ -21,7 +22,7 @@ export function ListeningLayout({
   isAuthenticated: boolean
 }) {
   return (
-    <div className="w-full px-4 py-8 pb-24 sm:px-6">
+    <div className="w-full max-w-7xl mx-auto px-4 py-8 pb-24 sm:px-6">
       <div className="mb-8">
         <h1 className="text-2xl font-bold tracking-tight text-gray-900">
           {sectionTitle}
@@ -44,4 +45,4 @@ export function ListeningLayout({
       )}
     </div>
   )
-}
+})

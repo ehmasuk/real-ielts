@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
 import { Search, BookOpen } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
-import { fetchPublicBooks, fetchPublicTests } from "@/lib/api"
+import { fetchPublicBooks, fetchPublicTests, fetchUserResults } from "@/lib/api"
 
 interface TestItem {
   _id: string
@@ -42,6 +42,19 @@ export default function ReadingPage() {
     queryKey: ["public", "tests", "reading"],
     queryFn: () => fetchPublicTests({ skill: "reading" }),
   })
+
+  const { data: userResults = [] } = useQuery({
+    queryKey: ["user-results"],
+    queryFn: fetchUserResults,
+  })
+
+  const resultsMap = React.useMemo(() => {
+    const map: Record<string, { score: number; total: number }> = {}
+    for (const r of userResults as Array<{ testId: string; partNum: number; score: number; total: number }>) {
+      map[`${r.testId}-${r.partNum}`] = { score: r.score, total: r.total }
+    }
+    return map
+  }, [userResults])
 
   const testsByBook = React.useMemo(() => {
     const map: Record<string, TestItem[]> = {}
@@ -135,16 +148,27 @@ export default function ReadingPage() {
                           <span>Practice Test {testNum}</span>
                         </div>
                         <div className="flex flex-col gap-2">
-                          {test && [1, 2, 3].map((passageNum) => (
-                            <Link
-                              key={passageNum}
-                              href={`/test/${test._id}/reading/${passageNum}`}
-                              className="flex items-center justify-between rounded-lg border border-border/40 bg-background/50 hover:bg-purple-600 hover:border-purple-600 hover:text-white px-3 py-2 text-[11px] font-semibold text-muted-foreground transition-all shadow-sm cursor-pointer"
-                            >
-                              <span>Passage {passageNum}</span>
-                              <span className="text-[9px] opacity-70 font-normal">Practice Now</span>
-                            </Link>
-                          ))}
+                          {test && [1, 2, 3].map((passageNum) => {
+                            const result = resultsMap[`${test._id}-${passageNum}`]
+                            return (
+                              <Link
+                                key={passageNum}
+                                href={result ? `/test/${test._id}/part/${passageNum}/result` : `/test/${test._id}/reading/${passageNum}`}
+                                className={`flex items-center justify-between rounded-lg border px-3 py-2 text-[11px] font-semibold transition-all shadow-sm cursor-pointer ${
+                                  result
+                                    ? "border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-600 hover:border-emerald-600 hover:text-white text-muted-foreground"
+                                    : "border-border/40 bg-background/50 hover:bg-purple-600 hover:border-purple-600 hover:text-white text-muted-foreground"
+                                }`}
+                              >
+                                <span>Passage {passageNum}</span>
+                                {result ? (
+                                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">{result.score}/{result.total}</span>
+                                ) : (
+                                  <span className="text-[9px] opacity-70 font-normal">Practice Now</span>
+                                )}
+                              </Link>
+                            )
+                          })}
                           {!test && (
                             <div className="rounded-lg border border-border/20 bg-background/20 px-3 py-3 text-[11px] font-semibold text-muted-foreground/30 text-center pointer-events-none">
                               Not available

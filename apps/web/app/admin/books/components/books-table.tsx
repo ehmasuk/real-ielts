@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import {
   MoreHorizontal,
   Edit,
@@ -115,9 +116,12 @@ export function BooksTable({ books, onEdit, onToggleStatus, onDelete }: BooksTab
                 {book.number}
               </TableCell>
               <TableCell>
-                <span className="font-medium text-foreground">
+                <Link
+                  href={`/admin/books/${book.id}`}
+                  className="font-medium text-foreground hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
                   {book.title}
-                </span>
+                </Link>
               </TableCell>
               <TableCell className="hidden sm:table-cell">
                 <code className="rounded bg-muted/60 px-1.5 py-0.5 text-[11px] font-mono text-muted-foreground">

@@ -1,8 +1,9 @@
 "use client"
 
+import * as React from "react"
 import { useAuth } from "@/lib/use-auth"
 
-export function AuthGate({ children }: { children: React.ReactNode }) {
+export const AuthGate = React.memo(function AuthGate({ children }: { children: React.ReactNode }) {
   const { user, isAuthenticated, signIn } = useAuth()
 
   return (
@@ -45,4 +46,4 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
       )}
     </>
   )
-}
+})

@@ -40,37 +40,34 @@ const listeningContentJson = `{
         {
           "id": "group_2",
           "type": "notes_completion",
-          "instructions": "Complete the notes below. Write NO MORE THAN TWO WORDS for each answer.",
-          "questionRange": "6-10",
+          "instructions": "Complete the notes below. Write **ONE WORD ONLY** for each answer.",
+          "questionRange": "31-40",
           "layout": {
             "blocks": [
               {
                 "type": "heading",
-                "text": "Customer Registration"
+                "text": "Inclusive design"
               },
               {
                 "type": "paragraph",
                 "content": [
-                  { "type": "text", "text": "Name: " },
-                  { "type": "question", "questionId": "q_6", "number": 6, "question": "Customer full name" }
-                ]
-              },
-              {
-                "type": "paragraph",
-                "content": [
-                  { "type": "text", "text": "Email: " },
-                  { "type": "question", "questionId": "q_7", "number": 7, "question": "Email address" }
-                ]
-              },
-              {
-                "type": "heading",
-                "text": "Booking Details"
-              },
-              {
-                "type": "paragraph",
-                "content": [
-                  { "type": "text", "text": "Phone: " },
-                  { "type": "question", "questionId": "q_8", "number": 8, "question": "Contact number" }
+                  { "type": "text", "text": "**Definition** \n" },
+                  { "type": "question", "questionId": "q_31", "number": 31, "question": "- Designing products that can be accessed by a diverse range of people without the need for any ______ \n" },
+                  { "type": "question", "questionId": "q_32", "number": 32, "question": "- Not the same as universal design: that is design for everyone, including catering for people with ______ problems \n" },
+                  { "type": "text", "text": "**Examples of inclusive design** \n" },
+                  { "type": "question", "questionId": "q_33", "number": 33, "question": "- ______ which are adjustable, avoiding back or neck problems \n" },
+                  { "type": "question", "questionId": "q_34", "number": 34, "question": "- ______ in public toilets which are easier to use \n" },
+                  { "type": "text", "text": "- To assist the elderly:\n" },
+                  { "type": "question", "questionId": "q_35", "number": 35, "question": "- designers avoid using ______ in interfaces \n" },
+                  { "type": "question", "questionId": "q_36", "number": 36, "question": "- people can make commands using a mouse, keyboard or their ______ \n" },
+                  { "type": "text", "text": "**Impact of non-inclusive designs** \n" },
+                  { "type": "text", "text": "Access: \n - Loss of independence for disabled people \n" },
+                  { "type": "text", "text": "Safety:\n" },
+                  { "type": "question", "questionId": "q_37", "number": 37, "question": "- Seatbelts are especially problematic for ______ women \n" },
+                  { "type": "question", "questionId": "q_38", "number": 38, "question": "- PPE jackets are often unsuitable because of the size of women's ______\n" },
+                  { "type": "question", "questionId": "q_39", "number": 39, "question": "- PPE for female ______ officers dealing with emergencies is the worst \n" },
+                  { "type": "text", "text": "Comfort in the workplace: \n" },
+                  { "type": "question", "questionId": "q_40", "number": 40, "question": "- The ______ in offices is often too low for women." }
                 ]
               }
             ]
@@ -86,15 +83,23 @@ const listeningContentJson = `{
       "questionGroups": [
         {
           "id": "group_3",
-          "type": "diagram_labeling",
-          "instructions": "Choose the correct letter A\u2013F.",
-          "questionRange": "11-13",
-          "image_src": "/maps/map1.png",
-          "options": ["A", "B", "C", "D", "E", "F"],
+          "type": "matching",
+          "instructions": "Choose FOUR answers from the box and write the correct letter, A..F, next to Questions 27-30.",
+          "questionRange": "27-30",
+          "optionsTitle": "Comment about programme",
+          "options": [
+            { "id": "A", "text": "Its origin is somewhat controversial." },
+            { "id": "B", "text": "It is historically significant for a country." },
+            { "id": "C", "text": "It was effective at attracting audiences." },
+            { "id": "D", "text": "It is included in a recent project." },
+            { "id": "E", "text": "It contains insights into the show." },
+            { "id": "F", "text": "It resembles an artwork." }
+          ],
           "questions": [
-            { "questionId": "q_11", "number": 11, "question": "Library" },
-            { "questionId": "q_12", "number": 12, "question": "Restaurant" },
-            { "questionId": "q_13", "number": 13, "question": "Car park" }
+            { "questionId": "q_27", "number": 27, "question": "Ruy Blas" },
+            { "questionId": "q_28", "number": 28, "question": "Man of La Mancha" },
+            { "questionId": "q_29", "number": 29, "question": "The Tragedy of Jane Shore" },
+            { "questionId": "q_30", "number": 30, "question": "The Sailors' Festival" }
           ]
         }
       ]
@@ -137,27 +142,138 @@ const listeningContentJson = `{
         {
           "id": "group_6",
           "type": "table_completion",
-          "instructions": "Complete the table below. Write NO MORE THAN TWO WORDS for each answer.",
-          "questionRange": "21-24",
+          "title": "Furniture Rental Companies",
+          "instructions": "Complete the table below. Write ONE WORD AND/OR A NUMBER for each answer.",
+          "questionRange": "1-10",
           "layout": {
-            "columns": ["Species", "Depth (m)", "Feature"],
+            "columns": [
+              "Name of company",
+              "Information about costs",
+              "Additional notes"
+            ],
             "rows": [
               [
-                [{ "type": "text", "text": "Dolphin" }],
-                [{ "type": "question", "questionId": "q_21", "number": 21 }],
-                [{ "type": "text", "text": "Echolocation" }]
-              ],
-              [
-                [{ "type": "text", "text": "Whale Shark" }],
-                [{ "type": "question", "questionId": "q_22", "number": 22 }],
-                [{ "type": "question", "questionId": "q_23", "number": 23 }]
-              ],
-              [
-                [{ "type": "text", "text": "Manta Ray" }],
-                [{ "type": "text", "text": "0-10" }],
                 [
-                  { "type": "text", "text": "Diet: " },
-                  { "type": "question", "questionId": "q_24", "number": 24 }
+                  {
+                    "type": "text",
+                    "text": "Peak Rentals "
+                  }
+                ],
+                [
+                  {
+                    "type": "question",
+                    "questionId": "q_41",
+                    "number": 1,
+                    "question": "Prices range from $105 to ______$ per room per month."
+                  }
+                ],
+                [
+                  {
+                    "type": "question",
+                    "questionId": "q_42",
+                    "number": 2,
+                    "question": "The furniture Is very ______.\n"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Delivers in 1-2 days\n"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Special offer:\n"
+                  },
+                  {
+                    "type": "question",
+                    "questionId": "q_43",
+                    "number": 3,
+                    "question": "Free ______ with every living room set."
+                  }
+                ]
+              ],
+              [
+                [
+                  {
+                    "type": "question",
+                    "questionId": "q_44",
+                    "number": 4,
+                    "question": "______ and Oliver "
+                  }
+                ],
+                [
+                  {
+                    "type": "question",
+                    "questionId": "q_45",
+                    "number": 5,
+                    "question": "Mid-range prices 12% monthly fee for ______"
+                  }
+                ],
+                [
+                  {
+                    "type": "text",
+                    "text": "Also offers a cleaning service"
+                  }
+                ]
+              ],
+              [
+                [
+                  {
+                    "type": "text",
+                    "text": "Larch Furniture"
+                  }
+                ],
+                [
+                  {
+                    "type": "text",
+                    "text": "Offers cheapest prices for renting \n "
+                  },
+                  {
+                    "type": "question",
+                    "questionId": "q_46",
+                    "number": 6,
+                    "question": "Furniture and ______ items"
+                  }
+                ],
+                [
+                  {
+                    "type": "question",
+                    "questionId": "q_47",
+                    "number": 7,
+                    "question": "Must have own ______ \n"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Minimum contract length: \n six months"
+                  }
+                ]
+              ],
+              [
+                [
+                  {
+                    "type": "question",
+                    "questionId": "q_48",
+                    "number": 8,
+                    "question": "______ Rentals"
+                  }
+                ],
+                [
+                  {
+                    "type": "question",
+                    "questionId": "q_49",
+                    "number": 9,
+                    "question": "See the ______ for the most \n"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Up-to-date prices"
+                  }
+                ],
+                [
+                  {
+                    "type": "question",
+                    "questionId": "q_50",
+                    "number": 10,
+                    "question": "______ are allowed within 7 days of delivery"
+                  }
                 ]
               ]
             ]
@@ -172,17 +288,34 @@ const listeningAnswerJson = `{
   "answers": {
     "q_1": "Double",
     "q_2": "Three",
-    "q_6": "John Smith",
-    "q_7": "john.smith@email.com",
-    "q_8": "0412345678",
+    "q_27": "C",
+    "q_28": "A",
+    "q_29": "E",
+    "q_30": "F",
     "q_11": "A",
     "q_17_18": ["Climate change", "Urban planning"],
     "q_19": "research topic",
     "q_20": "Wednesday",
-    "q_21": "200",
-    "q_22": "1000",
-    "q_23": "plankton",
-    "q_24": "wing-like fins"
+    "q_31": "adaptation",
+    "q_32": "visual",
+    "q_33": "Chairs",
+    "q_34": "Sensors",
+    "q_35": "colour",
+    "q_36": "voice",
+    "q_37": "pregnant",
+    "q_38": "chests",
+    "q_39": "police",
+    "q_40": "temperature",
+    "q_41": "175",
+    "q_42": "comfortable",
+    "q_43": "delivery",
+    "q_44": "Simpson",
+    "q_45": "hire",
+    "q_46": "household",
+    "q_47": "transport",
+    "q_48": "Express",
+    "q_49": "website",
+    "q_50": "Returns"
   }
 }`
 

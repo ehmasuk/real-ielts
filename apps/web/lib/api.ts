@@ -49,6 +49,11 @@ export const fetchBooks = async () => {
   return res.data
 }
 
+export const fetchBookById = async (id: string) => {
+  const res = await api.get(`/admin/books/${id}`)
+  return res.data
+}
+
 export const createBook = async (data: { number: number; title: string; status?: string }) => {
   const res = await api.post("/admin/books", data)
   return res.data
@@ -66,8 +71,10 @@ export const deleteBook = async (id: string) => {
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
-export const fetchTests = async () => {
-  const res = await api.get("/admin/tests")
+export const fetchTests = async (bookId?: string) => {
+  const res = await api.get("/admin/tests", {
+    params: typeof bookId === "string" ? { bookId } : undefined,
+  })
   return res.data
 }
 

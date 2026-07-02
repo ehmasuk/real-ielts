@@ -1,0 +1,278 @@
+{
+  "title": "Cambridge IELTS 20 Test 4 Listening",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "audio_url": "https://res.cloudinary.com/.../part1.mp3",
+      "passage": "You will hear a conversation between two friends, Sandra and a man, about arranging activities for a family visit.",
+      "questionGroups": [
+        {
+          "id": "group_1",
+          "type": "notes_completion",
+          "title": "Advice on Family Visit",
+          "instructions": "Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+          "questionRange": "1-10",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Advice on Family Visit"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "**Accommodation**\n- " },
+                  { "type": "question", "questionId": "q_1", "number": 1, "question": "Hotel name: ______ Hotel on George Street" },
+                  { "type": "text", "text": "\n- cost of family room per night: £ " },
+                  { "type": "question", "questionId": "q_2", "number": 2, "question": "Cost of family room per night: £ ______ (approx.)" },
+                  { "type": "text", "text": "\n\n**Recommended Trips**\n- a " },
+                  { "type": "question", "questionId": "q_3", "number": 3, "question": "A ______ tour of the city centre (starts in Carlton Square)" },
+                  { "type": "text", "text": "\n- a trip by " },
+                  { "type": "question", "questionId": "q_4", "number": 4, "question": "A trip by ______ to the old fort" },
+                  { "type": "text", "text": "\n\n**Science Museum**\n- best day to visit: " },
+                  { "type": "question", "questionId": "q_5", "number": 5, "question": "Best day to visit: ______" },
+                  { "type": "text", "text": "\n- see the exhibition about " },
+                  { "type": "question", "questionId": "q_6", "number": 6, "question": "See the exhibition about ______ which opens soon" },
+                  { "type": "text", "text": "\n\n**Food**\nClacton Market:\n- good for " },
+                  { "type": "question", "questionId": "q_7", "number": 7, "question": "Good for ______ food" },
+                  { "type": "text", "text": "\n- need to have lunch before " },
+                  { "type": "question", "questionId": "q_8", "number": 8, "question": "Need to have lunch before ______ p.m." },
+                  { "type": "text", "text": "\n\n**Theatre Tickets**\n- save up to " },
+                  { "type": "question", "questionId": "q_9", "number": 9, "question": "Save up to ______% on ticket prices at bargaintickets.com" },
+                  { "type": "text", "text": "\n\n**Free Activities**\nBlakewell Gardens: Roots Music Festival\n- climb Telegraph Hill to see a view of the " },
+                  { "type": "question", "questionId": "q_10", "number": 10, "question": "Climb Telegraph Hill to see a view of the ______" }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "audio_url": "https://res.cloudinary.com/.../part2.mp3",
+      "passage": "You will hear a guide talking to members of the public who are visiting a football stadium in the UK.",
+      "questionGroups": [
+        {
+          "id": "group_2",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A–E.",
+          "questionRange": "11-12",
+          "questionId": "q_11_12",
+          "select": 2,
+          "questionNumbers": [11, 12],
+          "question": "Which TWO things does the speaker say about visiting the football stadium with children?",
+          "options": [
+            { "id": "A", "text": "Children can get their photo taken with a football player." },
+            { "id": "B", "text": "There is a competition for children today." },
+            { "id": "C", "text": "Parents must stay with their children at all times." },
+            { "id": "D", "text": "Children will need sunhats and drinks." },
+            { "id": "E", "text": "The café has a special offer on meals for children." }
+          ]
+        },
+        {
+          "id": "group_3",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A–E.",
+          "questionRange": "13-14",
+          "questionId": "q_13_14",
+          "select": 2,
+          "questionNumbers": [13, 14],
+          "question": "Which TWO features of the stadium tour are new this year?",
+          "options": [
+            { "id": "A", "text": "VIP tour" },
+            { "id": "B", "text": "360 cinema experience" },
+            { "id": "C", "text": "audio guide" },
+            { "id": "D", "text": "dressing room tour" },
+            { "id": "E", "text": "tours in other languages" }
+          ]
+        },
+        {
+          "id": "group_4",
+          "type": "matching",
+          "instructions": "Which event in the history of football in the UK took place in each of the following years? Choose SIX answers from the box and write the correct letter, A–H, next to Questions 15–20.",
+          "questionRange": "15-20",
+          "optionsTitle": "Events in the history of football",
+          "options": [
+            { "id": "A", "text": "the introduction of pay for the players" },
+            { "id": "B", "text": "a change to the design of the goal" },
+            { "id": "C", "text": "the first use of lights for matches" },
+            { "id": "D", "text": "the introduction of goalkeepers" },
+            { "id": "E", "text": "the first international match" },
+            { "id": "F", "text": "two changes to the rules of the game" },
+            { "id": "G", "text": "the introduction of a fee for spectators" },
+            { "id": "H", "text": "an agreement on the length of a game" }
+          ],
+          "questions": [
+            { "questionId": "q_15", "number": 15, "question": "1870" },
+            { "questionId": "q_16", "number": 16, "question": "1874" },
+            { "questionId": "q_17", "number": 17, "question": "1875" },
+            { "questionId": "q_18", "number": 18, "question": "1877" },
+            { "questionId": "q_19", "number": 19, "question": "1878" },
+            { "questionId": "q_20", "number": 20, "question": "1880" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "audio_url": "https://res.cloudinary.com/.../part3.mp3",
+      "passage": "You will hear two students discussing their assignment on handwriting and the impact of technology on writing.",
+      "questionGroups": [
+        {
+          "id": "group_5",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A–E.",
+          "questionRange": "21-22",
+          "questionId": "q_21_22",
+          "select": 2,
+          "questionNumbers": [21, 22],
+          "question": "Which TWO benefits for children of learning to write did both students find surprising?",
+          "options": [
+            { "id": "A", "text": "improved fine motor skills" },
+            { "id": "B", "text": "improved memory" },
+            { "id": "C", "text": "improved concentration" },
+            { "id": "D", "text": "improved imagination" },
+            { "id": "E", "text": "improved spatial awareness" }
+          ]
+        },
+        {
+          "id": "group_6",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A–E.",
+          "questionRange": "23-24",
+          "questionId": "q_23_24",
+          "select": 2,
+          "questionNumbers": [23, 24],
+          "question": "For children with dyspraxia, which TWO problems with handwriting do the students think are easiest to correct?",
+          "options": [
+            { "id": "A", "text": "not spacing letters correctly" },
+            { "id": "B", "text": "not writing in a straight line" },
+            { "id": "C", "text": "applying too much pressure when writing" },
+            { "id": "D", "text": "confusing letter shapes" },
+            { "id": "E", "text": "writing very slowly" }
+          ]
+        },
+        {
+          "id": "group_7",
+          "type": "mcq_single",
+          "instructions": "Choose the correct letter, A, B or C.",
+          "questionRange": "25-30",
+          "questions": [
+            {
+              "questionId": "q_25",
+              "number": 25,
+              "question": "What does the woman say about using laptops to teach writing to children with dyslexia?",
+              "options": [
+                { "id": "A", "text": "Children often lack motivation to learn that way." },
+                { "id": "B", "text": "Children become fluent relatively quickly." },
+                { "id": "C", "text": "Children react more positively if they make a mistake." }
+              ]
+            },
+            {
+              "questionId": "q_26",
+              "number": 26,
+              "question": "When discussing whether to teach cursive or print writing, the woman thinks that",
+              "options": [
+                { "id": "A", "text": "cursive writing disadvantages a certain group of children." },
+                { "id": "B", "text": "print writing is associated with lower academic performance." },
+                { "id": "C", "text": "most teachers in the UK prefer a traditional approach to handwriting." }
+              ]
+            },
+            {
+              "questionId": "q_27",
+              "number": 27,
+              "question": "According to the students, what impact does poor handwriting have on exam performance?",
+              "options": [
+                { "id": "A", "text": "There is evidence to suggest grades are affected by poor handwriting." },
+                { "id": "B", "text": "Neat handwriting is less important now than it used to be." },
+                { "id": "C", "text": "Candidates write more slowly and produce shorter answers." }
+              ]
+            },
+            {
+              "questionId": "q_28",
+              "number": 28,
+              "question": "What prediction does the man make about the future of handwriting?",
+              "options": [
+                { "id": "A", "text": "Touch typing will be taught before writing by hand." },
+                { "id": "B", "text": "Children will continue to learn to write by hand." },
+                { "id": "C", "text": "People will dislike handwriting on digital devices." }
+              ]
+            },
+            {
+              "questionId": "q_29",
+              "number": 29,
+              "question": "The woman is concerned that relying on digital devices has made it difficult for her to",
+              "options": [
+                { "id": "A", "text": "take detailed notes." },
+                { "id": "B", "text": "spell and punctuate." },
+                { "id": "C", "text": "read old documents." }
+              ]
+            },
+            {
+              "questionId": "q_30",
+              "number": 30,
+              "question": "How do the students feel about their own handwriting?",
+              "options": [
+                { "id": "A", "text": "concerned they are unable to write quickly" },
+                { "id": "B", "text": "embarrassed by comments made about it" },
+                { "id": "C", "text": "regretful that they have lost the habit" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_4",
+      "title": "Part 4",
+      "audio_url": "https://res.cloudinary.com/.../part4.mp3",
+      "passage": "You will hear a lecture about research conducted in the area around the Chembe Bird Sanctuary in Zambia.",
+      "questionGroups": [
+        {
+          "id": "group_8",
+          "type": "notes_completion",
+          "title": "Research in the area around the Chembe Bird Sanctuary",
+          "instructions": "Complete the notes below. Write ONE WORD ONLY for each answer.",
+          "questionRange": "31-40",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Research in the area around the Chembe Bird Sanctuary"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "**The importance of birds of prey to the local communities**\n- They destroy " },
+                  { "type": "question", "questionId": "q_31", "number": 31, "question": "They destroy ______ and other rodents" },
+                  { "type": "text", "text": "\n- They help to prevent farmers from being bitten by " },
+                  { "type": "question", "questionId": "q_32", "number": 32, "question": "They help to prevent farmers from being bitten by ______" },
+                  { "type": "text", "text": "\n- They have been an important part of the local culture for many years.\n- They now support the economy by encouraging " },
+                  { "type": "question", "questionId": "q_33", "number": 33, "question": "They now support the economy by encouraging ______ in the area" },
+                  { "type": "text", "text": "\n\n**Falling numbers of birds of prey**\nThe birds may be accidentally killed:\n- by " },
+                  { "type": "question", "questionId": "q_34", "number": 34, "question": "by ______ when they are hunting or sleeping" },
+                  { "type": "text", "text": "\n- by electrocution from contact with power lines, especially at times when there is a lot of " },
+                  { "type": "question", "questionId": "q_35", "number": 35, "question": "especially at times when there is a lot of ______" },
+                  { "type": "text", "text": "\nLocal farmers may illegally shoot them or " },
+                  { "type": "question", "questionId": "q_36", "number": 36, "question": "Local farmers may illegally shoot them or ______ them" },
+                  { "type": "text", "text": "\n\n**Ways of protecting chickens from birds of prey**\n- clearing away vegetation from the area (unhelpful)\n- providing a " },
+                  { "type": "question", "questionId": "q_37", "number": 37, "question": "providing a ______ for chickens (expensive)" },
+                  { "type": "text", "text": "\n- frightening birds of prey by:\n  - keeping a " },
+                  { "type": "question", "questionId": "q_38", "number": 38, "question": "keeping a ______" },
+                  { "type": "text", "text": "\n  - making a " },
+                  { "type": "question", "questionId": "q_39", "number": 39, "question": "making a ______ - e.g. with metal objects" },
+                  { "type": "text", "text": "\n- A " },
+                  { "type": "question", "questionId": "q_40", "number": 40, "question": "A ______ of methods is usually most effective" }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

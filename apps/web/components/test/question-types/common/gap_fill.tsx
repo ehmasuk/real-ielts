@@ -9,7 +9,7 @@ interface Props {
   onAnswerChange: (questionId: string, value: any) => void
 }
 
-export function GapFill({ group, answers, onAnswerChange }: Props) {
+export const GapFill = React.memo(function GapFill({ group, answers, onAnswerChange }: Props) {
   const { questionRange, instructions, questions } = group
   return (
     <div className="space-y-4">
@@ -19,7 +19,7 @@ export function GapFill({ group, answers, onAnswerChange }: Props) {
       {instructions && <p className="font-medium">{formatString(instructions)}</p>}
       {questions?.map((q: any) => (
         <div key={q.questionId}>
-          <p className="text-sm leading-relaxed">
+          <p className="leading-relaxed">
             <span className="mr-1 font-bold">{q.number}.</span>
             {q.question
               ?.split("______")
@@ -28,8 +28,8 @@ export function GapFill({ group, answers, onAnswerChange }: Props) {
                   {formatString(part)}
                   {pi < arr.length - 1 && (
                     <input
-                      className="mx-1 inline-block w-28 border border-black bg-transparent px-2 py-0.5 text-sm outline-none"
-                      placeholder="..."
+                      className="mx-1 inline-block text-center w-28 border border-black bg-transparent px-2 py-0.5 text-sm outline-none"
+                      placeholder={q.number}
                       value={answers[q.questionId] ?? ""}
                       onChange={(e) =>
                         onAnswerChange(q.questionId, e.target.value)
@@ -43,4 +43,4 @@ export function GapFill({ group, answers, onAnswerChange }: Props) {
       ))}
     </div>
   )
-}
+})

@@ -1,0 +1,50 @@
+{
+  "title": "Cambridge IELTS 20 Test 2 Speaking",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "instructions": "The examiner asks you general questions about yourself and familiar topics.",
+      "topics": [
+        {
+          "title": "Fruit",
+          "questions": [
+            "What's your favourite fruit?",
+            "Are there any kinds of fruit that you don't like eating?",
+            "Do you like eating cooked food that has fruit in it?",
+            "Where's the best place to buy fruit where you live?"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "instructions": "You will have 1 minute to prepare and should speak for 1\u20132 minutes.",
+      "cueCard": {
+        "title": "Describe a time when you changed a plan you had made.",
+        "task": "Describe a time when you changed a plan you had made.",
+        "points": [
+          "What your original plan was",
+          "Why you changed it",
+          "What new plan you made",
+          "And explain how you felt about changing your plan."
+        ],
+        "endingQuestion": "And explain how you felt about changing your plan."
+      }
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "instructions": "The examiner and the candidate discuss issues related to the Part 2 topic.",
+      "questions": [
+        "What kinds of plans do friends make together?",
+        "Do you think it's better to discuss future plans with friends or with family?",
+        "When making plans for the future, is it important not to copy friends?",
+        "When people are choosing what to study, how important is it that their course should lead directly to a career?",
+        "Why is it a good idea to get some work experience before deciding on a future career?",
+        "How easy do you think it is for people to change from one career to another?"
+      ]
+    }
+  ]
+}

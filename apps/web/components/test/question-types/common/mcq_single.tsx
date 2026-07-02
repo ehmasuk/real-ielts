@@ -1,6 +1,18 @@
 "use client"
 
+import * as React from "react"
 import { formatString } from "../../shared/formatString"
+
+function optValue(opt: any): string {
+  return typeof opt === "object" && opt !== null ? opt.id : opt
+}
+
+function optLabel(opt: any): string {
+  if (typeof opt === "object" && opt !== null) {
+    return `${opt.id}. ${opt.text}`
+  }
+  return opt
+}
 
 interface Props {
   group: any
@@ -8,7 +20,7 @@ interface Props {
   onAnswerChange: (questionId: string, value: any) => void
 }
 
-export function MCQSingle({ group, answers, onAnswerChange }: Props) {
+export const MCQSingle = React.memo(function MCQSingle({ group, answers, onAnswerChange }: Props) {
   const { questionRange, instructions, questions } = group
   return (
     <div className="space-y-4">
@@ -23,7 +35,7 @@ export function MCQSingle({ group, answers, onAnswerChange }: Props) {
             {formatString(q.question)}
           </p>
           <div className="inline-block space-y-2 pl-5">
-            {q.options?.map((opt: string, oi: number) => (
+            {q.options?.map((opt: any, oi: number) => (
               <label
                 key={oi}
                 className="-mt-px -ml-px flex cursor-pointer items-center gap-2"
@@ -31,11 +43,11 @@ export function MCQSingle({ group, answers, onAnswerChange }: Props) {
                 <input
                   type="radio"
                   name={q.questionId}
-                  value={opt}
-                  checked={answers[q.questionId] === opt}
-                  onChange={() => onAnswerChange(q.questionId, opt)}
+                  value={optValue(opt)}
+                  checked={answers[q.questionId] === optValue(opt)}
+                  onChange={() => onAnswerChange(q.questionId, optValue(opt))}
                 />
-                {opt}
+                {optLabel(opt)}
               </label>
             ))}
           </div>
@@ -43,4 +55,4 @@ export function MCQSingle({ group, answers, onAnswerChange }: Props) {
       ))}
     </div>
   )
-}
+})
