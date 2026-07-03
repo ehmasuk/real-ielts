@@ -36,4 +36,7 @@ const bookSchema = new Schema<IBook>(
   }
 );
 
+// Performance indexes
+bookSchema.index({ status: 1 });
+
 export const Book = mongoose.model<IBook>("Book", bookSchema);

@@ -1,0 +1,293 @@
+{
+  "title": "Cambridge IELTS 17 Test 2 Listening",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "audio_url": "https://res.cloudinary.com/.../part1.mp3",
+      "passage": "You will hear a conversation between a woman and a man about opportunities for voluntary work in Southhoe village.",
+      "questionGroups": [
+        {
+          "id": "group_1",
+          "type": "notes_completion",
+          "title": "Opportunities for voluntary work in Southhoe village",
+          "instructions": "Complete the notes below. Write ONE WORD ONLY for each answer.",
+          "questionRange": "1-7",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Opportunities for voluntary work in Southhoe village"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "**Library**\n● Help with " },
+                  { "type": "question", "questionId": "q_1", "number": 1, "question": "Help with ______ books" },
+                  { "type": "text", "text": " books (times to be arranged)\n● Help needed to keep " },
+                  { "type": "question", "questionId": "q_2", "number": 2, "question": "Help needed to keep ______ of books up to date" },
+                  { "type": "text", "text": " of books up to date\n● Library is in the " },
+                  { "type": "question", "questionId": "q_3", "number": 3, "question": "Library is in the ______ Room in the village hall" },
+                  { "type": "text", "text": " Room in the village hall\n\n**Lunch club**\n● Help by providing " },
+                  { "type": "question", "questionId": "q_4", "number": 4, "question": "Help by providing ______" },
+                  { "type": "text", "text": "\n● Help with hobbies such as " },
+                  { "type": "question", "questionId": "q_5", "number": 5, "question": "Help with hobbies such as ______" },
+                  { "type": "text", "text": "\n\n**Help for individuals needed next week**\n● Taking Mrs Carroll to " },
+                  { "type": "question", "questionId": "q_6", "number": 6, "question": "Taking Mrs Carroll to ______" },
+                  { "type": "text", "text": "\n● Work in the " },
+                  { "type": "question", "questionId": "q_7", "number": 7, "question": "Work in the ______ at Mr Selsbury's house" },
+                  { "type": "text", "text": " at Mr Selsbury's house" }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "group_2",
+          "type": "table_completion",
+          "instructions": "Complete the table below. Write ONE WORD ONLY for each answer.",
+          "questionRange": "8-10",
+          "layout": {
+            "columns": ["Date", "Event", "Location", "Help needed"],
+            "rows": [
+              [
+                [{ "type": "text", "text": "19 Oct" }],
+                [{ "type": "question", "questionId": "q_8", "number": 8, "question": "Event: ______" }],
+                [{ "type": "text", "text": "Village hall" }],
+                [{ "type": "text", "text": "providing refreshments" }]
+              ],
+              [
+                [{ "type": "text", "text": "18 Nov" }],
+                [{ "type": "text", "text": "dance" }],
+                [{ "type": "text", "text": "Village hall" }],
+                [{ "type": "question", "questionId": "q_9", "number": 9, "question": "checking ______" }]
+              ],
+              [
+                [{ "type": "text", "text": "31 Dec" }],
+                [{ "type": "text", "text": "New Year's Eve party" }],
+                [{ "type": "text", "text": "Mountfort Hotel" }],
+                [{ "type": "question", "questionId": "q_10", "number": 10, "question": "designing the ______" }]
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "audio_url": "https://res.cloudinary.com/.../part2.mp3",
+      "passage": "You will hear a talk about Oniton Hall and activities on the farm.",
+      "questionGroups": [
+        {
+          "id": "group_3",
+          "type": "mcq_single",
+          "instructions": "Choose the correct letter, A, B or C.",
+          "questionRange": "11-14",
+          "questions": [
+            {
+              "questionId": "q_11",
+              "number": 11,
+              "question": "Many past owners made changes to",
+              "options": [
+                { "id": "A", "text": "the gardens." },
+                { "id": "B", "text": "the house." },
+                { "id": "C", "text": "the farm." }
+              ]
+            },
+            {
+              "questionId": "q_12",
+              "number": 12,
+              "question": "Sir Edward Downes built Oniton Hall because he wanted",
+              "options": [
+                { "id": "A", "text": "a place for discussing politics." },
+                { "id": "B", "text": "a place to display his wealth." },
+                { "id": "C", "text": "a place for artists and writers." }
+              ]
+            },
+            {
+              "questionId": "q_13",
+              "number": 13,
+              "question": "Visitors can learn about the work of servants in the past from",
+              "options": [
+                { "id": "A", "text": "audio guides." },
+                { "id": "B", "text": "photographs." },
+                { "id": "C", "text": "people in costume." }
+              ]
+            },
+            {
+              "questionId": "q_14",
+              "number": 14,
+              "question": "What is new for children at Oniton Hall?",
+              "options": [
+                { "id": "A", "text": "clothes for dressing up" },
+                { "id": "B", "text": "mini tractors" },
+                { "id": "C", "text": "the adventure playground" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "group_4",
+          "type": "matching",
+          "instructions": "Which activity is offered at each of the following locations on the farm? Choose SIX answers from the box and write the correct letter, A–H, next to Questions 15–20.",
+          "questionRange": "15-20",
+          "optionsTitle": "Activities",
+          "options": [
+            { "id": "A", "text": "shopping" },
+            { "id": "B", "text": "watching cows being milked" },
+            { "id": "C", "text": "seeing old farming equipment" },
+            { "id": "D", "text": "eating and drinking" },
+            { "id": "E", "text": "starting a trip" },
+            { "id": "F", "text": "seeing rare breeds of animals" },
+            { "id": "G", "text": "helping to look after animals" },
+            { "id": "H", "text": "using farming tools" }
+          ],
+          "questions": [
+            { "questionId": "q_15", "number": 15, "question": "dairy" },
+            { "questionId": "q_16", "number": 16, "question": "large barn" },
+            { "questionId": "q_17", "number": 17, "question": "small barn" },
+            { "questionId": "q_18", "number": 18, "question": "stables" },
+            { "questionId": "q_19", "number": 19, "question": "shed" },
+            { "questionId": "q_20", "number": 20, "question": "parkland" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "audio_url": "https://res.cloudinary.com/.../part3.mp3",
+      "passage": "You will hear two students discussing their reviews of Romeo and Juliet.",
+      "questionGroups": [
+        {
+          "id": "group_5",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A–E.",
+          "questionRange": "21-22",
+          "questionId": "q_21_22",
+          "select": 2,
+          "questionNumbers": [21, 22],
+          "question": "Which TWO things do the students agree they need to include in their reviews of Romeo and Juliet?",
+          "options": [
+            { "id": "A", "text": "analysis of the text" },
+            { "id": "B", "text": "a summary of the plot" },
+            { "id": "C", "text": "a description of the theatre" },
+            { "id": "D", "text": "a personal reaction" },
+            { "id": "E", "text": "a reference to particular scenes" }
+          ]
+        },
+        {
+          "id": "group_6",
+          "type": "matching",
+          "instructions": "Which opinion do the speakers give about each of the following aspects of The Emporium's production of Romeo and Juliet? Choose FIVE answers from the box and write the correct letter, A–G, next to Questions 23–27.",
+          "questionRange": "23-27",
+          "optionsTitle": "Opinions",
+          "options": [
+            { "id": "A", "text": "They both expected this to be more traditional." },
+            { "id": "B", "text": "They both thought this was original." },
+            { "id": "C", "text": "They agree this created the right atmosphere." },
+            { "id": "D", "text": "They agree this was a major strength." },
+            { "id": "E", "text": "They were both disappointed by this." },
+            { "id": "F", "text": "They disagree about why this was an issue." },
+            { "id": "G", "text": "They disagree about how this could be improved." }
+          ],
+          "questions": [
+            { "questionId": "q_23", "number": 23, "question": "the set" },
+            { "questionId": "q_24", "number": 24, "question": "the lighting" },
+            { "questionId": "q_25", "number": 25, "question": "the costume design" },
+            { "questionId": "q_26", "number": 26, "question": "the music" },
+            { "questionId": "q_27", "number": 27, "question": "the actors' delivery" }
+          ]
+        },
+        {
+          "id": "group_7",
+          "type": "mcq_single",
+          "instructions": "Choose the correct letter, A, B or C.",
+          "questionRange": "28-30",
+          "questions": [
+            {
+              "questionId": "q_28",
+              "number": 28,
+              "question": "The students think the story of Romeo and Juliet is still relevant for young people today because",
+              "options": [
+                { "id": "A", "text": "it illustrates how easily conflict can start." },
+                { "id": "B", "text": "it deals with problems that families experience." },
+                { "id": "C", "text": "it teaches them about relationships." }
+              ]
+            },
+            {
+              "questionId": "q_29",
+              "number": 29,
+              "question": "The students found watching Romeo and Juliet in another language",
+              "options": [
+                { "id": "A", "text": "frustrating." },
+                { "id": "B", "text": "demanding." },
+                { "id": "C", "text": "moving." }
+              ]
+            },
+            {
+              "questionId": "q_30",
+              "number": 30,
+              "question": "Why do the students think Shakespeare's plays have such international appeal?",
+              "options": [
+                { "id": "A", "text": "The stories are exciting." },
+                { "id": "B", "text": "There are recognisable characters." },
+                { "id": "C", "text": "They can be interpreted in many ways." }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_4",
+      "title": "Part 4",
+      "audio_url": "https://res.cloudinary.com/.../part4.mp3",
+      "passage": "You will hear a lecture about the impact of digital technology on the Icelandic language.",
+      "questionGroups": [
+        {
+          "id": "group_8",
+          "type": "notes_completion",
+          "title": "The impact of digital technology on the Icelandic language",
+          "instructions": "Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+          "questionRange": "31-40",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "The impact of digital technology on the Icelandic language"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "**The Icelandic language**\n● has approximately " },
+                  { "type": "question", "questionId": "q_31", "number": 31, "question": "has approximately ______ speakers" },
+                  { "type": "text", "text": " speakers\n● has a " },
+                  { "type": "question", "questionId": "q_32", "number": 32, "question": "has a ______ that is still growing" },
+                  { "type": "text", "text": " that is still growing\n● has not changed a lot over the last thousand years\n● has its own words for computer-based concepts, such as web browser and " },
+                  { "type": "question", "questionId": "q_33", "number": 33, "question": "such as web browser and ______" },
+                  { "type": "text", "text": "\n\n**Young speakers**\n● are big users of digital technology, such as " },
+                  { "type": "question", "questionId": "q_34", "number": 34, "question": "are big users of digital technology, such as ______" },
+                  { "type": "text", "text": "\n● are becoming " },
+                  { "type": "question", "questionId": "q_35", "number": 35, "question": "are becoming ______ very quickly" },
+                  { "type": "text", "text": " very quickly\n● are having discussions using only English while they are in the " },
+                  { "type": "question", "questionId": "q_36", "number": 36, "question": "while they are in the ______ at school" },
+                  { "type": "text", "text": " at school\n● are better able to identify the content of a " },
+                  { "type": "question", "questionId": "q_37", "number": 37, "question": "identify the content of a ______ in English than Icelandic" },
+                  { "type": "text", "text": " in English than Icelandic\n\n**Technology and internet companies**\n● write very little in Icelandic because of the small number of speakers and because of how complicated its " },
+                  { "type": "question", "questionId": "q_38", "number": 38, "question": "because of how complicated its ______ is" },
+                  { "type": "text", "text": " is\n\n**The Icelandic government**\n● has set up a fund to support the production of more digital content in the language\n● believes that Icelandic has a secure future\n● is worried that young Icelanders may lose their " },
+                  { "type": "question", "questionId": "q_39", "number": 39, "question": "young Icelanders may lose their ______ as Icelanders" },
+                  { "type": "text", "text": " as Icelanders\n● is worried about the consequences of children not being " },
+                  { "type": "question", "questionId": "q_40", "number": 40, "question": "children not being ______ in either Icelandic or English" },
+                  { "type": "text", "text": " in either Icelandic or English" }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

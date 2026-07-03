@@ -51,25 +51,62 @@ const testServices = {
     if (!answerMap) return { score: 0, total: 0, results: [] };
 
     const section = sections[partIndex];
-    const questionIds = collectQuestionIds(section);
+    const meta = getQuestionMetadata(section);
+    const questionIds = Object.keys(meta);
+    
+    let totalScore = 0;
+    let totalMax = 0;
+
     const results = questionIds.map((qId) => {
       const userAnswer = userAnswers[qId];
       const correctAnswer = answerMap[qId];
+      const qMeta = meta[qId] || { type: "unknown", maxScore: 1 };
+      
+      let score = 0;
       let correct = false;
-      if (Array.isArray(correctAnswer)) {
-        if (Array.isArray(userAnswer)) {
-          const sortedUser = [...userAnswer].sort();
-          const sortedCorrect = [...correctAnswer].sort();
-          correct = sortedUser.length === sortedCorrect.length && sortedUser.every((v, i) => v === sortedCorrect[i]);
-        }
+
+      if (qMeta.type === "mcq_multiple") {
+        const userArr = Array.isArray(userAnswer) ? userAnswer : [];
+        const correctArr = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
+        
+        const userSet = new Set(userArr.filter(Boolean).map(v => String(v).trim().toLowerCase()));
+        const correctSet = new Set(correctArr.filter(Boolean).map(v => String(v).trim().toLowerCase()));
+        
+        let matchCount = 0;
+        userSet.forEach(v => {
+          if (correctSet.has(v)) matchCount++;
+        });
+        
+        score = Math.min(matchCount, qMeta.maxScore);
+        correct = score === qMeta.maxScore;
       } else {
-        correct = String(userAnswer ?? "").trim().toLowerCase() === String(correctAnswer ?? "").trim().toLowerCase();
+        if (Array.isArray(correctAnswer)) {
+          const uAns = String(userAnswer ?? "").trim().toLowerCase();
+          const match = correctAnswer.some(ans => String(ans).trim().toLowerCase() === uAns);
+          score = match ? 1 : 0;
+          correct = match;
+        } else {
+          const match = String(userAnswer ?? "").trim().toLowerCase() === String(correctAnswer ?? "").trim().toLowerCase();
+          score = match ? 1 : 0;
+          correct = match;
+        }
       }
-      return { questionId: qId, correct, userAnswer: userAnswer ?? null, correctAnswer };
+
+      totalScore += score;
+      totalMax += qMeta.maxScore;
+
+      return { 
+        questionId: qId, 
+        correct, 
+        score,
+        maxScore: qMeta.maxScore,
+        userAnswer: userAnswer ?? null, 
+        correctAnswer 
+      };
     });
 
-    const score = results.filter((r) => r.correct).length;
-    const total = results.length;
+    const score = totalScore;
+    const total = totalMax;
 
     await UserTestResult.findOneAndUpdate(
       { userId: new mongoose.Types.ObjectId(userId), testId: new mongoose.Types.ObjectId(testId), partNum: partIndex + 1 },
@@ -167,34 +204,52 @@ function qid(item: any): string | undefined {
   return item.questionId ?? (item.number != null ? `q_${item.number}` : undefined);
 }
 
-function collectQuestionIds(section: any): string[] {
-  const ids = new Set<string>();
+function getQuestionMetadata(section: any): Record<string, { type: string, maxScore: number }> {
+  const meta: Record<string, { type: string, maxScore: number }> = {};
   for (const group of section.questionGroups ?? []) {
-    if (group.questionId) ids.add(group.questionId);
-    for (const q of group.questions ?? []) {
-      const id = qid(q);
-      if (id) ids.add(id);
-    }
-    if (group.layout?.blocks) {
-      for (const block of group.layout.blocks) {
-        for (const item of block.content ?? []) {
-          const id = qid(item);
-          if (id) ids.add(id);
+    if (group.type === "mcq_multiple" && group.questionId) {
+      meta[group.questionId] = { 
+        type: "mcq_multiple", 
+        maxScore: group.questionNumbers?.length || group.select || 1 
+      };
+    } else {
+      for (const q of group.questions ?? []) {
+        const id = qid(q);
+        if (id) meta[id] = { type: group.type, maxScore: 1 };
+      }
+      if (group.layout?.blocks) {
+        for (const block of group.layout.blocks) {
+          for (const item of block.content ?? []) {
+            if (item.type === "question") {
+              const id = qid(item);
+              if (id) meta[id] = { type: group.type, maxScore: 1 };
+            }
+          }
         }
       }
-    }
-    if (group.layout?.rows) {
-      for (const row of group.layout.rows) {
-        for (const cell of row) {
-          for (const item of cell ?? []) {
-            const id = qid(item);
-            if (id) ids.add(id);
+      if (group.layout?.rows) {
+        for (const row of group.layout.rows) {
+          for (const cell of row) {
+            for (const item of cell ?? []) {
+              if (item.type === "question") {
+                const id = qid(item);
+                if (id) meta[id] = { type: group.type, maxScore: 1 };
+              }
+            }
           }
         }
       }
     }
   }
-  return Array.from(ids);
+  
+  if (!section.questionGroups || section.questionGroups.length === 0) {
+    for (const q of section.questions ?? []) {
+      const id = qid(q);
+      if (id) meta[id] = { type: "standard", maxScore: 1 };
+    }
+  }
+  
+  return meta;
 }
 
 export default testServices;

@@ -30,6 +30,28 @@ const gradients = [
   "from-indigo-700 to-indigo-950",
 ]
 
+function rawScoreToBand(score: number): string {
+  if (score > 40 || score < 0) throw new Error("Invalid IELTS raw score");
+  
+  if (score >= 39) return "9.0";
+  if (score >= 37) return "8.5";
+  if (score >= 35) return "8.0";
+  if (score >= 33) return "7.5";
+  if (score >= 30) return "7.0";
+  if (score >= 27) return "6.5";
+  if (score >= 23) return "6.0";
+  if (score >= 19) return "5.5";
+  if (score >= 15) return "5.0";
+  if (score >= 13) return "4.5";
+  if (score >= 10) return "4.0";
+  if (score >= 8)  return "3.5";
+  if (score >= 6)  return "3.0";
+  if (score >= 4)  return "2.5";
+  if (score >= 2)  return "2.0";
+  if (score >= 1)  return "1.0";
+  return "0.0";
+}
+
 export default function ReadingPage() {
   const [searchTerm, setSearchTerm] = React.useState("")
 
@@ -143,9 +165,25 @@ export default function ReadingPage() {
                     const test = bookTests.find((t) => t.testNumber === testNum)
                     return (
                       <div key={testNum} className="flex flex-col justify-between space-y-3 bg-muted/10 dark:bg-muted/5 p-4 rounded-xl border border-border/20">
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
-                          <BookOpen className="h-3.5 w-3.5 text-purple-500 shrink-0" />
-                          <span>Practice Test {testNum}</span>
+                        <div className="flex items-center justify-between gap-1.5 text-xs font-bold text-foreground">
+                          <div className="flex items-center gap-1.5">
+                            <BookOpen className="h-3.5 w-3.5 text-purple-500 shrink-0" />
+                            <span>Practice Test {testNum}</span>
+                          </div>
+                          {(() => {
+                            if (!test) return null
+                            const sectionCount = 3
+                            const partsDone = Array.from({ length: sectionCount }, (_, i) => i + 1).every((pn) => resultsMap[`${test._id}-${pn}`])
+                            if (!partsDone) return null
+                            const totalScore = Array.from({ length: sectionCount }, (_, i) => i + 1).reduce((sum, pn) => sum + (resultsMap[`${test._id}-${pn}`]?.score ?? 0), 0)
+                            const maxScore = Array.from({ length: sectionCount }, (_, i) => i + 1).reduce((sum, pn) => sum + (resultsMap[`${test._id}-${pn}`]?.total ?? 0), 0)
+                            const scaledScore = maxScore > 0 && maxScore !== 40 ? Math.round((totalScore / maxScore) * 40) : totalScore
+                            return (
+                              <span className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] font-bold text-purple-600 dark:text-purple-400 border border-purple-500/20 shadow-sm" title={`Raw: ${totalScore}/${maxScore}`}>
+                                Band {rawScoreToBand(scaledScore)}
+                              </span>
+                            )
+                          })()}
                         </div>
                         <div className="flex flex-col gap-2">
                           {test && [1, 2, 3].map((passageNum) => {
@@ -154,17 +192,23 @@ export default function ReadingPage() {
                               <Link
                                 key={passageNum}
                                 href={result ? `/test/${test._id}/part/${passageNum}/result` : `/test/${test._id}/reading/${passageNum}`}
-                                className={`flex items-center justify-between rounded-lg border px-3 py-2 text-[11px] font-semibold transition-all shadow-sm cursor-pointer ${
+                                className={`group flex items-center justify-between rounded-xl border px-3 py-2.5 text-[11px] font-semibold transition-all duration-300 cursor-pointer ${
                                   result
-                                    ? "border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-600 hover:border-emerald-600 hover:text-white text-muted-foreground"
-                                    : "border-border/40 bg-background/50 hover:bg-purple-600 hover:border-purple-600 hover:text-white text-muted-foreground"
+                                    ? "border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 hover:border-emerald-500/30 text-foreground/90 shadow-sm"
+                                    : "border-border/50 bg-background/80 hover:bg-purple-500/5 hover:border-purple-500/30 text-foreground/80 hover:text-purple-600 dark:hover:text-purple-400 shadow-sm"
                                 }`}
                               >
                                 <span>Passage {passageNum}</span>
                                 {result ? (
-                                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">{result.score}/{result.total}</span>
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
+                                      {result.score}/{result.total}
+                                    </span>
+                                  </div>
                                 ) : (
-                                  <span className="text-[9px] opacity-70 font-normal">Practice Now</span>
+                                  <span className="text-[10px] font-medium text-purple-500/60 transition-colors group-hover:text-purple-600 dark:group-hover:text-purple-400">
+                                    Practice
+                                  </span>
                                 )}
                               </Link>
                             )

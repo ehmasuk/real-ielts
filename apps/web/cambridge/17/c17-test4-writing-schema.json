@@ -1,0 +1,51 @@
+{
+  "title": "Cambridge IELTS 17 Test 4 Writing",
+  "testType": "academic",
+  "sections": [
+    {
+      "id": "task_1",
+      "title": "Writing Task 1",
+      "timeLimit": 20,
+      "minimumWords": 150,
+      "instructions": "You should spend about 20 minutes on this task.",
+      "prompt": {
+        "text": "The graph below shows the number of shops that closed and the number of new shops that opened in one country between 2011 and 2018. Summarise the information by selecting and reporting the main features, and make comparisons where relevant."
+      },
+      "visuals": [
+        {
+          "type": "graph",
+          "src": "/images/c17-test4-writing-task1.png",
+          "caption": "Number of shop closures and openings 2011–2018"
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "task1",
+          "number": 1
+        }
+      ],
+      "answer": {
+        "type": "essay"
+      }
+    },
+    {
+      "id": "task_2",
+      "title": "Writing Task 2",
+      "timeLimit": 40,
+      "minimumWords": 250,
+      "instructions": "You should spend about 40 minutes on this task.",
+      "prompt": {
+        "text": "Nowadays, a growing number of people with health problems are trying alternative medicines and treatments instead of visiting their usual doctor. Do you think this is a positive or a negative development? Give reasons for your answer and include any relevant examples from your own knowledge or experience."
+      },
+      "questions": [
+        {
+          "questionId": "task2",
+          "number": 2
+        }
+      ],
+      "answer": {
+        "type": "essay"
+      }
+    }
+  ]
+}

@@ -47,21 +47,21 @@ export default function TestsPage() {
 
   const { data: rawBooks, isLoading: booksLoading } = useQuery({
     queryKey: ["books"],
-    queryFn: fetchBooks,
+    queryFn: () => fetchBooks(),
   })
 
   const { data: rawTests, isLoading: testsLoading } = useQuery({
     queryKey: ["tests"],
-    queryFn: fetchTests,
+    queryFn: () => fetchTests(),
   })
 
   const books: BookItem[] = React.useMemo(
-    () => (rawBooks ? rawBooks.map(mapBook) : []),
+    () => (Array.isArray(rawBooks) ? rawBooks.map(mapBook) : []),
     [rawBooks]
   )
 
   const tests: TestItem[] = React.useMemo(
-    () => (rawTests ? rawTests.map((t: any) => mapTest(t, books)) : []),
+    () => (Array.isArray(rawTests) ? rawTests.map((t: any) => mapTest(t, books)) : []),
     [rawTests, books]
   )
 
@@ -75,13 +75,11 @@ export default function TestsPage() {
       return publishTest(test.id)
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tests"] }),
-    onError: (err) => console.error(err),
   })
 
   const deleteMutation = useMutation({
     mutationFn: deleteTest,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tests"] }),
-    onError: (err) => console.error(err),
   })
 
   const createMutation = useMutation({
@@ -90,7 +88,6 @@ export default function TestsPage() {
       queryClient.invalidateQueries({ queryKey: ["tests"] })
       router.push(`/admin/tests/${newTest._id}/edit`)
     },
-    onError: (err) => console.error(err),
   })
 
   const handleCreate = React.useCallback(() => setDialogOpen(true), [])

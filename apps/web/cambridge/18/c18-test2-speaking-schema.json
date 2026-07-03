@@ -1,0 +1,60 @@
+{
+  "title": "Cambridge IELTS 18 Test 2 Speaking",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "instructions": "The examiner asks you about yourself, your home, work or studies and other familiar topics.",
+      "topics": [
+        {
+          "title": "Science",
+          "questions": [
+            "Did you like studying science when you were at school? [Why/Why not?]",
+            "What do you remember about your science teachers at school?",
+            "How interested are you in science now? [Why/Why not?]",
+            "What do you think has been an important recent scientific development? [Why?]"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "instructions": "You will have 1 minute to prepare and should speak for 1\u20132 minutes.",
+      "cueCard": {
+        "title": "Describe a tourist attraction in your country that you would recommend.",
+        "task": "Describe a tourist attraction in your country that you would recommend.",
+        "points": [
+          "What the tourist attraction is",
+          "Where in your country this tourist attraction is",
+          "What visitors can see and do at this tourist attraction",
+          "And explain why you would recommend this tourist attraction"
+        ],
+        "endingQuestion": "And explain why you would recommend this tourist attraction."
+      }
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "instructions": "The examiner and the candidate discuss issues related to the Part 2 topic.",
+      "discussionTopics": [
+        {
+          "title": "Museums and art galleries",
+          "questions": [
+            "What are the most popular museums and art galleries in ... / where you live?",
+            "Do you believe that all museums and art galleries should be free?",
+            "What kinds of things make a museum or art gallery an interesting place to visit?"
+          ]
+        },
+        {
+          "title": "The holiday industry",
+          "questions": [
+            "Why, do you think, do some people book package holidays rather than travelling independently?",
+            "Would you say that large numbers of tourists cause problems for local people?",
+            "What sort of impact can large holiday resorts have on the environment?"
+          ]
+        }
+      ]
+    }
+  ]
+}

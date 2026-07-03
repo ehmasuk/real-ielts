@@ -4,15 +4,7 @@ import { Header } from "@/components/header"
 import { formatString } from "@/components/test/shared/formatString"
 import { fetchPartResult } from "@/lib/api"
 import { useQuery } from "@tanstack/react-query"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@workspace/ui/components/table"
-import { Check, Loader2, RotateCcw, X } from "lucide-react"
+import { Check, Loader2, RotateCcw, X, BookOpen, List } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import * as React from "react"
 
@@ -34,6 +26,59 @@ interface ResultData {
   skill?: string
 }
 
+function CircularProgress({ percentage }: { percentage: number }) {
+  const [offset, setOffset] = React.useState(0)
+  const radius = 56
+  const circumference = 2 * Math.PI * radius
+  
+  React.useEffect(() => {
+    // Delay animation slightly for effect
+    const timeout = setTimeout(() => {
+      setOffset(circumference - (percentage / 100) * circumference)
+    }, 100)
+    return () => clearTimeout(timeout)
+  }, [percentage, circumference])
+
+  return (
+    <div className="relative inline-flex items-center justify-center drop-shadow-sm">
+      <svg className="-rotate-90 transform" width="140" height="140">
+        <circle
+          className="text-muted/30"
+          strokeWidth="10"
+          stroke="currentColor"
+          fill="transparent"
+          r={radius}
+          cx="70"
+          cy="70"
+        />
+        <circle
+          className={
+            percentage >= 70
+              ? "text-emerald-500"
+              : percentage >= 40
+                ? "text-amber-500"
+                : "text-red-500"
+          }
+          strokeWidth="10"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset === 0 ? circumference : offset}
+          strokeLinecap="round"
+          stroke="currentColor"
+          fill="transparent"
+          r={radius}
+          cx="70"
+          cy="70"
+          style={{ transition: "stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1)" }}
+        />
+      </svg>
+      <div className="absolute flex flex-col items-center justify-center text-foreground">
+        <span className="text-3xl font-black tracking-tight">{percentage}%</span>
+        <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mt-0.5">Score</span>
+      </div>
+    </div>
+  )
+}
+
 export default function ResultPage() {
   const params = useParams()
   const router = useRouter()
@@ -41,6 +86,8 @@ export default function ResultPage() {
   const partNum = parseInt(params.partNum as string, 10)
 
   const [hydrated, setHydrated] = React.useState(false)
+  const [activeTab, setActiveTab] = React.useState<"summary" | "review">("summary")
+
   React.useEffect(() => {
     setHydrated(true)
   }, [])
@@ -91,7 +138,7 @@ export default function ResultPage() {
   }
 
   const skill = data?.skill
-  const correctCount = data.results.filter((r) => r.correct).length
+  const correctCount = data.score ?? data.results.filter((r) => r.correct).length
   const percentage = Math.round((correctCount / data.total) * 100)
   const resultMap = new Map(data.results.map((r) => [r.questionId, r]))
   const collected = collectQuestions(data.section)
@@ -107,215 +154,264 @@ export default function ResultPage() {
   return (
     <>
       <Header />
-      <div className="mx-auto w-full max-w-7xl px-4 py-8 pb-24 sm:px-6">
-        {/* Score Card */}
-        <div className="mb-8 rounded-2xl border border-border/40 bg-card/50 p-8 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-4 py-1.5 font-semibold text-indigo-600 dark:text-indigo-400">
-            {data.sectionTitle || `Part ${partNum}`}
+      <div className="mx-auto w-full max-w-5xl px-4 py-12 pb-32 sm:px-6">
+        
+        {/* Hero Score Card */}
+        <div className="mb-12 overflow-hidden rounded-3xl border border-border/40 bg-card/40 shadow-sm relative">
+          <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-80" />
+          
+          <div className="flex flex-col md:flex-row items-center justify-between p-8 md:p-12 gap-10">
+            {/* Left side: Context */}
+            <div className="flex-1 text-center md:text-left flex flex-col justify-center">
+              <div className="mb-4 inline-flex items-center justify-center md:justify-start gap-2 rounded-full bg-indigo-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
+                {data.sectionTitle || `Part ${partNum}`}
+              </div>
+              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground mb-4">
+                Test Complete
+              </h1>
+              <p className="text-muted-foreground text-sm max-w-md mx-auto md:mx-0 leading-relaxed">
+                You've completed this section. Review your answers below to understand your mistakes and improve your score for next time.
+              </p>
+              
+              <div className="mt-8">
+                <button
+                  onClick={() => {
+                    const base =
+                      skill === "listening"
+                        ? `/test/${testId}/listening/${partNum}`
+                        : skill === "reading"
+                          ? `/test/${testId}/reading/${partNum}`
+                          : `/test/${testId}/part/${partNum}`
+                    router.push(`${base}?retry=1`)
+                  }}
+                  className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/30 active:scale-95"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  Try Again
+                </button>
+              </div>
+            </div>
+
+            {/* Right side: Circular Progress & Stats */}
+            <div className="shrink-0 flex items-center justify-center bg-background/50 rounded-2xl border border-border/50 p-6 md:p-8">
+              <div className="flex flex-col items-center gap-4">
+                <CircularProgress percentage={percentage} />
+                <div className="flex items-center gap-4 text-center mt-2 border-t border-border/40 pt-4 w-full">
+                  <div>
+                    <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{correctCount}</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Correct</p>
+                  </div>
+                  <div className="w-px h-8 bg-border/60" />
+                  <div>
+                    <p className="text-xl font-bold text-red-600 dark:text-red-400">{data.total - correctCount}</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Incorrect</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
-            Your Score
-          </h1>
-          <div className="mt-6 flex items-center justify-center gap-1">
-            <span className="text-6xl font-black text-foreground">
-              {correctCount}
-            </span>
-            <span className="text-2xl font-bold text-muted-foreground">
-              / {data.total}
-            </span>
-          </div>
-          <div className="mt-3">
-            <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1 font-semibold ${
-                percentage >= 70
-                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                  : percentage >= 40
-                    ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                    : "bg-red-500/10 text-red-600 dark:text-red-400"
+        </div>
+
+        {/* Tabs Control */}
+        <div className="mb-8 flex items-center justify-center border-b border-border/40">
+          <div className="flex gap-8">
+            <button
+              onClick={() => setActiveTab("summary")}
+              className={`flex items-center gap-2 px-1 py-4 text-sm font-semibold transition-all border-b-2 -mb-[1px] ${
+                activeTab === "summary"
+                  ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              {percentage}% Correct
-            </span>
-          </div>
-          <div className="mt-6 flex items-center justify-center gap-3">
+              <List className="h-4 w-4" />
+              Answer Summary
+            </button>
             <button
-              onClick={() => {
-                const base =
-                  skill === "listening"
-                    ? `/test/${testId}/listening/${partNum}`
-                    : skill === "reading"
-                      ? `/test/${testId}/reading/${partNum}`
-                      : `/test/${testId}/part/${partNum}`
-                router.push(`${base}?retry=1`)
-              }}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border/30 px-4 py-2 font-medium text-foreground transition-colors hover:bg-muted"
+              onClick={() => setActiveTab("review")}
+              className={`flex items-center gap-2 px-1 py-4 text-sm font-semibold transition-all border-b-2 -mb-[1px] ${
+                activeTab === "review"
+                  ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
             >
-              <RotateCcw className="h-3.5 w-3.5" />
-              Retry
+              <BookOpen className="h-4 w-4" />
+              Detailed Review
             </button>
           </div>
         </div>
 
-        {/* Answer Summary Table */}
-        {allQuestions.length > 0 && (
-          <div className="mt-8 overflow-hidden rounded-xl border border-border/30 bg-card/50">
-            <div className="border-b border-border/20 px-5 py-3">
-              <h3 className="font-bold text-foreground">Answer Summary</h3>
-            </div>
+        {/* Tab 1: Answer Summary Table */}
+        {activeTab === "summary" && allQuestions.length > 0 && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden rounded-2xl border border-border/30 bg-card/50 shadow-sm">
             <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-border/20 hover:bg-transparent">
-                    <TableHead className="w-12">#</TableHead>
-                    <TableHead className="">Your Answer</TableHead>
-                    <TableHead className="">Correct Answer</TableHead>
-                    <TableHead className="w-10">Result</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+              <table className="w-full text-sm text-left">
+                <thead className="bg-muted/30 border-b border-border/30 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <tr>
+                    <th className="px-6 py-4 w-16 text-center">#</th>
+                    <th className="px-6 py-4">Your Answer</th>
+                    <th className="px-6 py-4">Correct Answer</th>
+                    <th className="px-6 py-4 w-24 text-center">Result</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/20">
                   {allQuestions.map((q) => {
                     const r = resultMap.get(q.id)
+                    const isCorrect = r?.correct
+                    
                     return (
-                      <TableRow
+                      <tr
                         key={q.id}
-                        className="border-border/20 hover:bg-muted/20"
+                        className={`transition-colors ${
+                          isCorrect 
+                            ? "bg-emerald-500/[0.02] hover:bg-emerald-500/[0.05]" 
+                            : "bg-red-500/[0.02] hover:bg-red-500/[0.05]"
+                        }`}
                       >
-                        <TableCell className="font-medium text-muted-foreground">
+                        <td className="px-6 py-4 text-center font-bold text-muted-foreground">
                           {q.number}
-                        </TableCell>
-                        <TableCell
-                          className={`font-semibold ${r?.correct ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}
-                        >
-                          {r ? formatAnswer(r.userAnswer) : "-"}
-                        </TableCell>
-                        <TableCell className="font-semibold text-emerald-600 dark:text-emerald-400">
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`font-semibold ${isCorrect ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>
+                             {r ? formatAnswer(r.userAnswer) : "-"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-emerald-600 dark:text-emerald-400">
                           {r ? formatAnswer(r.correctAnswer) : "-"}
-                        </TableCell>
-                        <TableCell>
-                          {r?.correct ? (
-                            <Check className="h-3.5 w-3.5 text-emerald-500" />
+                        </td>
+                        <td className="px-6 py-4 flex justify-center">
+                          {isCorrect ? (
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                              <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                            </div>
                           ) : (
-                            <X className="h-3.5 w-3.5 text-red-500" />
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-red-500/20 text-red-600 dark:text-red-400">
+                              <X className="h-3.5 w-3.5" strokeWidth={3} />
+                            </div>
                           )}
-                        </TableCell>
-                      </TableRow>
+                        </td>
+                      </tr>
                     )
                   })}
-                </TableBody>
-              </Table>
+                </tbody>
+              </table>
             </div>
           </div>
         )}
 
-        {/* Section Content */}
-        {data.section?.passage?.blocks && (
-          <div className="mb-8 space-y-4 rounded-xl border border-border/30 bg-card/50 p-6 leading-relaxed text-foreground">
-            <h2 className="text-base font-bold">
-              {data.section.title || "Passage"}
-            </h2>
-            {data.section.passage.blocks.map((block: any, bi: number) => {
-              if (block.type === "heading")
-                return (
-                  <h3 key={bi} className="font-bold">
-                    {formatString(block.text)}
-                  </h3>
-                )
-              if (block.type === "paragraph")
-                return <p key={bi}>{formatString(block.text)}</p>
-              if (block.type === "image")
-                return (
-                  <div key={bi} className="text-muted-foreground">
-                    [Image: {block.src}]
-                  </div>
-                )
-              if (block.type === "table") {
-                return (
-                  <div key={bi} className="overflow-x-auto">
-                    <table className="w-full border-collapse">
-                      <tbody>
-                        {block.rows?.map((row: string[], ri: number) => (
-                          <tr key={ri}>
-                            {row.map((cell: string, ci: number) => (
-                              <td
-                                key={ci}
-                                className="border border-border/30 px-3 py-1.5"
-                              >
-                                {formatString(cell)}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )
-              }
-              return null
-            })}
-          </div>
-        )}
-        {data.section?.passage?.sections && (
-          <div className="mb-8 space-y-4 rounded-xl border border-border/30 bg-card/50 p-6 leading-relaxed text-foreground">
-            <h2 className="text-base font-bold">
-              {data.section.title || "Passage"}
-            </h2>
-            {data.section.passage.sections.map((section: any, si: number) => (
-              <div key={section.id || si} className="space-y-4">
-                <h3 className="font-bold">{section.label}</h3>
-                {section.blocks?.map((block: any, bi: number) => {
-                  if (block.type === "heading")
-                    return (
-                      <h4 key={bi} className="font-bold">
-                        {formatString(block.text)}
-                      </h4>
-                    )
-                  if (block.type === "paragraph")
-                    return <p key={bi} className="text-justify">{formatString(block.text)}</p>
-                  return null
-                })}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Question Groups */}
-        <div className="mt-10 space-y-6">
-          {data.section?.questionGroups?.map((group: any, gi: number) => (
-            <div
-              key={group.id || gi}
-              className="space-y-5 rounded-xl border border-border/30 bg-card/50 p-6"
-            >
-              {/* Group header */}
-              {group.questionRange && (
-                <span className="inline-block font-bold">
-                  Questions {group.questionRange}
-                </span>
-              )}
-              {group.instructions && (
-                <p className="font-medium text-muted-foreground">
-                  {formatString(group.instructions)}
-                </p>
-              )}
-
-              {/* Options box (for matching types that share options) */}
-              {group.options && (
-                <div className="space-y-1 rounded-lg border border-border/20 bg-muted/10 p-3 text-foreground">
-                  <p className="font-semibold tracking-wider text-muted-foreground uppercase">
-                    Options
-                  </p>
-                  {group.options.map((opt: any, oi: number) => {
-                    const label =
-                      typeof opt === "string" ? opt : `${opt.id}. ${opt.text}`
-                    return <p key={oi}>{label}</p>
+        {/* Tab 2: Detailed Review */}
+        {activeTab === "review" && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
+            
+            {/* Section Passage Content */}
+            {data.section?.passage?.blocks && (
+              <div className="rounded-3xl border border-border/30 bg-card/30 p-8 md:p-10 shadow-sm leading-relaxed text-foreground/90">
+                <h2 className="text-2xl font-bold mb-6 font-serif">
+                  {data.section.title || "Passage"}
+                </h2>
+                <div className="prose prose-neutral dark:prose-invert max-w-none">
+                  {data.section.passage.blocks.map((block: any, bi: number) => {
+                    if (block.type === "heading")
+                      return <h3 key={bi} className="font-bold text-xl mt-6 mb-3">{formatString(block.text)}</h3>
+                    if (block.type === "paragraph")
+                      return <p key={bi} className="mb-4 text-justify leading-7">{formatString(block.text)}</p>
+                    if (block.type === "image")
+                      return <div key={bi} className="my-6 italic text-muted-foreground text-center p-4 bg-muted/20 rounded-xl">[Image content: {block.src}]</div>
+                    if (block.type === "table") {
+                      return (
+                        <div key={bi} className="overflow-x-auto my-6">
+                          <table className="w-full border-collapse rounded-xl overflow-hidden shadow-sm">
+                            <tbody className="bg-background">
+                              {block.rows?.map((row: string[], ri: number) => (
+                                <tr key={ri} className="border-b border-border/40 last:border-0">
+                                  {row.map((cell: string, ci: number) => (
+                                    <td key={ci} className="px-4 py-3 text-sm border-r border-border/40 last:border-0">
+                                      {formatString(cell)}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )
+                    }
+                    return null
                   })}
                 </div>
-              )}
+              </div>
+            )}
+            
+            {data.section?.passage?.sections && (
+              <div className="rounded-3xl border border-border/30 bg-card/30 p-8 md:p-10 shadow-sm leading-relaxed text-foreground/90">
+                <h2 className="text-2xl font-bold mb-6 font-serif">
+                  {data.section.title || "Passage"}
+                </h2>
+                <div className="prose prose-neutral dark:prose-invert max-w-none space-y-8">
+                  {data.section.passage.sections.map((section: any, si: number) => (
+                    <div key={section.id || si} className="space-y-4">
+                      <h3 className="font-bold text-lg border-b border-border/40 pb-2">{section.label}</h3>
+                      {section.blocks?.map((block: any, bi: number) => {
+                        if (block.type === "heading")
+                          return <h4 key={bi} className="font-bold text-base mt-4">{formatString(block.text)}</h4>
+                        if (block.type === "paragraph")
+                          return <p key={bi} className="text-justify leading-7">{formatString(block.text)}</p>
+                        return null
+                      })}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
-              {/* Questions */}
-              {renderGroupQuestions(group, resultMap)}
+            {/* Questions Review */}
+            <div className="space-y-8 mt-12">
+              <div className="flex items-center gap-4 mb-2">
+                <div className="h-px flex-1 bg-border/60" />
+                <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Question Review</h3>
+                <div className="h-px flex-1 bg-border/60" />
+              </div>
+              
+              {data.section?.questionGroups?.map((group: any, gi: number) => (
+                <div
+                  key={group.id || gi}
+                  className="rounded-3xl border border-border/40 bg-background/50 p-6 md:p-8 shadow-sm"
+                >
+                  <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/40 pb-6">
+                    {group.questionRange && (
+                      <span className="inline-flex items-center justify-center rounded-lg bg-indigo-500/10 px-3 py-1 text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                        Questions {group.questionRange}
+                      </span>
+                    )}
+                    {group.instructions && (
+                      <p className="text-sm font-medium italic text-muted-foreground max-w-xl">
+                        {formatString(group.instructions)}
+                      </p>
+                    )}
+                  </div>
+
+                  {(group.options || group.features || group.endings) && group.type !== "mcq_multiple" && (
+                    <div className="mb-8 rounded-xl border border-border/30 bg-muted/20 p-5">
+                      <p className="mb-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        {group.featuresTitle || "Options Available"}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {(group.options || group.features || group.endings).map((opt: any, oi: number) => {
+                          const label = typeof opt === "string" ? opt : `${opt.id}. ${opt.text}`
+                          return <span key={oi} className="bg-background border border-border/50 rounded-md px-3 py-1.5 text-sm font-medium shadow-sm">{label}</span>
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="bg-card/40 rounded-2xl p-6 border border-border/30">
+                     {renderGroupQuestions(group, resultMap)}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
+
       </div>
     </>
   )
@@ -332,10 +428,8 @@ function renderGroupQuestions(group: any, resultMap: Map<string, ResultItem>) {
     return renderMcqMultiple(group, resultMap)
   }
 
-  const optionsDefined = group.options?.length > 0
-
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       {group.questions?.map((q: any) => {
         const r = resultMap.get(q.questionId || `q_${q.number}`)
         const userAns = r ? formatAnswer(r.userAnswer) : null
@@ -343,41 +437,52 @@ function renderGroupQuestions(group: any, resultMap: Map<string, ResultItem>) {
         const isCorrect = r?.correct ?? false
 
         return (
-          <div key={q.questionId || q.number} className="space-y-1.5">
-            <p className="leading-relaxed text-foreground">
-              <span className="mr-1 font-medium text-muted-foreground">
-                {q.number}.
-              </span>
+          <div key={q.questionId || q.number} className="relative pl-10">
+            <span className="absolute left-0 top-0 flex h-7 w-7 items-center justify-center rounded-full bg-muted font-bold text-xs text-muted-foreground">
+              {q.number}
+            </span>
+            
+            <p className="leading-relaxed text-foreground/90 font-medium mb-3">
               {formatString(q.question)}
             </p>
-            {optionsDefined && (
-              <div className="flex flex-wrap gap-1.5 text-muted-foreground">
-                {group.options.map((opt: any, oi: number) => {
-                  const label = typeof opt === "string" ? opt : opt.text
+            
+            {q.options && q.options.length > 0 && (
+              <div className="flex flex-col gap-2 mb-4 mt-2">
+                {q.options.map((opt: any, oi: number) => {
+                  const optLabel = typeof opt === "string" ? opt : `${opt.id}. ${opt.text}`
                   return (
-                    <span
-                      key={oi}
-                      className="rounded-md border border-border/20 px-2 py-0.5"
-                    >
-                      {label}
-                    </span>
+                    <div key={oi} className="text-sm text-muted-foreground bg-muted/20 px-3 py-2 rounded-md border border-border/30">
+                      {optLabel}
+                    </div>
                   )
                 })}
               </div>
             )}
-            {userAns && (
-              <p
-                className={`font-bold ${isCorrect ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}
-              >
-                {userAns}
-              </p>
-            )}
-            {!isCorrect && correctAns && (
-              <p className="text-emerald-600 dark:text-emerald-400">
-                Correct answer:{" "}
-                <span className="font-semibold">{correctAns}</span>
-              </p>
-            )}
+            
+            <div className="flex flex-col gap-2 mt-2 bg-background/50 rounded-lg p-3 border border-border/40">
+              {userAns && (
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted-foreground w-20 text-xs font-semibold uppercase tracking-wider">You wrote:</span>
+                  <span className={`px-2 py-0.5 rounded font-bold ${isCorrect ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-red-500/10 text-red-600 dark:text-red-400"}`}>
+                    {userAns}
+                  </span>
+                  {isCorrect ? (
+                     <Check className="h-4 w-4 text-emerald-500 ml-auto" />
+                  ) : (
+                     <X className="h-4 w-4 text-red-500 ml-auto" />
+                  )}
+                </div>
+              )}
+              
+              {!isCorrect && correctAns && (
+                <div className="flex items-center gap-2 text-sm pt-2 border-t border-border/30 mt-1">
+                  <span className="text-muted-foreground w-20 text-xs font-semibold uppercase tracking-wider">Correct:</span>
+                  <span className="px-2 py-0.5 rounded font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    {correctAns}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         )
       })}
@@ -387,18 +492,18 @@ function renderGroupQuestions(group: any, resultMap: Map<string, ResultItem>) {
 
 function renderNoteStyle(group: any, resultMap: Map<string, ResultItem>) {
   return (
-    <div className="space-y-2 font-serif">
+    <div className="space-y-4 font-serif text-lg leading-relaxed text-foreground/90">
       {group.layout?.blocks?.map((block: any, bi: number) => {
         if (block.type === "heading") {
           return (
-            <h4 key={bi} className="mt-3 font-bold text-foreground first:mt-0">
+            <h4 key={bi} className="mt-6 mb-4 font-bold text-foreground text-xl first:mt-0">
               {formatString(block.text)}
             </h4>
           )
         }
         if (block.type === "paragraph") {
           return (
-            <p key={bi} className="leading-relaxed text-foreground">
+            <p key={bi} className="mb-4 text-justify">
               {block.content?.map((item: any, ci: number) => {
                 if (item.type === "text")
                   return <span key={ci}>{formatString(item.text)}</span>
@@ -406,16 +511,23 @@ function renderNoteStyle(group: any, resultMap: Map<string, ResultItem>) {
                   const r = resultMap.get(item.questionId)
                   const userAns = r ? formatAnswer(r.userAnswer) : null
                   const isCorrect = r?.correct ?? false
+                  
                   return (
-                    <span
-                      key={ci}
-                      className={`mx-1 font-bold ${
-                        isCorrect
-                          ? "text-emerald-600 dark:text-emerald-400"
-                          : "text-red-600 dark:text-red-400"
-                      }`}
-                    >
-                      {userAns || (r ? formatAnswer(r.correctAnswer) : "")}
+                    <span key={ci} className="inline-flex items-center mx-1 align-baseline">
+                      <span
+                        className={`inline-block border-b-2 px-1 pb-0.5 font-sans text-base font-bold ${
+                          isCorrect
+                            ? "border-emerald-500/50 text-emerald-600 dark:text-emerald-400"
+                            : "border-red-500/50 text-red-600 dark:text-red-400"
+                        }`}
+                      >
+                        {userAns || (r ? formatAnswer(r.correctAnswer) : "")}
+                      </span>
+                      {!isCorrect && r?.correctAnswer && (
+                        <span className="ml-1 inline-flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.5 font-sans text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                          <Check className="h-3 w-3" /> {formatAnswer(r.correctAnswer)}
+                        </span>
+                      )}
                     </span>
                   )
                 }
@@ -432,15 +544,15 @@ function renderNoteStyle(group: any, resultMap: Map<string, ResultItem>) {
 
 function renderTableStyle(group: any, resultMap: Map<string, ResultItem>) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse">
+    <div className="overflow-x-auto rounded-xl border border-border/40 shadow-sm">
+      <table className="w-full border-collapse bg-background">
         {group.layout?.columns && (
           <thead>
             <tr>
               {group.layout.columns.map((col: string, ci: number) => (
                 <th
                   key={ci}
-                  className="border border-border/30 bg-muted/20 px-3 py-2 text-left font-semibold text-foreground"
+                  className="border-b border-r border-border/40 last:border-r-0 bg-muted/30 px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground"
                 >
                   {col}
                 </th>
@@ -448,13 +560,13 @@ function renderTableStyle(group: any, resultMap: Map<string, ResultItem>) {
             </tr>
           </thead>
         )}
-        <tbody>
+        <tbody className="divide-y divide-border/40">
           {group.layout?.rows?.map((row: any[], ri: number) => (
-            <tr key={ri}>
+            <tr key={ri} className="hover:bg-muted/10 transition-colors">
               {row.map((cell: any[], ci: number) => (
                 <td
                   key={ci}
-                  className="border border-border/30 px-3 py-2 text-foreground"
+                  className="border-r border-border/40 last:border-r-0 px-4 py-3 text-sm text-foreground/90 leading-relaxed"
                 >
                   {cell?.map((item: any, ii: number) => {
                     if (item.type === "text")
@@ -464,16 +576,22 @@ function renderTableStyle(group: any, resultMap: Map<string, ResultItem>) {
                       const userAns = r ? formatAnswer(r.userAnswer) : null
                       const isCorrect = r?.correct ?? false
                       return (
-                        <span
-                          key={ii}
-                          className={`font-bold ${
-                            isCorrect
-                              ? "text-emerald-600 dark:text-emerald-400"
-                              : "text-red-600 dark:text-red-400"
-                          }`}
-                        >
-                          {userAns || (r ? formatAnswer(r.correctAnswer) : "")}
-                        </span>
+                        <div key={ii} className="inline-flex flex-col gap-1 my-1">
+                          <span
+                            className={`inline-block rounded px-2 py-0.5 font-bold shadow-sm ${
+                              isCorrect
+                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                : "bg-red-500/10 text-red-600 dark:text-red-400"
+                            }`}
+                          >
+                            {userAns || (r ? formatAnswer(r.correctAnswer) : "")}
+                          </span>
+                          {!isCorrect && r?.correctAnswer && (
+                            <span className="inline-flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                              <Check className="h-3 w-3" /> {formatAnswer(r.correctAnswer)}
+                            </span>
+                          )}
+                        </div>
                       )
                     }
                     return null
@@ -495,28 +613,56 @@ function renderMcqMultiple(group: any, resultMap: Map<string, ResultItem>) {
   const isCorrect = r?.correct ?? false
 
   return (
-    <div className="space-y-2">
-      <p className="font-medium text-foreground">
+    <div className="space-y-4 bg-background/50 rounded-xl p-5 border border-border/40">
+      <p className="font-medium text-foreground/90 leading-relaxed">
         {group.questionNumbers?.length ? (
-          <span className="mr-1 text-muted-foreground">
-            {group.questionNumbers.join(" and ")}.
+          <span className="mr-2 inline-flex h-6 items-center rounded-md bg-muted px-2 text-xs font-bold text-muted-foreground">
+            {group.questionNumbers.join(" & ")}
           </span>
         ) : null}
         {formatString(group.question)}
       </p>
-      {userSelected.length > 0 && (
-        <p
-          className={`font-bold ${isCorrect ? "text-emerald-600" : "text-red-600"}`}
-        >
-          {userSelected.join(", ")}
-        </p>
+      
+      {group.options && group.options.length > 0 && (
+        <div className="flex flex-col gap-2 mb-4 mt-2">
+          {group.options.map((opt: any, oi: number) => {
+            const optLabel = typeof opt === "string" ? opt : `${opt.id}. ${opt.text}`
+            return (
+              <div key={oi} className="text-sm text-muted-foreground bg-muted/20 px-3 py-2 rounded-md border border-border/30">
+                {optLabel}
+              </div>
+            )
+          })}
+        </div>
       )}
-      {!isCorrect && correctAnswers.length > 0 && (
-        <p className="text-emerald-600 dark:text-emerald-400">
-          Correct answer{correctAnswers.length > 1 ? "s" : ""}:{" "}
-          <span className="font-semibold">{correctAnswers.join(", ")}</span>
-        </p>
-      )}
+
+      <div className="flex flex-col gap-3 mt-4">
+        {userSelected.length > 0 && (
+          <div className="flex items-start gap-2 text-sm">
+            <span className="text-muted-foreground w-20 text-xs font-semibold uppercase tracking-wider mt-0.5">Selected:</span>
+            <div className="flex flex-wrap gap-1.5">
+              {userSelected.map((ans, i) => (
+                <span key={i} className={`px-2.5 py-1 rounded-md font-bold text-xs shadow-sm ${isCorrect ? "bg-emerald-500/10 text-emerald-600" : "bg-red-500/10 text-red-600"}`}>
+                  {ans}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {!isCorrect && correctAnswers.length > 0 && (
+          <div className="flex items-start gap-2 text-sm pt-3 border-t border-border/30">
+            <span className="text-muted-foreground w-20 text-xs font-semibold uppercase tracking-wider mt-0.5">Correct:</span>
+            <div className="flex flex-wrap gap-1.5">
+              {correctAnswers.map((ans, i) => (
+                 <span key={i} className="px-2.5 py-1 rounded-md font-bold text-xs bg-emerald-500/10 text-emerald-600 shadow-sm">
+                   {ans}
+                 </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

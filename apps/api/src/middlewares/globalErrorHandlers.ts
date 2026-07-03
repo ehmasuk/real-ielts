@@ -17,6 +17,15 @@ const catchGlobalErrors: ErrorRequestHandler = (err: ErrorWithStatus, _req: Requ
     return res.status(400).json({ code: 400, message, requestId: res.getHeader("x-request-id") });
   }
 
+  // Handle Mongoose duplicate key errors
+  if (err.name === "MongoServerError" && (err as any).code === 11000) {
+    return res.status(409).json({
+      code: 409,
+      message: "This record already exists. Please check for duplicates.",
+      requestId: res.getHeader("x-request-id"),
+    });
+  }
+
   // if there is a statusCode that means its our newError
   if (err.statusCode) {
     const { statusCode, message } = err;

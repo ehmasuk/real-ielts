@@ -48,5 +48,8 @@ const testSchema = new Schema<ITest>(
 
 // Compound index: one test per book+number+skill combination
 testSchema.index({ bookId: 1, testNumber: 1, skill: 1 }, { unique: true });
+// Performance indexes
+testSchema.index({ status: 1 });
+testSchema.index({ bookId: 1, status: 1 });
 
 export const Test = mongoose.model<ITest>("Test", testSchema);

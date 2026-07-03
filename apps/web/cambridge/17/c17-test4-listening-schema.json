@@ -1,0 +1,246 @@
+{
+  "title": "Cambridge IELTS 17 Test 4 Listening",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "audio_url": "https://res.cloudinary.com/.../part1.mp3",
+      "passage": "You will hear a conversation between a customer and a representative from Easy Life Cleaning Services.",
+      "questionGroups": [
+        {
+          "id": "group_1",
+          "type": "notes_completion",
+          "title": "Easy Life Cleaning Services",
+          "instructions": "Complete the notes below. Write ONE WORD for each answer.",
+          "questionRange": "1-10",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Easy Life Cleaning Services"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "**Basic cleaning package offered**\n● Cleaning all surfaces\n● Cleaning the " },
+                  { "type": "question", "questionId": "q_1", "number": 1, "question": "Cleaning the ______ throughout the apartment" },
+                  { "type": "text", "text": " throughout the apartment\n● Cleaning shower, sinks, toilet etc.\n\n**Additional services agreed**\n● Every week\n  - Cleaning the " },
+                  { "type": "question", "questionId": "q_2", "number": 2, "question": "Cleaning the ______" },
+                  { "type": "text", "text": "\n  - Ironing clothes - " },
+                  { "type": "question", "questionId": "q_3", "number": 3, "question": "Ironing clothes - ______ only" },
+                  { "type": "text", "text": " only\n● Every month\n  - Cleaning all the " },
+                  { "type": "question", "questionId": "q_4", "number": 4, "question": "Cleaning all the ______ from the inside" },
+                  { "type": "text", "text": " from the inside\n  - Washing down the " },
+                  { "type": "question", "questionId": "q_5", "number": 5, "question": "Washing down the ______" },
+                  { "type": "text", "text": "\n\n**Other possibilities**\n● They can organise a plumber or an " },
+                  { "type": "question", "questionId": "q_6", "number": 6, "question": "They can organise a plumber or an ______ if necessary." },
+                  { "type": "text", "text": " if necessary.\n● A special cleaning service is available for customers who are allergic to " },
+                  { "type": "question", "questionId": "q_7", "number": 7, "question": "A special cleaning service is available for customers who are allergic to ______" },
+                  { "type": "text", "text": "\n\n**Information on the cleaners**\n● Before being hired, all cleaners have a background check carried out by the " },
+                  { "type": "question", "questionId": "q_8", "number": 8, "question": "All cleaners have a background check carried out by the ______" },
+                  { "type": "text", "text": "\n● References are required.\n● All cleaners are given " },
+                  { "type": "question", "questionId": "q_9", "number": 9, "question": "All cleaners are given ______ for two weeks." },
+                  { "type": "text", "text": " for two weeks.\n● Customers send a " },
+                  { "type": "question", "questionId": "q_10", "number": 10, "question": "Customers send a ______ after each visit." },
+                  { "type": "text", "text": " after each visit.\n● Usually, each customer has one regular cleaner." }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "audio_url": "https://res.cloudinary.com/.../part2.mp3",
+      "passage": "You will hear a talk about staff turnover in the hotel industry.",
+      "questionGroups": [
+        {
+          "id": "group_2",
+          "type": "mcq_single",
+          "instructions": "Choose the correct letter, A, B or C.",
+          "questionRange": "11-14",
+          "questions": [
+            {
+              "questionId": "q_11",
+              "number": 11,
+              "question": "Many hotel managers are unaware that their staff often leave because of",
+              "options": [
+                { "id": "A", "text": "a lack of training." },
+                { "id": "B", "text": "long hours." },
+                { "id": "C", "text": "low pay." }
+              ]
+            },
+            {
+              "questionId": "q_12",
+              "number": 12,
+              "question": "What is the impact of high staff turnover on managers?",
+              "options": [
+                { "id": "A", "text": "an increased workload" },
+                { "id": "B", "text": "low morale" },
+                { "id": "C", "text": "an inability to meet targets" }
+              ]
+            },
+            {
+              "questionId": "q_13",
+              "number": 13,
+              "question": "What mistake should managers always avoid?",
+              "options": [
+                { "id": "A", "text": "failing to treat staff equally" },
+                { "id": "B", "text": "reorganising shifts without warning" },
+                { "id": "C", "text": "neglecting to have enough staff during busy periods" }
+              ]
+            },
+            {
+              "questionId": "q_14",
+              "number": 14,
+              "question": "What unexpected benefit did Dunwich Hotel notice after improving staff retention rates?",
+              "options": [
+                { "id": "A", "text": "a fall in customer complaints" },
+                { "id": "B", "text": "an increase in loyalty club membership" },
+                { "id": "C", "text": "a rise in spending per customer" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "group_3",
+          "type": "matching",
+          "instructions": "Which way of reducing staff turnover was used in each of the following hotels? Write the correct letter, A, B or C, next to Questions 15-20.",
+          "questionRange": "15-20",
+          "optionsTitle": "Ways of reducing staff turnover",
+          "options": [
+            { "id": "A", "text": "improving relationships and teamwork" },
+            { "id": "B", "text": "offering incentives and financial benefits" },
+            { "id": "C", "text": "providing career opportunities" }
+          ],
+          "questions": [
+            { "questionId": "q_15", "number": 15, "question": "The Sun Club" },
+            { "questionId": "q_16", "number": 16, "question": "The Portland" },
+            { "questionId": "q_17", "number": 17, "question": "Blewater Hotels" },
+            { "questionId": "q_18", "number": 18, "question": "Pentlow Hotels" },
+            { "questionId": "q_19", "number": 19, "question": "Green Planet" },
+            { "questionId": "q_20", "number": 20, "question": "The Amesbury" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "audio_url": "https://res.cloudinary.com/.../part3.mp3",
+      "passage": "You will hear two students, Thomas and Jeanne, discussing Thomas's sporting activities and the development of sporting equipment.",
+      "questionGroups": [
+        {
+          "id": "group_4",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A-E.",
+          "questionRange": "21-22",
+          "questionId": "q_21_22",
+          "select": 2,
+          "questionNumbers": [21, 22],
+          "question": "Which TWO points do Thomas and Jeanne make about Thomas's sporting activities at school?",
+          "options": [
+            { "id": "A", "text": "He should have felt more positive about them." },
+            { "id": "B", "text": "The training was too challenging for him." },
+            { "id": "C", "text": "He could have worked harder at them." },
+            { "id": "D", "text": "His parents were disappointed in him." },
+            { "id": "E", "text": "His fellow students admired him." }
+          ]
+        },
+        {
+          "id": "group_5",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A-E.",
+          "questionRange": "23-24",
+          "questionId": "q_23_24",
+          "select": 2,
+          "questionNumbers": [23, 24],
+          "question": "Which TWO feelings did Thomas experience when he was in Kenya?",
+          "options": [
+            { "id": "A", "text": "disbelief" },
+            { "id": "B", "text": "relief" },
+            { "id": "C", "text": "stress" },
+            { "id": "D", "text": "gratitude" },
+            { "id": "E", "text": "homesickness" }
+          ]
+        },
+        {
+          "id": "group_6",
+          "type": "matching",
+          "instructions": "What comment do the students make about the development of each of the following items of sporting equipment? Choose SIX answers from the box and write the correct letter, A-H, next to Questions 25-30.",
+          "questionRange": "25-30",
+          "optionsTitle": "Comments about the development of the equipment",
+          "options": [
+            { "id": "A", "text": "It could cause excessive sweating." },
+            { "id": "B", "text": "The material was being mass produced for another purpose." },
+            { "id": "C", "text": "People often needed to make their own." },
+            { "id": "D", "text": "It often had to be replaced." },
+            { "id": "E", "text": "The material was expensive." },
+            { "id": "F", "text": "It was unpopular among spectators." },
+            { "id": "G", "text": "It caused injuries." },
+            { "id": "H", "text": "No one using it liked it at first." }
+          ],
+          "questions": [
+            { "questionId": "q_25", "number": 25, "question": "the table tennis bat" },
+            { "questionId": "q_26", "number": 26, "question": "the cricket helmet" },
+            { "questionId": "q_27", "number": 27, "question": "the cycle helmet" },
+            { "questionId": "q_28", "number": 28, "question": "the golf club" },
+            { "questionId": "q_29", "number": 29, "question": "the hockey stick" },
+            { "questionId": "q_30", "number": 30, "question": "the football" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_4",
+      "title": "Part 4",
+      "audio_url": "https://res.cloudinary.com/.../part4.mp3",
+      "passage": "You will hear a lecture about maple syrup.",
+      "questionGroups": [
+        {
+          "id": "group_7",
+          "type": "notes_completion",
+          "title": "Maple syrup",
+          "instructions": "Complete the notes below. Write ONE WORD ONLY for each answer.",
+          "questionRange": "31-40",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Maple syrup"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "**What is maple syrup?**\n● made from the sap of the maple tree\n● colour described as " },
+                  { "type": "question", "questionId": "q_31", "number": 31, "question": "colour described as ______" },
+                  { "type": "text", "text": "\n● added to food or used in cooking\n● very " },
+                  { "type": "question", "questionId": "q_32", "number": 32, "question": "very ______ compared to refined sugar" },
+                  { "type": "text", "text": " compared to refined sugar\n\n**The maple tree**\n● has many species\n● needs moist soil but does not need fertiliser as well\n● needs sunny days and cool nights\n● best growing conditions and " },
+                  { "type": "question", "questionId": "q_33", "number": 33, "question": "best growing conditions and ______ are in Canada and North America" },
+                  { "type": "text", "text": " are in Canada and North America\n● maple leaf has been on the Canadian flag since 1964\n\n**Early maple sugar producers**\n● made holes in the tree trunks\n● used tree bark to make containers for collection\n● used hot " },
+                  { "type": "question", "questionId": "q_34", "number": 34, "question": "used hot ______ to heat the sap" },
+                  { "type": "text", "text": " to heat the sap\n● sweetened food and drink with sugar\n\n**Today's maple syrup**\n\n**The trees**\n● Tree trunks may not have the correct " },
+                  { "type": "question", "questionId": "q_35", "number": 35, "question": "Tree trunks may not have the correct ______ until they have been growing for 40 years." },
+                  { "type": "text", "text": " until they have been growing for 40 years.\n● The changing temperature and movement of water within the tree produces the sap.\n\n**The production**\n● A tap is drilled into the trunk and a " },
+                  { "type": "question", "questionId": "q_36", "number": 36, "question": "A tap is drilled into the trunk and a ______ carries the sap into a bucket." },
+                  { "type": "text", "text": " carries the sap into a bucket.\n● Large pans of sap called evaporators are heated by means of a " },
+                  { "type": "question", "questionId": "q_37", "number": 37, "question": "Large pans of sap called evaporators are heated by means of a ______" },
+                  { "type": "text", "text": "\n● A lot of " },
+                  { "type": "question", "questionId": "q_38", "number": 38, "question": "A lot of ______ is produced during the evaporation process." },
+                  { "type": "text", "text": " is produced during the evaporation process.\n● 'Sugar sand' is removed because it makes the syrup look " },
+                  { "type": "question", "questionId": "q_39", "number": 39, "question": "'Sugar sand' is removed because it makes the syrup look ______ and affects the taste." },
+                  { "type": "text", "text": " and affects the taste.\n● The syrup is ready for use.\n● A huge quantity of sap is needed to make a " },
+                  { "type": "question", "questionId": "q_40", "number": 40, "question": "A huge quantity of sap is needed to make a ______ of maple syrup." },
+                  { "type": "text", "text": " of maple syrup." }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

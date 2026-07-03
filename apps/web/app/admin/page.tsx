@@ -8,12 +8,12 @@ import { fetchBooks, fetchTests } from "@/lib/api"
 export default function AdminDashboardPage() {
   const { data: books, isLoading: booksLoading } = useQuery({
     queryKey: ["books"],
-    queryFn: fetchBooks,
+    queryFn: () => fetchBooks(),
   })
 
   const { data: tests, isLoading: testsLoading } = useQuery({
     queryKey: ["tests"],
-    queryFn: fetchTests,
+    queryFn: () => fetchTests(),
   })
 
   const isLoading = booksLoading || testsLoading
@@ -21,13 +21,13 @@ export default function AdminDashboardPage() {
   const stats = [
     {
       title: "Total Books",
-      value: books?.length ?? 0,
+      value: Array.isArray(books) ? books.length : 0,
       icon: BookOpen,
       accentColor: "indigo",
     },
     {
       title: "Total Tests",
-      value: tests?.length ?? 0,
+      value: Array.isArray(tests) ? tests.length : 0,
       icon: FileText,
       accentColor: "purple",
     },

@@ -1,0 +1,51 @@
+{
+  "title": "Cambridge IELTS 18 Test 4 Writing",
+  "testType": "academic",
+  "sections": [
+    {
+      "id": "task_1",
+      "title": "Writing Task 1",
+      "timeLimit": 20,
+      "minimumWords": 150,
+      "instructions": "You should spend about 20 minutes on this task.",
+      "prompt": {
+        "text": "The graph below shows the average monthly change in the prices of three metals during 2014. Summarise the information by selecting and reporting the main features, and make comparisons where relevant."
+      },
+      "visuals": [
+        {
+          "type": "graph",
+          "src": "/images/c18-test4-writing-task1.png",
+          "caption": "Average monthly change in prices of three metals during 2014"
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "task1",
+          "number": 1
+        }
+      ],
+      "answer": {
+        "type": "essay"
+      }
+    },
+    {
+      "id": "task_2",
+      "title": "Writing Task 2",
+      "timeLimit": 40,
+      "minimumWords": 250,
+      "instructions": "You should spend about 40 minutes on this task.",
+      "prompt": {
+        "text": "In many countries, people are now living longer than ever before. Some people say an ageing population creates problems for governments. Other people think there are benefits if society has more elderly people. To what extent do the advantages of having an ageing population outweigh the disadvantages? Give reasons for your answer and include any relevant examples from your own knowledge or experience."
+      },
+      "questions": [
+        {
+          "questionId": "task2",
+          "number": 2
+        }
+      ],
+      "answer": {
+        "type": "essay"
+      }
+    }
+  ]
+}

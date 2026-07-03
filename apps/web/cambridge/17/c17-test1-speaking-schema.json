@@ -1,0 +1,50 @@
+{
+  "title": "Cambridge IELTS 17 Test 1 Speaking",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "instructions": "The examiner asks you about yourself, your home, work or studies and other familiar topics.",
+      "topics": [
+        {
+          "title": "History",
+          "questions": [
+            "What did you study in history lessons when you were at school?",
+            "Did you enjoy studying history at school? [Why/Why not?]",
+            "How often do you watch TV programmes about history now? [Why/Why not?]",
+            "What period in history would you like to learn more about? [Why?]"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "instructions": "You will have 1 minute to prepare and should speak for 1\u20132 minutes.",
+      "cueCard": {
+        "title": "Describe the neighbourhood you lived in when you were a child.",
+        "task": "Describe the neighbourhood you lived in when you were a child.",
+        "points": [
+          "Where in your town/city the neighbourhood was",
+          "What kind of people lived there",
+          "What it was like to live in this neighbourhood",
+          "And explain whether you would like to live in this neighbourhood in the future."
+        ],
+        "endingQuestion": "And explain whether you would like to live in this neighbourhood in the future."
+      }
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "instructions": "The examiner and the candidate discuss issues related to the Part 2 topic.",
+      "questions": [
+        "What sort of things can neighbours do to help each other?",
+        "How well do people generally know their neighbours in your country?",
+        "How important do you think it is to have good neighbours?",
+        "Which facilities are most important to people living in cities?",
+        "How does shopping in small local shops differ from shopping in large city centre shops?",
+        "Do you think that children should always go to the school nearest to where they live?"
+      ]
+    }
+  ]
+}

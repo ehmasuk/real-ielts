@@ -28,7 +28,7 @@ interface NavLink {
 const navLinks: NavLink[] = [
   { href: "/listening", label: "Listening", icon: Headphones },
   { href: "/reading", label: "Reading", icon: BookOpen },
-  { href: "/writing", label: "Writing", icon: PenTool, disabled: true },
+  { href: "/writing", label: "Writing", icon: PenTool },
   { href: "/speaking", label: "Speaking", icon: Mic },
 ]
 

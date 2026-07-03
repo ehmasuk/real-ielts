@@ -1,0 +1,60 @@
+{
+  "title": "Cambridge IELTS 18 Test 4 Speaking",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "instructions": "The examiner asks you about yourself, your home, work or studies and other familiar topics.",
+      "topics": [
+        {
+          "title": "Sleep",
+          "questions": [
+            "How many hours do you usually sleep at night?",
+            "Do you sometimes sleep during the day? [Why/Why not?]",
+            "What do you do if you can't get to sleep at night? [Why?]",
+            "Do you ever remember the dreams you've had while you were asleep?"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "instructions": "You will have 1 minute to prepare and should speak for 1\u20132 minutes.",
+      "cueCard": {
+        "title": "Describe a time when you met someone who you became good friends with.",
+        "task": "Describe a time when you met someone who you became good friends with.",
+        "points": [
+          "Who you met",
+          "When and where you met this person",
+          "What you thought about this person when you first met",
+          "And explain why you think you became good friends with this person"
+        ],
+        "endingQuestion": "And explain why you think you became good friends with this person."
+      }
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "instructions": "The examiner and the candidate discuss issues related to the Part 2 topic.",
+      "discussionTopics": [
+        {
+          "title": "Friends at school",
+          "questions": [
+            "How important is it for children to have lots of friends at school?",
+            "Do you think it is wrong for parents to influence which friends their children have?",
+            "Why do you think children often choose different friends as they get older?"
+          ]
+        },
+        {
+          "title": "Making new friends",
+          "questions": [
+            "If a person is moving to a new town, what is a good way for them to make friends?",
+            "Can you think of any disadvantages of making new friends online?",
+            "Would you say it is harder for people to make new friends as they get older?"
+          ]
+        }
+      ]
+    }
+  ]
+}

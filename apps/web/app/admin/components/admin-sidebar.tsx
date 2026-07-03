@@ -78,6 +78,11 @@ interface AdminSidebarProps {
 export const AdminSidebar = React.memo(function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
   const pathname = usePathname()
   const { user } = useAuth()
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const isActive = React.useCallback((href: string) => {
     if (href === "/admin") return pathname === "/admin"
@@ -211,12 +216,12 @@ export const AdminSidebar = React.memo(function AdminSidebar({ collapsed, onTogg
         <div className="border-t border-border/40 p-3">
           <div className="flex items-center gap-3 rounded-lg bg-muted/40 p-2.5">
             <Avatar className="size-8">
-              <AvatarImage src={user?.picture || user?.image} alt={user?.name} />
-              <AvatarFallback className="text-xs font-bold">{user?.name?.charAt(0)?.toUpperCase() || "A"}</AvatarFallback>
+              <AvatarImage src={mounted ? (user?.picture || user?.image) : undefined} alt={mounted ? user?.name : undefined} />
+              <AvatarFallback className="text-xs font-bold">{mounted && user?.name ? user.name.charAt(0).toUpperCase() : "A"}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="truncate text-xs font-semibold text-foreground">{user?.name || "Admin"}</p>
-              <p className="truncate text-[10px] text-muted-foreground">{user?.role || "admin"}</p>
+              <p className="truncate text-xs font-semibold text-foreground">{mounted && user?.name ? user.name : "Admin"}</p>
+              <p className="truncate text-[10px] text-muted-foreground">{mounted && user?.role ? user.role : "admin"}</p>
             </div>
             <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
           </div>

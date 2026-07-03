@@ -1,0 +1,269 @@
+{
+  "title": "Cambridge IELTS 18 Test 2 Listening",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "instructions": "Questions 1\u201310.",
+      "context": "Working at Milo's Restaurants",
+      "questionGroups": [
+        {
+          "id": "notes_1_5",
+          "type": "form_completion",
+          "instructions": "Complete the notes below. Write ONE WORD ONLY for each answer.",
+          "questionRange": "1-5",
+          "questions": [
+            { "questionId": "q_1", "number": 1, "question": "Benefits: ______ provided for all staff" },
+            { "questionId": "q_2", "number": 2, "question": "______ during weekdays at all Milo's Restaurants" },
+            { "questionId": "q_3", "number": 3, "question": "______ provided after midnight" },
+            { "questionId": "q_4", "number": 4, "question": "Person specification: must care about maintaining a high standard of" },
+            { "questionId": "q_5", "number": 5, "question": "must have a qualification in" }
+          ]
+        },
+        {
+          "id": "table_6_10",
+          "type": "table_completion",
+          "instructions": "Complete the table below. Write ONE WORD AND/OR A NUMBER for each answer.",
+          "questionRange": "6-10",
+          "layout": {
+            "columns": ["Location", "Job title", "Responsibilities include", "Pay and conditions"],
+            "rows": [
+              [
+                [{ "type": "question", "questionId": "q_6", "number": 6, "question": "______ Street" }],
+                [{ "type": "text", "text": "Breakfast supervisor" }],
+                [
+                  { "type": "text", "text": "Making sure " },
+                  { "type": "question", "questionId": "q_7", "number": 7, "question": "Making sure ______ is clean" }
+                ],
+                [
+                  { "type": "text", "text": "Starting salary \u00a3" },
+                  { "type": "question", "questionId": "q_8", "number": 8, "question": "Starting salary \u00a3______ per hour" },
+                  { "type": "text", "text": " per hour. Start work at 5.30 a.m." }
+                ]
+              ],
+              [
+                [{ "type": "text", "text": "City Road" }],
+                [{ "type": "text", "text": "Junior chef" }],
+                [
+                  { "type": "text", "text": "Maintaining stock and organising " },
+                  { "type": "question", "questionId": "q_9", "number": 9, "question": "Maintaining stock and organising" }
+                ],
+                [
+                  { "type": "text", "text": "No work on a " },
+                  { "type": "question", "questionId": "q_10", "number": 10, "question": "No work on a ______ once a month" },
+                  { "type": "text", "text": " once a month" }
+                ]
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "instructions": "Questions 11\u201320.",
+      "context": "Housing development",
+      "questionGroups": [
+        {
+          "id": "choose_two_11_12",
+          "questionId": "q_11_12",
+          "type": "mcq_multiple",
+          "questionNumbers": [11, 12],
+          "instructions": "Choose TWO letters, A\u2013E.",
+          "question": "What are the TWO main reasons why this site has been chosen for the housing development?",
+          "questionRange": "11-12",
+          "select": 2,
+          "options": [
+            { "id": "A", "text": "It has suitable geographical features." },
+            { "id": "B", "text": "There is easy access to local facilities." },
+            { "id": "C", "text": "It has good connections with the airport." },
+            { "id": "D", "text": "The land is of little agricultural value." },
+            { "id": "E", "text": "It will be convenient for workers." }
+          ]
+        },
+        {
+          "id": "choose_two_13_14",
+          "questionId": "q_13_14",
+          "type": "mcq_multiple",
+          "questionNumbers": [13, 14],
+          "instructions": "Choose TWO letters, A\u2013E.",
+          "question": "Which TWO aspects of the planned housing development have people given positive feedback about?",
+          "questionRange": "13-14",
+          "select": 2,
+          "options": [
+            { "id": "A", "text": "the facilities for cyclists" },
+            { "id": "B", "text": "the impact on the environment" },
+            { "id": "C", "text": "the encouragement of good relations between residents" },
+            { "id": "D", "text": "the low cost of all the accommodation" },
+            { "id": "E", "text": "the rural location" }
+          ]
+        },
+        {
+          "id": "map_15_20",
+          "type": "map_labelling",
+          "instructions": "Label the map below. Write the correct letter, A\u2013I, next to Questions 15\u201320.",
+          "questionRange": "15-20",
+          "questions": [
+            { "questionId": "q_15", "number": 15, "label": "School", "question": "School" },
+            { "questionId": "q_16", "number": 16, "label": "Sports centre", "question": "Sports centre" },
+            { "questionId": "q_17", "number": 17, "label": "Clinic", "question": "Clinic" },
+            { "questionId": "q_18", "number": 18, "label": "Community centre", "question": "Community centre" },
+            { "questionId": "q_19", "number": 19, "label": "Supermarket", "question": "Supermarket" },
+            { "questionId": "q_20", "number": 20, "label": "Playground", "question": "Playground" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "instructions": "Questions 21\u201330.",
+      "context": "Talk on the Laki eruption of 1783",
+      "questionGroups": [
+        {
+          "id": "mcq_21_24",
+          "type": "mcq_single",
+          "instructions": "Choose the correct letter, A, B or C.",
+          "questionRange": "21-24",
+          "questions": [
+            {
+              "questionId": "q_21",
+              "number": 21,
+              "question": "Why do the students think the Laki eruption of 1783 is so important?",
+              "options": [
+                { "id": "A", "text": "It was the most severe eruption in modern times." },
+                { "id": "B", "text": "It led to the formal study of volcanoes." },
+                { "id": "C", "text": "It had a profound effect on society." }
+              ]
+            },
+            {
+              "questionId": "q_22",
+              "number": 22,
+              "question": "What surprised Adam about observations made at the time?",
+              "options": [
+                { "id": "A", "text": "the number of places producing them" },
+                { "id": "B", "text": "the contradictions in them" },
+                { "id": "C", "text": "the lack of scientific data to support them" }
+              ]
+            },
+            {
+              "questionId": "q_23",
+              "number": 23,
+              "question": "According to Michelle, what did the contemporary sources say about the Laki haze?",
+              "options": [
+                { "id": "A", "text": "People thought it was similar to ordinary fog." },
+                { "id": "B", "text": "It was associated with health issues." },
+                { "id": "C", "text": "It completely blocked out the sun for weeks." }
+              ]
+            },
+            {
+              "questionId": "q_24",
+              "number": 24,
+              "question": "Adam corrects Michelle when she claims that Benjamin Franklin",
+              "options": [
+                { "id": "A", "text": "came to the wrong conclusion about the cause of the haze." },
+                { "id": "B", "text": "was the first to identify the reason for the haze." },
+                { "id": "C", "text": "supported the opinions of other observers about the haze." }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "choose_two_25_26",
+          "questionId": "q_25_26",
+          "type": "mcq_multiple",
+          "questionNumbers": [25, 26],
+          "instructions": "Choose TWO letters, A\u2013E.",
+          "question": "Which TWO issues following the Laki eruption surprised the students?",
+          "questionRange": "25-26",
+          "select": 2,
+          "options": [
+            { "id": "A", "text": "how widespread the effects were" },
+            { "id": "B", "text": "how long-lasting the effects were" },
+            { "id": "C", "text": "the number of deaths it caused" },
+            { "id": "D", "text": "the speed at which the volcanic ash cloud spread" },
+            { "id": "E", "text": "how people ignored the warning signs" }
+          ]
+        },
+        {
+          "id": "matching_27_30",
+          "type": "matching",
+          "instructions": "What comment do the students make about the impact of the Laki eruption on the following countries? Choose FOUR answers from the box and write the correct letter, A\u2013F, next to Questions 27\u201330.",
+          "questionRange": "27-30",
+          "optionsTitle": "Comments",
+          "options": [
+            { "id": "A", "text": "This country suffered the most severe loss of life." },
+            { "id": "B", "text": "The impact on agriculture was predictable." },
+            { "id": "C", "text": "There was a significant increase in deaths of young people." },
+            { "id": "D", "text": "Animals suffered from a sickness." },
+            { "id": "E", "text": "This country saw the highest rise in food prices in the world." },
+            { "id": "F", "text": "It caused a particularly harsh winter." }
+          ],
+          "questions": [
+            { "questionId": "q_27", "number": 27, "label": "Iceland", "question": "Iceland" },
+            { "questionId": "q_28", "number": 28, "label": "Egypt", "question": "Egypt" },
+            { "questionId": "q_29", "number": 29, "label": "UK", "question": "UK" },
+            { "questionId": "q_30", "number": 30, "label": "USA", "question": "USA" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_4",
+      "title": "Part 4",
+      "instructions": "Questions 31\u201340. Complete the notes below. Write ONE WORD ONLY for each answer.",
+      "context": "Pockets",
+      "questionGroups": [
+        {
+          "id": "note_completion",
+          "type": "note_completion",
+          "instructions": "Complete the notes below. Write ONE WORD ONLY for each answer.",
+          "questionRange": "31-40",
+          "sections": [
+            {
+              "heading": "Reason for choice of subject",
+              "items": [
+                "\u2022 They are 31 ______ but can be overlooked by consumers and designers."
+              ]
+            },
+            {
+              "heading": "Pockets in men\u2019s clothes",
+              "items": [
+                "\u2022 Men started to wear 32 ______ in the 18th century.",
+                "\u2022 A 33 ______ sewed pockets into the lining of the garments.",
+                "\u2022 The wearer could use the pockets for small items.",
+                "\u2022 Bigger pockets might be made for men who belonged to a certain type of 34 ______."
+              ]
+            },
+            {
+              "heading": "Pockets in women\u2019s clothes",
+              "items": [
+                "\u2022 Women's pockets were less 35 ______ than men's.",
+                "\u2022 Women were very concerned about pickpockets.",
+                "\u2022 Pockets were produced in pairs using 36 ______ to link them together.",
+                "\u2022 Pockets hung from the women's 37 ______ under skirts and petticoats.",
+                "\u2022 Items such as 38 ______ could be reached through a gap in the material.",
+                "\u2022 Pockets, of various sizes, stayed inside clothing for many decades.",
+                "\u2022 When dresses changed shape, hidden pockets had a negative effect on the 39 ______ of women.",
+                "\u2022 Bags called 'pouches' became popular, before women carried a 40 ______."
+              ]
+            }
+          ],
+          "questions": [
+            { "questionId": "q_31", "number": 31, "question": "They are ______ but can be overlooked by consumers and designers." },
+            { "questionId": "q_32", "number": 32, "question": "Men started to wear ______ in the 18th century." },
+            { "questionId": "q_33", "number": 33, "question": "A ______ sewed pockets into the lining of the garments." },
+            { "questionId": "q_34", "number": 34, "question": "Bigger pockets might be made for men who belonged to a certain type of ______." },
+            { "questionId": "q_35", "number": 35, "question": "Women's pockets were less ______ than men's." },
+            { "questionId": "q_36", "number": 36, "question": "Pockets were produced in pairs using ______ to link them together." },
+            { "questionId": "q_37", "number": 37, "question": "Pockets hung from the women's ______ under skirts and petticoats." },
+            { "questionId": "q_38", "number": 38, "question": "Items such as ______ could be reached through a gap in the material." },
+            { "questionId": "q_39", "number": 39, "question": "When dresses changed shape, hidden pockets had a negative effect on the ______ of women." },
+            { "questionId": "q_40", "number": 40, "question": "Bags called 'pouches' became popular, before women carried a ______." }
+          ]
+        }
+      ]
+    }
+  ]
+}

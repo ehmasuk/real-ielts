@@ -1,0 +1,50 @@
+{
+  "title": "Cambridge IELTS 17 Test 2 Speaking",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "instructions": "The examiner asks you about yourself, your home, work or studies and other familiar topics.",
+      "topics": [
+        {
+          "title": "Reading",
+          "questions": [
+            "Did you have a favourite book when you were a child? [Why/Why not?]",
+            "How much reading do you do for your work/studies? [Why/Why not?]",
+            "What kinds of books do you read for pleasure? [Why/Why not?]",
+            "Do you prefer to read a newspaper or a magazine online, or to buy a copy? [Why?]"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "instructions": "You will have 1 minute to prepare and should speak for 1\u20132 minutes.",
+      "cueCard": {
+        "title": "Describe a big city you would like to visit.",
+        "task": "Describe a big city you would like to visit.",
+        "points": [
+          "Which big city you would like to visit",
+          "How you would travel there",
+          "What you would do there",
+          "And explain why you would like to visit this big city."
+        ],
+        "endingQuestion": "And explain why you would like to visit this big city."
+      }
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "instructions": "The examiner and the candidate discuss issues related to the Part 2 topic.",
+      "questions": [
+        "What are the most interesting things to do while visiting cities on holiday?",
+        "Why can it be expensive to visit cities on holiday?",
+        "Do you think it is better to visit cities alone or in a group with friends?",
+        "Why have cities increased in size in recent years?",
+        "What are the challenges created by ever-growing cities?",
+        "In what ways do you think cities of the future will be different to cities today?"
+      ]
+    }
+  ]
+}

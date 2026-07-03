@@ -31,21 +31,25 @@ const gradients = [
 ]
 
 function rawScoreToBand(score: number): string {
-  if (score >= 39) return "9.0"
-  if (score >= 37) return "8.5"
-  if (score >= 35) return "8.0"
-  if (score >= 32) return "7.5"
-  if (score >= 30) return "7.0"
-  if (score >= 26) return "6.5"
-  if (score >= 23) return "6.0"
-  if (score >= 18) return "5.5"
-  if (score >= 16) return "5.0"
-  if (score >= 13) return "4.5"
-  if (score >= 10) return "4.0"
-  if (score >= 7) return "3.5"
-  if (score >= 5) return "3.0"
-  if (score >= 3) return "2.5"
-  return "2.0"
+  if (score > 40 || score < 0) throw new Error("Invalid IELTS raw score");
+  
+  if (score >= 39) return "9.0";
+  if (score >= 37) return "8.5";
+  if (score >= 35) return "8.0";
+  if (score >= 33) return "7.5";
+  if (score >= 30) return "7.0";
+  if (score >= 27) return "6.5";
+  if (score >= 23) return "6.0";
+  if (score >= 19) return "5.5";
+  if (score >= 15) return "5.0";
+  if (score >= 13) return "4.5";
+  if (score >= 10) return "4.0";
+  if (score >= 8)  return "3.5";
+  if (score >= 6)  return "3.0";
+  if (score >= 4)  return "2.5";
+  if (score >= 2)  return "2.0";
+  if (score >= 1)  return "1.0";
+  return "0.0";
 }
 
 export default function ListeningPage() {
@@ -162,9 +166,24 @@ export default function ListeningPage() {
                     const sectionCount = (test as any)?.contentJson?.sections?.length ?? 4
                     return (
                       <div key={testNum} className="flex flex-col justify-between space-y-3 bg-muted/10 dark:bg-muted/5 p-4 rounded-xl border border-border/20">
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
-                          <Play className="h-3.5 w-3.5 text-indigo-500 fill-indigo-500/20 shrink-0" />
-                          <span>Practice Test {testNum}</span>
+                        <div className="flex items-center justify-between gap-1.5 text-xs font-bold text-foreground">
+                          <div className="flex items-center gap-1.5">
+                            <Play className="h-3.5 w-3.5 text-indigo-500 fill-indigo-500/20 shrink-0" />
+                            <span>Practice Test {testNum}</span>
+                          </div>
+                          {(() => {
+                            if (!test) return null
+                            const partsDone = Array.from({ length: sectionCount }, (_, i) => i + 1).every((pn) => resultsMap[`${test._id}-${pn}`])
+                            if (!partsDone) return null
+                            const totalScore = Array.from({ length: sectionCount }, (_, i) => i + 1).reduce((sum, pn) => sum + (resultsMap[`${test._id}-${pn}`]?.score ?? 0), 0)
+                            const maxScore = Array.from({ length: sectionCount }, (_, i) => i + 1).reduce((sum, pn) => sum + (resultsMap[`${test._id}-${pn}`]?.total ?? 0), 0)
+                            const scaledScore = maxScore > 0 && maxScore !== 40 ? Math.round((totalScore / maxScore) * 40) : totalScore
+                            return (
+                              <span className="rounded bg-indigo-500/10 px-1.5 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shadow-sm" title={`Raw: ${totalScore}/${maxScore}`}>
+                                Band {rawScoreToBand(scaledScore)}
+                              </span>
+                            )
+                          })()}
                         </div>
                         <div className="flex flex-col gap-2">
                           {Array.from({ length: sectionCount }, (_, i) => i + 1).map((partNum) => {
@@ -173,37 +192,29 @@ export default function ListeningPage() {
                               <Link
                                 key={partNum}
                                 href={test ? (result ? `/test/${test._id}/part/${partNum}/result` : `/test/${test._id}/listening/${partNum}`) : "#"}
-                                className={`flex items-center justify-between rounded-lg border px-3 py-2 text-[11px] font-semibold transition-all shadow-sm cursor-pointer ${
+                                className={`group flex items-center justify-between rounded-xl border px-3 py-2.5 text-[11px] font-semibold transition-all duration-300 cursor-pointer ${
                                   result
-                                    ? "border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-600 hover:border-emerald-600 hover:text-white text-muted-foreground"
+                                    ? "border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 hover:border-emerald-500/30 text-foreground/90 shadow-sm"
                                     : test
-                                      ? "border-border/40 bg-background/50 hover:bg-indigo-600 hover:border-indigo-600 hover:text-white text-muted-foreground"
-                                      : "border-border/20 bg-background/20 text-muted-foreground/30 pointer-events-none"
+                                      ? "border-border/50 bg-background/80 hover:bg-indigo-500/5 hover:border-indigo-500/30 text-foreground/80 hover:text-indigo-600 dark:hover:text-indigo-400 shadow-sm"
+                                      : "border-transparent bg-muted/30 text-muted-foreground/40 pointer-events-none"
                                 }`}
                               >
                                 <span>Part {partNum}</span>
                                 {result ? (
-                                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">{result.score}/{result.total}</span>
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
+                                      {result.score}/{result.total}
+                                    </span>
+                                  </div>
                                 ) : (
-                                  <span className="text-[9px] opacity-70 font-normal">{test ? "Practice Now" : "Unavailable"}</span>
+                                  <span className={`text-[10px] font-medium transition-colors ${test ? "text-indigo-500/60 group-hover:text-indigo-600 dark:group-hover:text-indigo-400" : "opacity-0"}`}>
+                                    {test ? "Practice" : ""}
+                                  </span>
                                 )}
                               </Link>
                             )
                           })}
-                          {(() => {
-                            if (!test) return null
-                            const partsDone = Array.from({ length: sectionCount }, (_, i) => i + 1)
-                              .every((pn) => resultsMap[`${test._id}-${pn}`])
-                            if (!partsDone) return null
-                            const totalScore = Array.from({ length: sectionCount }, (_, i) => i + 1)
-                              .reduce((sum, pn) => sum + (resultsMap[`${test._id}-${pn}`]?.score ?? 0), 0)
-                            return (
-                              <div className="mt-2 flex items-center justify-between rounded-lg border border-indigo-500/30 bg-indigo-500/5 px-3 py-2 text-[11px] font-semibold">
-                                <span className="text-indigo-700 dark:text-indigo-300">Overall Band</span>
-                                <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{rawScoreToBand(totalScore)}</span>
-                              </div>
-                            )
-                          })()}
                         </div>
                       </div>
                     )

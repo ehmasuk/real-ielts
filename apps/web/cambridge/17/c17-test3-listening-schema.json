@@ -1,0 +1,270 @@
+{
+  "title": "Cambridge IELTS 17 Test 3 Listening",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "audio_url": "https://res.cloudinary.com/.../part1.mp3",
+      "passage": "You will hear a conversation between a woman and Jack about advice on surfing holidays.",
+      "questionGroups": [
+        {
+          "id": "group_1",
+          "type": "notes_completion",
+          "title": "Advice on surfing holidays",
+          "instructions": "Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+          "questionRange": "1-10",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Advice on surfing holidays"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "Jack's advice\nRecommends surfing for " },
+                  { "type": "question", "questionId": "q_1", "number": 1, "question": "Recommends surfing for ______ holidays in the summer" },
+                  { "type": "text", "text": " holidays in the summer\nNeed to be quite " },
+                  { "type": "question", "questionId": "q_2", "number": 2, "question": "Need to be quite ______" },
+                  { "type": "text", "text": "\n\nIrish surfing locations\nCounty Clare\nLahinch has some good quality " },
+                  { "type": "question", "questionId": "q_3", "number": 3, "question": "Lahinch has some good quality ______ and surf schools" },
+                  { "type": "text", "text": " and surf schools\nThere are famous cliffs nearby\nCounty Mayo\nGood surf school at " },
+                  { "type": "question", "questionId": "q_4", "number": 4, "question": "Good surf school at ______ beach" },
+                  { "type": "text", "text": " beach\nSurf camp lasts for one " },
+                  { "type": "question", "questionId": "q_5", "number": 5, "question": "Surf camp lasts for one ______" },
+                  { "type": "text", "text": "\nCan also explore the local " },
+                  { "type": "question", "questionId": "q_6", "number": 6, "question": "Can also explore the local ______ by kayak" },
+                  { "type": "text", "text": " by kayak\n\nWeather\nBest month to go: " },
+                  { "type": "question", "questionId": "q_7", "number": 7, "question": "Best month to go: ______" },
+                  { "type": "text", "text": "\nAverage temperature in summer: approx. " },
+                  { "type": "question", "questionId": "q_8", "number": 8, "question": "Average temperature in summer: approx. ______ degrees" },
+                  { "type": "text", "text": " degrees\n\nCosts\nEquipment\nWetsuit and surfboard: " },
+                  { "type": "question", "questionId": "q_9", "number": 9, "question": "Wetsuit and surfboard: ______ euros per day" },
+                  { "type": "text", "text": " euros per day\nAlso advisable to hire " },
+                  { "type": "question", "questionId": "q_10", "number": 10, "question": "Also advisable to hire ______ for warmth" },
+                  { "type": "text", "text": " for warmth" }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "audio_url": "https://res.cloudinary.com/.../part2.mp3",
+      "passage": "You will hear a talk about a school's extended hours childcare service.",
+      "questionGroups": [
+        {
+          "id": "group_2",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A–E.",
+          "questionRange": "11-12",
+          "questionId": "q_11_12",
+          "select": 2,
+          "questionNumbers": [11, 12],
+          "question": "Which TWO facts are given about the school's extended hours childcare service?",
+          "options": [
+            { "id": "A", "text": "It started recently." },
+            { "id": "B", "text": "More children attend after school than before school." },
+            { "id": "C", "text": "An average of 50 children attend in the mornings." },
+            { "id": "D", "text": "A child cannot attend both the before and after school sessions." },
+            { "id": "E", "text": "The maximum number of children who can attend is 70." }
+          ]
+        },
+        {
+          "id": "group_3",
+          "type": "mcq_single",
+          "instructions": "Choose the correct letter, A, B or C.",
+          "questionRange": "13-15",
+          "questions": [
+            {
+              "questionId": "q_13",
+              "number": 13,
+              "question": "How much does childcare cost for a complete afternoon session per child?",
+              "options": [
+                { "id": "A", "text": "£3.50" },
+                { "id": "B", "text": "£5.70" },
+                { "id": "C", "text": "£7.20" }
+              ]
+            },
+            {
+              "questionId": "q_14",
+              "number": 14,
+              "question": "What does the manager say about food?",
+              "options": [
+                { "id": "A", "text": "Children with allergies should bring their own food." },
+                { "id": "B", "text": "Children may bring healthy snacks with them." },
+                { "id": "C", "text": "Children are given a proper meal at 5 p.m." }
+              ]
+            },
+            {
+              "questionId": "q_15",
+              "number": 15,
+              "question": "What is different about arrangements in the school holidays?",
+              "options": [
+                { "id": "A", "text": "Children from other schools can attend." },
+                { "id": "B", "text": "Older children can attend." },
+                { "id": "C", "text": "A greater number of children can attend." }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "group_4",
+          "type": "matching",
+          "instructions": "What information is given about each of the following activities on offer? Choose FIVE answers from the box and write the correct letter, A–G, next to Questions 16–20.",
+          "questionRange": "16-20",
+          "optionsTitle": "Information",
+          "options": [
+            { "id": "A", "text": "has limited availability" },
+            { "id": "B", "text": "is no longer available" },
+            { "id": "C", "text": "is for over 8s only" },
+            { "id": "D", "text": "requires help from parents" },
+            { "id": "E", "text": "involves an additional fee" },
+            { "id": "F", "text": "is a new activity" },
+            { "id": "G", "text": "was requested by children" }
+          ],
+          "questions": [
+            { "questionId": "q_16", "number": 16, "question": "Spanish" },
+            { "questionId": "q_17", "number": 17, "question": "Music" },
+            { "questionId": "q_18", "number": 18, "question": "Painting" },
+            { "questionId": "q_19", "number": 19, "question": "Yoga" },
+            { "questionId": "q_20", "number": 20, "question": "Cooking" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "audio_url": "https://res.cloudinary.com/.../part3.mp3",
+      "passage": "You will hear a conversation between Holly and Dr Green about Holly's work placement.",
+      "questionGroups": [
+        {
+          "id": "group_5",
+          "type": "mcq_single",
+          "instructions": "Choose the correct letter, A, B or C.",
+          "questionRange": "21-24",
+          "questions": [
+            {
+              "questionId": "q_21",
+              "number": 21,
+              "question": "Holly has chosen the Orion Stadium placement because",
+              "options": [
+                { "id": "A", "text": "it involves children." },
+                { "id": "B", "text": "it is outdoors." },
+                { "id": "C", "text": "it sounds like fun." }
+              ]
+            },
+            {
+              "questionId": "q_22",
+              "number": 22,
+              "question": "Which aspect of safety does Dr Green emphasise most?",
+              "options": [
+                { "id": "A", "text": "ensuring children stay in the stadium" },
+                { "id": "B", "text": "checking the equipment children will use" },
+                { "id": "C", "text": "removing obstacles in changing rooms" }
+              ]
+            },
+            {
+              "questionId": "q_23",
+              "number": 23,
+              "question": "What does Dr Green say about the spectators?",
+              "options": [
+                { "id": "A", "text": "They can be hard to manage." },
+                { "id": "B", "text": "They make useful volunteers." },
+                { "id": "C", "text": "They shouldn't take photographs." }
+              ]
+            },
+            {
+              "questionId": "q_24",
+              "number": 24,
+              "question": "What has affected the schedule in the past?",
+              "options": [
+                { "id": "A", "text": "bad weather" },
+                { "id": "B", "text": "an injury" },
+                { "id": "C", "text": "extra time" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "group_6",
+          "type": "matching",
+          "instructions": "What do Holly and her tutor agree is an important aspect of each of the following events management skills? Choose SIX answers from the box and write the correct letter, A–H, next to Questions 25–30.",
+          "questionRange": "25-30",
+          "optionsTitle": "Important aspects",
+          "options": [
+            { "id": "A", "text": "being flexible" },
+            { "id": "B", "text": "focusing on details" },
+            { "id": "C", "text": "having a smart appearance" },
+            { "id": "D", "text": "hiding your emotions" },
+            { "id": "E", "text": "relying on experts" },
+            { "id": "F", "text": "trusting your own views" },
+            { "id": "G", "text": "doing one thing at a time" },
+            { "id": "H", "text": "thinking of the future" }
+          ],
+          "questions": [
+            { "questionId": "q_25", "number": 25, "question": "Communication" },
+            { "questionId": "q_26", "number": 26, "question": "Organisation" },
+            { "questionId": "q_27", "number": 27, "question": "Time management" },
+            { "questionId": "q_28", "number": 28, "question": "Creativity" },
+            { "questionId": "q_29", "number": 29, "question": "Leadership" },
+            { "questionId": "q_30", "number": 30, "question": "Networking" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_4",
+      "title": "Part 4",
+      "audio_url": "https://res.cloudinary.com/.../part4.mp3",
+      "passage": "You will hear a lecture about bird migration theory.",
+      "questionGroups": [
+        {
+          "id": "group_7",
+          "type": "notes_completion",
+          "title": "Bird Migration Theory",
+          "instructions": "Complete the notes below. Write ONE WORD ONLY for each answer.",
+          "questionRange": "31-40",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Bird Migration Theory"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "Most birds are believed to migrate seasonally.\n\nHibernation theory\n● It was believed that birds hibernated underwater or buried themselves in " },
+                  { "type": "question", "questionId": "q_31", "number": 31, "question": "It was believed that birds hibernated underwater or buried themselves in ______" },
+                  { "type": "text", "text": ".\n● This theory was later disproved by experiments on caged birds.\n\nTransmutation theory\n● Aristotle believed birds changed from one species into another in summer and winter.\n- In autumn he observed that redstarts experience the loss of " },
+                  { "type": "question", "questionId": "q_32", "number": 32, "question": "In autumn he observed that redstarts experience the loss of ______" },
+                  { "type": "text", "text": " and thought they then turned into robins.\n- Aristotle's assumptions were logical because the two species of birds had a similar " },
+                  { "type": "question", "questionId": "q_33", "number": 33, "question": "Aristotle's assumptions were logical because the two species of birds had a similar ______" },
+                  { "type": "text", "text": ".\n\n17th century\n● Charles Morton popularised the idea that birds fly to the " },
+                  { "type": "question", "questionId": "q_34", "number": 34, "question": "Charles Morton popularised the idea that birds fly to the ______ in winter" },
+                  { "type": "text", "text": " in winter.\n\nScientific developments\n● In 1822, a stork was killed in Germany which had an African spear in its " },
+                  { "type": "question", "questionId": "q_35", "number": 35, "question": "a stork was killed in Germany which had an African spear in its ______" },
+                  { "type": "text", "text": ".\n- previously there had been no " },
+                  { "type": "question", "questionId": "q_36", "number": 36, "question": "previously there had been no ______ that storks migrate to Africa" },
+                  { "type": "text", "text": " that storks migrate to Africa\n● Little was known about the " },
+                  { "type": "question", "questionId": "q_37", "number": 37, "question": "Little was known about the ______ and journeys of migrating birds until the practice of ringing was established" },
+                  { "type": "text", "text": " and journeys of migrating birds until the practice of ringing was established.\n- It was thought large birds carried small birds on some journeys because they were considered incapable of travelling across huge " },
+                  { "type": "question", "questionId": "q_38", "number": 38, "question": "large birds carried small birds because they were considered incapable of travelling across huge ______" },
+                  { "type": "text", "text": "\n- Ringing depended on what is called the " },
+                  { "type": "question", "questionId": "q_39", "number": 39, "question": "Ringing depended on what is called the ______ of dead birds" },
+                  { "type": "text", "text": " of dead birds.\n● In 1931, the first " },
+                  { "type": "question", "questionId": "q_40", "number": 40, "question": "In 1931, the first ______ to show the migration of European birds was printed" },
+                  { "type": "text", "text": " to show the migration of European birds was printed." }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

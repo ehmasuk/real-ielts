@@ -1,0 +1,306 @@
+{
+  "title": "Cambridge IELTS 17 Test 1 Listening",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "audio_url": "https://res.cloudinary.com/.../part1.mp3",
+      "passage": "You will hear a conversation between a man and a woman about the Buckworth Conservation Group.",
+      "questionGroups": [
+        {
+          "id": "group_1",
+          "type": "notes_completion",
+          "title": "Buckworth Conservation Group",
+          "instructions": "Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.",
+          "questionRange": "1-10",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Buckworth Conservation Group"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "**Regular activities**\n\n**Beach**\n● making sure the beach does not have " },
+                  { "type": "question", "questionId": "q_1", "number": 1, "question": "making sure the beach does not have ______ on it" },
+                  { "type": "text", "text": " on it\n● no " },
+                  { "type": "question", "questionId": "q_2", "number": 2, "question": "no ______" },
+                  { "type": "text", "text": "\n\n**Nature reserve**\n● maintaining paths\n● nesting boxes for birds installed\n● next task: taking action to attract " },
+                  { "type": "question", "questionId": "q_3", "number": 3, "question": "next task: taking action to attract ______ to the place" },
+                  { "type": "text", "text": " to the place\n● identifying types of " },
+                  { "type": "question", "questionId": "q_4", "number": 4, "question": "identifying types of ______" },
+                  { "type": "text", "text": "\n● building a new " },
+                  { "type": "question", "questionId": "q_5", "number": 5, "question": "building a new ______" },
+                  { "type": "text", "text": "\n\n**Forthcoming events**\n\n**Saturday**\n● meet at Dunsmore Beach car park\n● walk across the sands and reach the " },
+                  { "type": "question", "questionId": "q_6", "number": 6, "question": "walk across the sands and reach the ______" },
+                  { "type": "text", "text": "\n● take a picnic\n● wear appropriate " },
+                  { "type": "question", "questionId": "q_7", "number": 7, "question": "wear appropriate ______" },
+                  { "type": "text", "text": "\n\n**Woodwork session**\n● suitable for " },
+                  { "type": "question", "questionId": "q_8", "number": 8, "question": "suitable for ______ to participate in" },
+                  { "type": "text", "text": " to participate in\n● making " },
+                  { "type": "question", "questionId": "q_9", "number": 9, "question": "making ______ out of wood" },
+                  { "type": "text", "text": " out of wood\n● 17th, from 10 a.m. to 3 p.m.\n● cost of session (no camping): £" },
+                  { "type": "question", "questionId": "q_10", "number": 10, "question": "cost of session (no camping): £______" }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "audio_url": "https://res.cloudinary.com/.../part2.mp3",
+      "passage": "You will hear a tour guide called Lou Miller talking to people about a boat trip round Tasmania.",
+      "questionGroups": [
+        {
+          "id": "group_2",
+          "type": "mcq_single",
+          "instructions": "Choose the correct letter, A, B or C.",
+          "questionRange": "11-14",
+          "questions": [
+            {
+              "questionId": "q_11",
+              "number": 11,
+              "question": "What is the maximum number of people who can stand on each side of the boat?",
+              "options": [
+                { "id": "A", "text": "9" },
+                { "id": "B", "text": "15" },
+                { "id": "C", "text": "18" }
+              ]
+            },
+            {
+              "questionId": "q_12",
+              "number": 12,
+              "question": "What colour are the tour boats?",
+              "options": [
+                { "id": "A", "text": "dark red" },
+                { "id": "B", "text": "jet black" },
+                { "id": "C", "text": "light green" }
+              ]
+            },
+            {
+              "questionId": "q_13",
+              "number": 13,
+              "question": "Which lunchbox is suitable for someone who doesn't eat meat or fish?",
+              "options": [
+                { "id": "A", "text": "Lunchbox 1" },
+                { "id": "B", "text": "Lunchbox 2" },
+                { "id": "C", "text": "Lunchbox 3" }
+              ]
+            },
+            {
+              "questionId": "q_14",
+              "number": 14,
+              "question": "What should people do with their litter?",
+              "options": [
+                { "id": "A", "text": "take it home" },
+                { "id": "B", "text": "hand it to a member of staff" },
+                { "id": "C", "text": "put it in the bins provided on the boat" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "group_3",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A\u2013E.",
+          "questionRange": "15-16",
+          "questionId": "q_15_16",
+          "select": 2,
+          "questionNumbers": [15, 16],
+          "question": "Which TWO features of the lighthouse does Lou mention?",
+          "options": [
+            { "id": "A", "text": "why it was built" },
+            { "id": "B", "text": "who built it" },
+            { "id": "C", "text": "how long it took to build" },
+            { "id": "D", "text": "who staffed it" },
+            { "id": "E", "text": "what it was built with" }
+          ]
+        },
+        {
+          "id": "group_4",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A\u2013E.",
+          "questionRange": "17-18",
+          "questionId": "q_17_18",
+          "select": 2,
+          "questionNumbers": [17, 18],
+          "question": "Which TWO types of creature might come close to the boat?",
+          "options": [
+            { "id": "A", "text": "sea eagles" },
+            { "id": "B", "text": "fur seals" },
+            { "id": "C", "text": "dolphins" },
+            { "id": "D", "text": "whales" },
+            { "id": "E", "text": "penguins" }
+          ]
+        },
+        {
+          "id": "group_5",
+          "type": "mcq_multiple",
+          "instructions": "Choose TWO letters, A\u2013E.",
+          "questionRange": "19-20",
+          "questionId": "q_19_20",
+          "select": 2,
+          "questionNumbers": [19, 20],
+          "question": "Which TWO points does Lou make about the caves?",
+          "options": [
+            { "id": "A", "text": "Only large tourist boats can visit them." },
+            { "id": "B", "text": "The entrances to them are often blocked." },
+            { "id": "C", "text": "It is too dangerous for individuals to go near them." },
+            { "id": "D", "text": "Someone will explain what is inside them." },
+            { "id": "E", "text": "They cannot be reached on foot." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "audio_url": "https://res.cloudinary.com/.../part3.mp3",
+      "passage": "You will hear two veterinary science students, Diana and Tim, discussing their work experience on farms and the modules on their course.",
+      "questionGroups": [
+        {
+          "id": "group_6",
+          "type": "mcq_single",
+          "instructions": "Choose the correct letter, A, B or C.",
+          "questionRange": "21-26",
+          "questions": [
+            {
+              "questionId": "q_21",
+              "number": 21,
+              "question": "What problem did both Diana and Tim have when arranging their work experience?",
+              "options": [
+                { "id": "A", "text": "making initial contact with suitable farms" },
+                { "id": "B", "text": "organising transport to and from the farm" },
+                { "id": "C", "text": "finding a placement for the required length of time" }
+              ]
+            },
+            {
+              "questionId": "q_22",
+              "number": 22,
+              "question": "Tim was pleased to be able to help",
+              "options": [
+                { "id": "A", "text": "a lamb that had a broken leg." },
+                { "id": "B", "text": "a sheep that was having difficulty giving birth." },
+                { "id": "C", "text": "a newly born lamb that was having trouble feeding." }
+              ]
+            },
+            {
+              "questionId": "q_23",
+              "number": 23,
+              "question": "Diana says the sheep on her farm",
+              "options": [
+                { "id": "A", "text": "were of various different varieties." },
+                { "id": "B", "text": "were mainly reared for their meat." },
+                { "id": "C", "text": "had better quality wool than sheep on the hills." }
+              ]
+            },
+            {
+              "questionId": "q_24",
+              "number": 24,
+              "question": "What did the students learn about adding supplements to chicken feed?",
+              "options": [
+                { "id": "A", "text": "These should only be given if specially needed." },
+                { "id": "B", "text": "It is worth paying extra for the most effective ones." },
+                { "id": "C", "text": "The amount given at one time should be limited." }
+              ]
+            },
+            {
+              "questionId": "q_25",
+              "number": 25,
+              "question": "What happened when Diana was working with dairy cows?",
+              "options": [
+                { "id": "A", "text": "She identified some cows incorrectly." },
+                { "id": "B", "text": "She accidentally threw some milk away." },
+                { "id": "C", "text": "She made a mistake when storing milk." }
+              ]
+            },
+            {
+              "questionId": "q_26",
+              "number": 26,
+              "question": "What did both farmers mention about vets and farming?",
+              "options": [
+                { "id": "A", "text": "Vets are failing to cope with some aspects of animal health." },
+                { "id": "B", "text": "There needs to be a fundamental change in the training of vets." },
+                { "id": "C", "text": "Some jobs could be done by the farmer rather than by a vet." }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "group_7",
+          "type": "matching",
+          "instructions": "What opinion do the students give about each of the following modules on their veterinary science course? Choose FOUR answers from the box and write the correct letter, A\u2013F, next to questions 27\u201330.",
+          "questionRange": "27-30",
+          "optionsTitle": "Opinions",
+          "options": [
+            { "id": "A", "text": "Tim found this easier than expected." },
+            { "id": "B", "text": "Tim thought this was not very clearly organised." },
+            { "id": "C", "text": "Diana may do some further study on this." },
+            { "id": "D", "text": "They both found the reading required for this was difficult." },
+            { "id": "E", "text": "Tim was shocked at something he learned on this module." },
+            { "id": "F", "text": "They were both surprised how little is known about some aspects of this." }
+          ],
+          "questions": [
+            { "questionId": "q_27", "number": 27, "question": "Medical terminology" },
+            { "questionId": "q_28", "number": 28, "question": "Diet and nutrition" },
+            { "questionId": "q_29", "number": 29, "question": "Animal disease" },
+            { "questionId": "q_30", "number": 30, "question": "Wildlife medication" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_4",
+      "title": "Part 4",
+      "audio_url": "https://res.cloudinary.com/.../part4.mp3",
+      "passage": "You will hear a lecture about labyrinths.",
+      "questionGroups": [
+        {
+          "id": "group_8",
+          "type": "notes_completion",
+          "title": "Labyrinths",
+          "instructions": "Complete the notes below. Write ONE WORD ONLY for each answer.",
+          "questionRange": "31-40",
+          "layout": {
+            "blocks": [
+              {
+                "type": "heading",
+                "text": "Labyrinths"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  { "type": "text", "text": "**Definition**\n● a winding spiral path leading to a central area\n\n**Labyrinths compared with mazes**\n● Mazes are a type of " },
+                  { "type": "question", "questionId": "q_31", "number": 31, "question": "Mazes are a type of ______" },
+                  { "type": "text", "text": "\n● " },
+                  { "type": "question", "questionId": "q_32", "number": 32, "question": "______ is needed to navigate through a maze" },
+                  { "type": "text", "text": " is needed to navigate through a maze\n● the word 'maze' is derived from a word meaning a feeling of " },
+                  { "type": "question", "questionId": "q_33", "number": 33, "question": "the word 'maze' is derived from a word meaning a feeling of ______" },
+                  { "type": "text", "text": "\n● Labyrinths represent a journey through life\n● they have frequently been used in " },
+                  { "type": "question", "questionId": "q_34", "number": 34, "question": "they have frequently been used in ______ and prayer" },
+                  { "type": "text", "text": " and prayer\n\n**Early examples of the labyrinth spiral**\n● Ancient carvings on " },
+                  { "type": "question", "questionId": "q_35", "number": 35, "question": "Ancient carvings on ______ have been found across many cultures" },
+                  { "type": "text", "text": " have been found across many cultures\n● The Pima, a Native American tribe, wove the symbol on baskets\n● Ancient Greeks used the symbol on " },
+                  { "type": "question", "questionId": "q_36", "number": 36, "question": "Ancient Greeks used the symbol on ______" },
+                  { "type": "text", "text": "\n\n**Walking labyrinths**\n● The largest surviving example of a turf labyrinth once had a big " },
+                  { "type": "question", "questionId": "q_37", "number": 37, "question": "The largest surviving example of a turf labyrinth once had a big ______ at its centre" },
+                  { "type": "text", "text": " at its centre\n\n**Labyrinths nowadays**\n● Believed to have a beneficial impact on mental and physical health, e.g., walking a maze can reduce a person's " },
+                  { "type": "question", "questionId": "q_38", "number": 38, "question": "walking a maze can reduce a person's ______ rate" },
+                  { "type": "text", "text": " rate\n● Used in medical and health and fitness settings and also prisons\n● Popular with patients, visitors and staff in hospitals\n   - patients who can't walk can use 'finger labyrinths' made from " },
+                  { "type": "question", "questionId": "q_39", "number": 39, "question": "patients who can't walk can use 'finger labyrinths' made from ______" },
+                  { "type": "text", "text": "\n   - research has shown that Alzheimer's sufferers experience less " },
+                  { "type": "question", "questionId": "q_40", "number": 40, "question": "research has shown that Alzheimer's sufferers experience less ______" },
+                  { "type": "text", "text": "" }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

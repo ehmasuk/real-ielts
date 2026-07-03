@@ -40,19 +40,16 @@ export default function BooksPage() {
   const updateMutation = useMutation({
     mutationFn: updateBook,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["books"] }),
-    onError: (err) => console.error(err),
   })
 
   const createMutation = useMutation({
     mutationFn: createBook,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["books"] }),
-    onError: (err) => console.error(err),
   })
 
   const deleteMutation = useMutation({
     mutationFn: deleteBook,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["books"] }),
-    onError: (err) => console.error(err),
   })
 
   const handleEdit = React.useCallback((book: BookItem) => {

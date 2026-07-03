@@ -1,0 +1,60 @@
+{
+  "title": "Cambridge IELTS 18 Test 3 Speaking",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "instructions": "The examiner asks you about yourself, your home, work or studies and other familiar topics.",
+      "topics": [
+        {
+          "title": "Online shopping",
+          "questions": [
+            "How often do you buy things online? [Why?]",
+            "What was the last thing you bought online?",
+            "Do you ever see things in shops and then buy them online? [Why/Why not?]",
+            "Do you think the popularity of online shopping is changing your town or city centre? [Why/Why not?]"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "instructions": "You will have 1 minute to prepare and should speak for 1\u20132 minutes.",
+      "cueCard": {
+        "title": "Describe a time when you enjoyed visiting a member of your family in their home.",
+        "task": "Describe a time when you enjoyed visiting a member of your family in their home.",
+        "points": [
+          "Who you visited and where they lived",
+          "Why you made this visit",
+          "What happened during this visit",
+          "And explain what you enjoyed about this visit"
+        ],
+        "endingQuestion": "And explain what you enjoyed about this visit."
+      }
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "instructions": "The examiner and the candidate discuss issues related to the Part 2 topic.",
+      "discussionTopics": [
+        {
+          "title": "Family occasions",
+          "questions": [
+            "When do families celebrate together in your country?",
+            "How often do all the generations in a family come together in your country?",
+            "Why is it that some people might not enjoy attending family occasions?"
+          ]
+        },
+        {
+          "title": "Everyday life in families",
+          "questions": [
+            "Do you think it is a good thing for parents to help their children with schoolwork?",
+            "How important do you think it is for families to eat together at least once a day?",
+            "Do you believe that everyone in a family should share household tasks?"
+          ]
+        }
+      ]
+    }
+  ]
+}

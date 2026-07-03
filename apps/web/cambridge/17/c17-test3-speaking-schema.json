@@ -1,0 +1,50 @@
+{
+  "title": "Cambridge IELTS 17 Test 3 Speaking",
+  "sections": [
+    {
+      "id": "part_1",
+      "title": "Part 1",
+      "instructions": "The examiner asks you about yourself, your home, work or studies and other familiar topics.",
+      "topics": [
+        {
+          "title": "Drinks",
+          "questions": [
+            "What do you like to drink with your dinner? [Why?]",
+            "Do you drink a lot of water every day? [Why/Why not?]",
+            "Do you prefer drinking tea or coffee? [Why?]",
+            "If people visit you in your home, what do you usually offer them to drink? [Why/Why not?]"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "part_2",
+      "title": "Part 2",
+      "instructions": "You will have 1 minute to prepare and should speak for 1\u20132 minutes.",
+      "cueCard": {
+        "title": "Describe a monument (e.g., a statue or sculpture) that you like.",
+        "task": "Describe a monument (e.g., a statue or sculpture) that you like.",
+        "points": [
+          "What this monument is",
+          "Where this monument is",
+          "What it looks like",
+          "And explain why you like this monument."
+        ],
+        "endingQuestion": "And explain why you like this monument."
+      }
+    },
+    {
+      "id": "part_3",
+      "title": "Part 3",
+      "instructions": "The examiner and the candidate discuss issues related to the Part 2 topic.",
+      "questions": [
+        "What kinds of monuments do tourists in your country enjoy visiting?",
+        "Why do you think there are often statues of famous people in public places?",
+        "Do you agree that old monuments and buildings should always be preserved?",
+        "Why is architecture such a popular university subject?",
+        "In what ways has the design of homes changed in recent years?",
+        "To what extent does the design of buildings affect people's moods?"
+      ]
+    }
+  ]
+}

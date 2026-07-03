@@ -137,14 +137,18 @@ export default function SpeakingPage() {
                         <div>
                           <Link
                             href={test ? `/test/${test._id}/speaking` : "#"}
-                            className={`flex items-center justify-between rounded-lg border px-3 py-3 text-xs font-semibold transition-all shadow-sm ${
+                            className={`group flex items-center justify-between rounded-xl border px-4 py-3 text-xs font-semibold transition-all duration-300 ${
                               test
-                                ? "border-border/40 bg-background/50 hover:bg-violet-600 hover:border-violet-600 hover:text-white text-muted-foreground cursor-pointer"
-                                : "border-border/20 bg-background/20 text-muted-foreground/30 pointer-events-none"
+                                ? "border-border/50 bg-background/80 hover:bg-violet-500/5 hover:border-violet-500/30 text-foreground/80 hover:text-violet-600 dark:hover:text-violet-400 shadow-sm cursor-pointer"
+                                : "border-transparent bg-muted/30 text-muted-foreground/40 pointer-events-none"
                             }`}
                           >
                             <span>View Questions</span>
-                            {test && <span className="text-[9px] opacity-70">3 parts</span>}
+                            {test && (
+                              <span className="text-[10px] font-medium text-violet-500/60 transition-colors group-hover:text-violet-600 dark:group-hover:text-violet-400">
+                                3 parts
+                              </span>
+                            )}
                           </Link>
                         </div>
                       </div>
