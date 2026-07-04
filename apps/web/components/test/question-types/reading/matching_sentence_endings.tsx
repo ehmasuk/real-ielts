@@ -33,7 +33,7 @@ export const MatchingSentenceEndings = React.memo(function MatchingSentenceEndin
               <span className="w-8 shrink-0 pt-0.5 font-bold">{q.number}.</span>
               <p className="flex-1">{formatString(q.question)}</p>
               <input
-                className="w-16 border border-black px-2 py-1 text-center uppercase outline-none"
+                className="w-16 border border-black dark:border-white/30 px-2 py-1 text-center uppercase outline-none"
                 maxLength={1}
                 placeholder={placeholder}
                 value={answers[qId] ?? ""}

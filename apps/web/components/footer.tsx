@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
-import { GraduationCap } from "lucide-react"
+import { GraduationCap, Bug } from "lucide-react"
+import { ReportBugModal } from "@/components/ReportBugModal"
 
 const quickLinks = [
   { href: "/listening", label: "Listening" },
@@ -13,6 +15,7 @@ const quickLinks = [
 const currentYear = new Date().getFullYear()
 
 export function Footer() {
+  const [reportOpen, setReportOpen] = useState(false)
   return (
     <footer className="w-full border-t border-border/40 bg-muted/30 dark:bg-muted/10">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
@@ -60,10 +63,12 @@ export function Footer() {
           <div className="flex gap-4">
             <Link href="#" className="hover:underline">Privacy Policy</Link>
             <Link href="#" className="hover:underline">Terms of Service</Link>
+            <Link href="#" className="hover:underline inline-flex items-center gap-1" onClick={(e) => { e.preventDefault(); setReportOpen(true) }}> <Bug className="h-3 w-3" /> Report Bug</Link>
           </div>
         </div>
 
       </div>
+      <ReportBugModal open={reportOpen} onClose={() => setReportOpen(false)} />
     </footer>
   )
 }

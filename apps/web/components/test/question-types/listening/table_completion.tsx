@@ -27,7 +27,7 @@ export const TableCompletion = React.memo(function TableCompletion({ group, answ
             {layout.columns.map((col: string, ci: number) => (
               <th
                 key={ci}
-                className="border border-black p-3 text-center font-bold"
+                className="border border-black dark:border-white/30 p-3 text-center font-bold"
               >
                 {col}
               </th>
@@ -38,7 +38,7 @@ export const TableCompletion = React.memo(function TableCompletion({ group, answ
           {layout.rows.map((row: any[], ri: number) => (
             <tr key={ri}>
               {row.map((cell: any[], ci: number) => (
-                <td key={ci} className="border border-black p-3 leading-loose">
+                <td key={ci} className="border border-black dark:border-white/30 p-3 leading-loose">
                   {cell?.map((item: any, ii: number) => {
                     if (item.type === "text")
                       return (

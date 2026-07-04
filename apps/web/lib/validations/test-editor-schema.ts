@@ -1,5 +1,6 @@
+import { TestItem } from "@/app/admin/lib/mock-data";
 import { z } from "zod"
-import { TestItem } from "../mock-data"
+
 
 export const getValidationIssues = (contentJson: string, answerJson: string, test: TestItem | null) => {
   const issues: { type: "error" | "warning"; message: string }[] = []
@@ -34,17 +35,17 @@ export const getValidationIssues = (contentJson: string, answerJson: string, tes
 
   // Define question group schemas
   const QuestionGroupBase = z.object({
-    type: z.string({ required_error: "Missing 'type'" }),
-    instructions: z.string({ required_error: "Missing 'instructions'" }),
-    questionRange: z.string({ required_error: "Missing 'questionRange'" }),
+    type: z.string("Missing 'type'"),
+    instructions: z.string("Missing 'instructions'"),
+    questionRange: z.string("Missing 'questionRange'"),
     questions: z.array(QuestionBase).optional(),
   })
 
   const ContentSchema = z.object({
-    title: z.string({ required_error: "Test title ('title' key) is missing" }),
+    title: z.string("Test title ('title' key) is missing"),
     sections: z.array(
       z.object({
-        id: z.string({ required_error: "Section is missing an 'id'" }),
+        id: z.string("Section is missing an 'id'"),
         title: z.string().optional(),
         audio_url: z.string().optional(),
         instructions: z.string().optional(),

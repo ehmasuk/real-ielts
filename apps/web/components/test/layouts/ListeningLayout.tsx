@@ -24,7 +24,7 @@ export const ListeningLayout = React.memo(function ListeningLayout({
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8 pb-24 sm:px-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           {sectionTitle}
         </h1>
       </div>

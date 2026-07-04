@@ -12,7 +12,7 @@ export const SubmitButton = React.memo(function SubmitButton({
   onClick: () => void
 }) {
   return (
-    <div className="mt-12 flex justify-center border-t border-gray-200 pt-6">
+    <div className="mt-12 flex justify-center border-t border-border pt-6">
       <button
         onClick={onClick}
         disabled={submitting}

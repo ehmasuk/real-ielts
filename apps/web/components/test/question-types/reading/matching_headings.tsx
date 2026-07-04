@@ -19,8 +19,8 @@ export const MatchingHeadings = React.memo(function MatchingHeadings({ group, an
       {instructions && <p className="font-medium">{formatString(instructions)}</p>}
 
       {headings && headings.length > 0 && (
-        <div className="space-y-1 rounded-lg border border-black/20 bg-gray-50 p-4">
-          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-500">
+        <div className="space-y-1 rounded-lg border border-border bg-muted/50 p-4">
+          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
             List of Headings
           </p>
           {headings.map((h: any) => (
@@ -39,11 +39,11 @@ export const MatchingHeadings = React.memo(function MatchingHeadings({ group, an
               <span className="w-8 shrink-0 text-sm font-bold">
                 {q.number}.
               </span>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-muted-foreground">
                 Section {q.sectionId?.replace("section_", "")}
               </span>
               <select
-                className="border border-black px-2 py-1 text-sm outline-none"
+                className="border border-black dark:border-white/30 px-2 py-1 text-sm outline-none"
                 value={answers[qId] ?? ""}
                 onChange={(e) => onAnswerChange(qId, e.target.value)}
               >

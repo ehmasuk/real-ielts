@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   GraduationCap,
   ChevronLeft,
+  Bug,
 } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
@@ -57,6 +58,7 @@ const navGroups: NavGroup[] = [
     title: "Operations",
     items: [
       { href: "/admin/imports", label: "Imports", icon: Upload },
+      { href: "/admin/bug-reports", label: "Bug Reports", icon: Bug },
     ],
   },
   {

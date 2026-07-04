@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useSyncExternalStore } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useTheme } from "@/providers/theme-provider"
 import { BookOpen, Moon, Sun, Menu, X, GraduationCap, Headphones, PenTool, Mic, LogOut, User, ChevronDown, Mail } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
@@ -49,6 +50,7 @@ export const Header = React.memo(function Header() {
   const mounted = useIsClient()
   const { isAuthenticated, user, signIn, signOut } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+  const pathname = usePathname()
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
@@ -89,9 +91,9 @@ export const Header = React.memo(function Header() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="group relative flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className={`group relative flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.startsWith(link.href) ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
               >
-                <Icon className="h-4 w-4 text-muted-foreground/75 transition-colors group-hover:text-primary" />
+                <Icon className={`h-4 w-4 transition-colors ${pathname.startsWith(link.href) ? "text-primary" : "text-muted-foreground/75 group-hover:text-primary"}`} />
                 {link.label}
                 {link.badge && (
                   <span className="ml-1 rounded-full bg-indigo-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
@@ -178,7 +180,7 @@ export const Header = React.memo(function Header() {
             {mounted && resolvedTheme === "dark" ? (
               <Sun className="h-4 w-4 text-yellow-500" />
             ) : (
-              <Moon className="h-4 w-4" />
+              <Moon className="h-4 w-4 text-slate-700 dark:text-slate-300" />
             )}
           </Button>
           
@@ -219,9 +221,9 @@ export const Header = React.memo(function Header() {
                   key={link.label}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${pathname.startsWith(link.href) ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
                 >
-                  <Icon className="h-4 w-4 text-muted-foreground" />
+                  <Icon className={`h-4 w-4 ${pathname.startsWith(link.href) ? "text-primary" : "text-muted-foreground"}`} />
                   {link.label}
                   {link.badge && (
                     <span className="ml-auto rounded-full bg-indigo-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">

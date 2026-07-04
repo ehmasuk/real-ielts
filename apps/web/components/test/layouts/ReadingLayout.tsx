@@ -27,7 +27,7 @@ export const ReadingLayout = React.memo(function ReadingLayout({
   isAuthenticated: boolean
 }) {
   const passageContent = React.useMemo(() => (
-    <div className="w-1/2 overflow-y-auto border-r border-gray-200 px-6 py-8">
+    <div className="w-1/2 overflow-y-auto border-r border-border px-6 py-8">
       {sectionTitle && (
         <h2 className="mb-2 text-xl leading-tight font-bold">
           {formatString(sectionTitle)}

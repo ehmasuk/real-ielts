@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useAuth } from "@/lib/use-auth"
 
-export const AuthGate = React.memo(function AuthGate({ children }: { children: React.ReactNode }) {
+export const AuthGate = React.memo(function AuthGate({ children, onBeforeSignIn }: { children: React.ReactNode; onBeforeSignIn?: () => void }) {
   const { user, isAuthenticated, signIn } = useAuth()
 
   return (
@@ -12,14 +12,17 @@ export const AuthGate = React.memo(function AuthGate({ children }: { children: R
 
       {!isAuthenticated && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-sm bg-white p-8 shadow-xl">
+          <div className="w-full max-w-sm bg-background p-8 shadow-xl">
             <h2 className="mb-2 text-lg font-bold">Sign in to continue</h2>
-            <p className="mb-6 text-sm text-gray-500">
+            <p className="mb-6 text-sm text-muted-foreground">
               You need to sign in to submit your answers.
             </p>
             <button
-              onClick={() => signIn()}
-              className="flex w-full items-center justify-center gap-2 border border-gray-300 px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-50"
+              onClick={() => {
+                onBeforeSignIn?.()
+                signIn()
+              }}
+              className="flex w-full items-center justify-center gap-2 border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-muted"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path

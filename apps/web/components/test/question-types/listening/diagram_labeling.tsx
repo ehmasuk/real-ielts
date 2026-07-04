@@ -32,7 +32,7 @@ export const DiagramLabeling = React.memo(function DiagramLabeling({
             <span className="w-6 shrink-0 font-bold">{q.number}.</span>
             <span className="">{formatString(q.question)}</span>
             <input
-              className="w-12 border border-black px-2 py-1 text-center font-bold uppercase outline-none"
+              className="w-12 border border-black dark:border-white/30 px-2 py-1 text-center font-bold uppercase outline-none"
               value={answers[q.questionId] ?? ""}
               onChange={(e) => onAnswerChange(q.questionId, e.target.value.toUpperCase())}
               placeholder={options?.length ? `${options[0]}–${options[options.length - 1]}` : ""}

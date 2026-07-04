@@ -28,7 +28,7 @@ export const GapFill = React.memo(function GapFill({ group, answers, onAnswerCha
                   {formatString(part)}
                   {pi < arr.length - 1 && (
                     <input
-                      className="mx-1 inline-block text-center w-28 border border-black bg-transparent px-2 py-0.5 text-sm outline-none"
+                      className="mx-1 inline-block text-center w-28 border border-black dark:border-white/30 bg-transparent px-2 py-0.5 text-sm outline-none"
                       placeholder={q.number}
                       value={answers[q.questionId] ?? ""}
                       onChange={(e) =>

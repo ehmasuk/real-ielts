@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useRef, useEffect } from "react"
+import { useMemo, useRef, useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
 import { useAuth } from "@/lib/use-auth"
@@ -8,10 +8,15 @@ import { useTestPart } from "@/components/test/shared/useTestPart"
 import { TestHeader } from "@/components/test/shared/TestHeader"
 import { AuthGate } from "@/components/test/shared/AuthGate"
 import { TestTimer } from "@/components/test/shared/TestTimer"
+import { useTestGuard } from "@/components/test/shared/useTestGuard"
+import { LeaveTestModal } from "@/components/test/shared/LeaveTestModal"
+import { ReportBugModal } from "@/components/ReportBugModal"
 import { ListeningLayout } from "@/components/test/layouts/ListeningLayout"
-import { Users, Settings } from "lucide-react"
+import { Users, Settings, Bug, AlarmClock } from "lucide-react"
 
 export default function ListeningPartPage() {
+  const { showModal, confirmLeave, cancelLeave, bypassOnce } = useTestGuard()
+  const [reportOpen, setReportOpen] = useState(false)
   const params = useParams()
   const testId = params.testId as string
   const partNum = parseInt(params.partNum as string, 10)
@@ -57,10 +62,10 @@ export default function ListeningPartPage() {
 
   if (authLoading || isLoading || redirecting) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
+      <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-500/30 border-t-indigo-500" />
-          <p className="text-sm text-gray-500">Loading test...</p>
+          <p className="text-sm text-muted-foreground">Loading test...</p>
         </div>
       </div>
     )
@@ -68,8 +73,8 @@ export default function ListeningPartPage() {
 
   if (!data) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-white">
-        <p className="text-gray-500">Test or part not found.</p>
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background">
+        <p className="text-muted-foreground">Test or part not found.</p>
         <Link
           href="/listening"
           className="text-sm text-indigo-500 hover:underline"
@@ -81,7 +86,7 @@ export default function ListeningPartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <div className="sticky top-0 z-50 flex h-14 items-center gap-4 bg-[#1a1a1a] px-4 text-xs text-white">
         <div className="flex min-w-0 items-center gap-2">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10">
@@ -94,9 +99,7 @@ export default function ListeningPartPage() {
 
         <div className="flex flex-1 items-center justify-center gap-8">
           <div className="flex items-center gap-1.5 font-mono text-sm font-bold tracking-wider text-white">
-            <span className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-current">
-              <span className="h-1.5 w-1.5 rounded-full bg-current" />
-            </span>
+            <AlarmClock className="size-4" />
             <TestTimer initialElapsed={elapsed} formatTime={formatTime} />
           </div>
           {audio_url && (
@@ -111,18 +114,21 @@ export default function ListeningPartPage() {
               Settings
             </span>
           </button>
-          <button className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-white/70 transition-colors hover:bg-white/10 hover:text-white">
+          <button onClick={() => setReportOpen(true)} className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-white/70 transition-colors hover:bg-white/10 hover:text-white">
+            <Bug className="h-3.5 w-3.5" />
             <span className="hidden text-[11px] font-medium sm:inline">
-              Help
+              Report
             </span>
-            ❔
           </button>
         </div>
       </div>
 
-      <AuthGate>
+      <AuthGate onBeforeSignIn={bypassOnce}>
         {layout}
       </AuthGate>
+
+      <LeaveTestModal open={showModal} onConfirm={confirmLeave} onCancel={cancelLeave} />
+      <ReportBugModal open={reportOpen} onClose={() => setReportOpen(false)} />
     </div>
   )
 }

@@ -102,3 +102,25 @@ export const deleteTest = async (id: string) => {
   const res = await api.delete(`/admin/tests/${id}`)
   return res.data
 }
+
+// ─── Bug Reports ──────────────────────────────────────────────────────────────
+
+export const submitBugReport = async (data: { description: string }) => {
+  const res = await api.post("/bug-reports", data)
+  return res.data
+}
+
+export const fetchBugReports = async () => {
+  const res = await api.get("/admin/bug-reports")
+  return res.data
+}
+
+export const markBugReportAsFixed = async (id: string, fixed: boolean) => {
+  const res = await api.patch(`/admin/bug-reports/${id}/fixed`, { fixed })
+  return res.data
+}
+
+export const deleteBugReport = async (id: string) => {
+  const res = await api.delete(`/admin/bug-reports/${id}`)
+  return res.data
+}

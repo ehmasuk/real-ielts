@@ -642,7 +642,7 @@ function renderMcqMultiple(group: any, resultMap: Map<string, ResultItem>) {
             <span className="text-muted-foreground w-20 text-xs font-semibold uppercase tracking-wider mt-0.5">Selected:</span>
             <div className="flex flex-wrap gap-1.5">
               {userSelected.map((ans, i) => (
-                <span key={i} className={`px-2.5 py-1 rounded-md font-bold text-xs shadow-sm ${isCorrect ? "bg-emerald-500/10 text-emerald-600" : "bg-red-500/10 text-red-600"}`}>
+                <span key={i} className={`px-2.5 py-1 rounded-md font-bold text-xs shadow-sm ${isCorrect ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-red-500/10 text-red-600 dark:text-red-400"}`}>
                   {ans}
                 </span>
               ))}
@@ -655,7 +655,7 @@ function renderMcqMultiple(group: any, resultMap: Map<string, ResultItem>) {
             <span className="text-muted-foreground w-20 text-xs font-semibold uppercase tracking-wider mt-0.5">Correct:</span>
             <div className="flex flex-wrap gap-1.5">
               {correctAnswers.map((ans, i) => (
-                 <span key={i} className="px-2.5 py-1 rounded-md font-bold text-xs bg-emerald-500/10 text-emerald-600 shadow-sm">
+                 <span key={i} className="px-2.5 py-1 rounded-md font-bold text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm">
                    {ans}
                  </span>
               ))}
