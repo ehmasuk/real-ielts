@@ -1,25 +1,26 @@
-import { NextRequest, NextResponse } from "next/server"
-import { headers } from "next/headers"
-import { auth } from "@/lib/auth"
+import { auth } from "@/auth"
+import { NextResponse } from "next/server"
 
-export async function proxy(request: NextRequest) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+const proxy = auth((req) => {
+  const { nextUrl } = req
+  const isLoggedIn = !!req.auth
+  const role = req.auth?.user?.role
 
+  const isAdminRoute = nextUrl.pathname.startsWith("/admin")
 
-  if (!session) {
-    return NextResponse.redirect(new URL("/sign-in", request.url))
-  }
-
-  const role = (session.user as any)?.role
-
-  if (!role || role !== "admin") {
-    return NextResponse.redirect(new URL("/", request.url))
+  if (isAdminRoute) {
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL("/api/auth/signin", nextUrl))
+    }
+    if (role !== "admin") {
+      return NextResponse.redirect(new URL("/", nextUrl))
+    }
   }
 
   return NextResponse.next()
-}
+})
+
+export default proxy as any
 
 export const config = {
   matcher: ["/admin/:path*"],

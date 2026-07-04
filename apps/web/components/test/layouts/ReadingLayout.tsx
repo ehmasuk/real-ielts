@@ -26,73 +26,77 @@ export const ReadingLayout = React.memo(function ReadingLayout({
   submitting: boolean
   isAuthenticated: boolean
 }) {
+  const passageContent = React.useMemo(() => (
+    <div className="w-1/2 overflow-y-auto border-r border-gray-200 px-6 py-8">
+      {sectionTitle && (
+        <h2 className="mb-2 text-xl leading-tight font-bold">
+          {formatString(sectionTitle)}
+        </h2>
+      )}
+      {instructions && <p className="mb-10">{formatString(instructions)}</p>}
+      {passage.title && (
+        <h2 className="mb-2 text-center text-xl leading-tight font-bold">
+          {formatString(passage.title)}
+        </h2>
+      )}
+      {passage.subtitle && (
+        <p className="mb-6 text-center">{formatString(passage.subtitle)}</p>
+      )}
+      <div className="space-y-6">
+        {(passage.sections as any[])?.map((section: any, si: number) => (
+          <div key={section.id || si}>
+            <div className="space-y-4">
+              <h3 className="mb-2 font-bold">{formatString(section.label)}</h3>
+              {section.blocks?.map((block: any, bi: number) => {
+                if (block.type === "heading") {
+                  return (
+                    <h4
+                      key={bi}
+                      className={`font-bold ${block.alignment === "center" ? "text-center" : ""}`}
+                    >
+                      {formatString(block.text)}
+                    </h4>
+                  )
+                }
+                if (block.type === "paragraph") {
+                  return (
+                    <p key={bi} className="text-justify">
+                      {formatString(block.text)}
+                    </p>
+                  )
+                }
+                return null
+              })}
+            </div>
+          </div>
+        ))}
+        {!passage.sections && (passage.blocks as any[])?.map((block: any, bi: number) => {
+          if (block.type === "heading") {
+            return (
+              <h4
+                key={bi}
+                className={`font-bold ${block.alignment === "center" ? "text-center" : ""}`}
+              >
+                {formatString(block.text)}
+              </h4>
+            )
+          }
+          if (block.type === "paragraph") {
+            return (
+              <p key={bi} className="text-justify">
+                {formatString(block.text)}
+              </p>
+            )
+          }
+          return null
+        })}
+      </div>
+    </div>
+  ), [sectionTitle, instructions, passage])
+
   return (
     <div className="flex w-full">
-      <div className="w-1/2 overflow-y-auto border-r border-gray-200 px-6 py-8">
-        {sectionTitle && (
-          <h2 className="mb-2 text-xl leading-tight font-bold">
-            {formatString(sectionTitle)}
-          </h2>
-        )}
-        {instructions && <p className="mb-10">{formatString(instructions)}</p>}
-        {passage.title && (
-          <h2 className="mb-2 text-center text-xl leading-tight font-bold">
-            {formatString(passage.title)}
-          </h2>
-        )}
-        {passage.subtitle && (
-          <p className="mb-6 text-center">{formatString(passage.subtitle)}</p>
-        )}
-        <div className="space-y-6">
-          {(passage.sections as any[])?.map((section: any, si: number) => (
-            <div key={section.id || si}>
-              <div className="space-y-4">
-                <h3 className="mb-2 font-bold">{formatString(section.label)}</h3>
-                {section.blocks?.map((block: any, bi: number) => {
-                  if (block.type === "heading") {
-                    return (
-                      <h4
-                        key={bi}
-                        className={`font-bold ${block.alignment === "center" ? "text-center" : ""}`}
-                      >
-                        {formatString(block.text)}
-                      </h4>
-                    )
-                  }
-                  if (block.type === "paragraph") {
-                    return (
-                      <p key={bi} className="text-justify">
-                        {formatString(block.text)}
-                      </p>
-                    )
-                  }
-                  return null
-                })}
-              </div>
-            </div>
-          ))}
-          {!passage.sections && (passage.blocks as any[])?.map((block: any, bi: number) => {
-            if (block.type === "heading") {
-              return (
-                <h4
-                  key={bi}
-                  className={`font-bold ${block.alignment === "center" ? "text-center" : ""}`}
-                >
-                  {formatString(block.text)}
-                </h4>
-              )
-            }
-            if (block.type === "paragraph") {
-              return (
-                <p key={bi} className="text-justify">
-                  {formatString(block.text)}
-                </p>
-              )
-            }
-            return null
-          })}
-        </div>
-      </div>
+      {passageContent}
 
       <div className="w-1/2 overflow-y-auto px-6 py-8 pb-32">
         <div className="space-y-10">

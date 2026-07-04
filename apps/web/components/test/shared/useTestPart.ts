@@ -14,7 +14,6 @@ export function useTestPart(testId: string, partNum: number) {
   const answersRef = useRef<Record<string, any>>({})
   const submittingRef = useRef(false)
   const dataRef = useRef<any>(null)
-  const [tick, setTick] = useState(0)
   const [answers, setAnswers] = useState<Record<string, any>>({})
   const [submitting, setSubmitting] = useState(false)
 
@@ -22,6 +21,7 @@ export function useTestPart(testId: string, partNum: number) {
     queryKey: ["public", "test-part", testId, partNum],
     queryFn: () => fetchPublicTestPart(testId, partNum),
     enabled: !!testId && !!partNum,
+    staleTime: Infinity,
   })
   dataRef.current = data
 
@@ -36,7 +36,6 @@ export function useTestPart(testId: string, partNum: number) {
   useEffect(() => {
     const interval = setInterval(() => {
       elapsedRef.current += 1
-      setTick((n) => n + 1)
     }, 1000)
     return () => clearInterval(interval)
   }, [])

@@ -7,7 +7,7 @@ const testServices = {
     const filter: Record<string, any> = { status: "published" };
     if (filters?.bookId) filter.bookId = new mongoose.Types.ObjectId(filters.bookId);
     if (filters?.skill) filter.skill = filters.skill;
-    return Test.find(filter).select("-answerJson").sort({ testNumber: 1 });
+    return Test.find(filter).select("-answerJson").sort({ testNumber: 1 }).lean();
   },
 
   getAllAdmin: (bookId?: string): Promise<ITest[]> => {
@@ -15,14 +15,15 @@ const testServices = {
     if (bookId) filter.bookId = new mongoose.Types.ObjectId(bookId);
     return Test.find(filter)
       .populate("bookId", "title number")
-      .sort({ testNumber: 1 });
+      .sort({ testNumber: 1 })
+      .lean() as unknown as Promise<ITest[]>;
   },
 
   getById: (id: string): Promise<ITest | null> =>
-    Test.findOne({ _id: id, status: "published" }).select("-answerJson"),
+    Test.findOne({ _id: id, status: "published" }).select("-answerJson").lean() as unknown as Promise<ITest | null>,
 
   getPart: async (testId: string, partIndex: number) => {
-    const test = await Test.findOne({ _id: testId, status: "published" }).select("-answerJson");
+    const test = await Test.findOne({ _id: testId, status: "published" }).select("-answerJson").lean();
     if (!test) return null;
     const sections = (test.contentJson as any)?.sections as any[] | undefined;
     if (!sections || partIndex < 0 || partIndex >= sections.length) return null;
@@ -132,7 +133,7 @@ const testServices = {
   },
 
   getPartResult: async (userId: string, testId: string, partIndex: number) => {
-    const test = await Test.findById(testId).select("-answerJson");
+    const test = await Test.findById(testId).select("-answerJson").lean();
     if (!test) return null;
     const sections = (test.contentJson as any)?.sections as any[] | undefined;
     if (!sections || partIndex < 0 || partIndex >= sections.length) return null;
@@ -141,7 +142,7 @@ const testServices = {
       userId: new mongoose.Types.ObjectId(userId),
       testId: new mongoose.Types.ObjectId(testId),
       partNum: partIndex + 1,
-    });
+    }).lean();
 
     if (!result) return null;
 
@@ -158,7 +159,7 @@ const testServices = {
   },
 
   getByIdAdmin: (id: string): Promise<ITest | null> =>
-    Test.findById(id).populate("bookId", "title number"),
+    Test.findById(id).populate("bookId", "title number").lean() as unknown as Promise<ITest | null>,
 
   create: ({
     bookId,

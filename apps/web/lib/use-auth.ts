@@ -1,67 +1,40 @@
-import { useEffect, useRef, useCallback, useState } from "react"
-import { authClient } from "@/lib/auth-client"
+import { useEffect, useCallback } from "react"
+import { useSession, signIn as nextAuthSignIn, signOut as nextAuthSignOut } from "next-auth/react"
 import { setAccessToken } from "@/lib/token-manager"
 
 type User = {
-  id: string
-  name: string
-  email: string
-  image?: string
-  emailVerified?: boolean
-  picture?: string
+  id?: string
+  name?: string | null
+  email?: string | null
+  image?: string | null
   role?: string
+  backendId?: string
 }
 
 export function useAuth() {
-  const { data, isPending } = authClient.useSession()
-  const [isSyncing, setIsSyncing] = useState(false)
-  const [syncedRole, setSyncedRole] = useState<string | null>(null)
-  const syncedUserId = useRef<string | null>(null)
-
+  const { data, status } = useSession()
+  const isPending = status === "loading"
 
   useEffect(() => {
-    if (!data?.user) return
-    if (syncedUserId.current === data.user.id) return
-
-    syncedUserId.current = data.user.id
-
-    const sync = async () => {
-      setIsSyncing(true)
-      try {
-        const res = await fetch("/api/auth-sync", { method: "POST" })
-        if (!res.ok) throw new Error("Sync failed")
-        const json = await res.json()
-        setAccessToken(json.data?.token ?? null)
-        setSyncedRole(json.data?.user?.role ?? null)
-      } catch {
-        setAccessToken(null)
-      } finally {
-        setIsSyncing(false)
-      }
+    if (data?.user?.accessToken) {
+      setAccessToken(data.user.accessToken)
+    } else {
+      setAccessToken(null)
     }
-
-    sync()
-  }, [data?.user?.id])
+  }, [data?.user?.accessToken])
 
   const signIn = useCallback((callbackURL?: string) => {
-    authClient.signIn.social({
-      provider: "google",
-      ...(callbackURL ? { callbackURL } : {}),
-    })
+    nextAuthSignIn("google", callbackURL ? { callbackUrl: callbackURL } : undefined)
   }, [])
 
   const signOut = useCallback(async () => {
-    await authClient.signOut()
-    syncedUserId.current = null
+    await nextAuthSignOut()
     setAccessToken(null)
-    setSyncedRole(null)
   }, [])
 
   return {
-    user: data?.user
-      ? { ...(data.user as User), role: syncedRole ?? (data.user as User).role }
-      : null,
-    isLoading: isPending || isSyncing,
+    user: data?.user ? (data.user as User) : null,
+    isLoading: isPending,
     isAuthenticated: !!data?.user,
     signIn,
     signOut,

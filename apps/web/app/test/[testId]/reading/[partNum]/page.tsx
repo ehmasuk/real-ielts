@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useAuth } from "@/lib/use-auth"
 import { useTestPart } from "@/components/test/shared/useTestPart"
 import { AuthGate } from "@/components/test/shared/AuthGate"
+import { TestTimer } from "@/components/test/shared/TestTimer"
 import { ReadingLayout } from "@/components/test/layouts/ReadingLayout"
 import { Users, Settings } from "lucide-react"
 
@@ -87,7 +88,7 @@ export default function ReadingPartPage() {
             <span className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-current">
               <span className="h-1.5 w-1.5 rounded-full bg-current" />
             </span>
-            {formatTime(elapsed)}
+            <TestTimer initialElapsed={elapsed} formatTime={formatTime} />
           </div>
         </div>
 

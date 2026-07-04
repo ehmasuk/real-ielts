@@ -7,6 +7,7 @@ import * as React from "react"
 import { useAuth } from "@/lib/use-auth"
 import { useTestPart } from "@/components/test/shared/useTestPart"
 import { AuthGate } from "@/components/test/shared/AuthGate"
+import { TestTimer } from "@/components/test/shared/TestTimer"
 import { ReadingLayout } from "@/components/test/layouts/ReadingLayout"
 import { ListeningLayout } from "@/components/test/layouts/ListeningLayout"
 
@@ -125,7 +126,7 @@ export default function TestPartPage() {
             <span className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-current">
               <span className="h-1.5 w-1.5 rounded-full bg-current" />
             </span>
-            {formatTime(elapsed)}
+            <TestTimer initialElapsed={elapsed} formatTime={formatTime} />
           </div>
           {isListening && audio_url && (
             <audio ref={audioRef} controls autoPlay controlsList="noplaybackrate nodownload" className="h-8 w-72" src={audio_url} />
