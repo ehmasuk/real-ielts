@@ -13,7 +13,7 @@ const bugReportServices = {
   },
 
   markAsFixed: (id: string, fixed: boolean): Promise<IBugReport | null> => {
-    return BugReport.findByIdAndUpdate(id, { fixed }, { new: true }).lean()
+    return BugReport.findByIdAndUpdate(id, { fixed }, { returnDocument: "after" }).lean()
   },
 
   remove: (id: string): Promise<IBugReport | null> => {

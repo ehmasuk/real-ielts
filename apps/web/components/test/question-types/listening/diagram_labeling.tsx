@@ -14,16 +14,17 @@ export const DiagramLabeling = React.memo(function DiagramLabeling({
   answers,
   onAnswerChange,
 }: Props) {
-  const { questionRange, instructions, image_src, options, questions } = group
+  const { questionRange, instructions, image_src, title, options, questions } = group
   return (
     <div className="space-y-4">
       {questionRange && <p className="font-bold">Questions {questionRange}</p>}
       {instructions && (
-        <p className="font-medium">{formatString(instructions)}</p>
+        <p className="font-medium mb-4">{formatString(instructions)}</p>
       )}
       {image_src && (
-        <div className="h-auto w-[500px] max-w-full">
-          <img src={image_src} className="h-auto w-full" alt="diagram" />
+        <div className="h-auto w-[500px] max-w-full space-y-2">
+          {title && <p className="font-bold text-center mb-2">{formatString(title)}</p>}
+          <img src={image_src} className="h-auto w-full" alt={title || "diagram"} />
         </div>
       )}
       <div className="space-y-2">

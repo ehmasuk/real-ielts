@@ -6,7 +6,8 @@ import { CodeBlock, CodeSnippet, questionTypes } from "../_shared"
 const readingQuestionTypes = questionTypes.filter((qt) =>
   ["mcq_single", "mcq_multiple", "statement_judgement",
    "matching_headings", "matching_information", "matching_features",
-   "matching_sentence_endings", "completion", "completion_layout"].includes(qt.type)
+   "matching_sentence_endings", "completion", "completion_layout",
+   "flowchart_completion"].includes(qt.type)
 )
 
 const readingContentJson = `{
@@ -160,11 +161,11 @@ const readingContentJson = `{
           "instructions": "Choose the correct letter, A, B, C or D.",
           "questionRange": "24-28",
           "questions": [
-            { "questionId": "q_24", "number": 24, "question": "What was the original name of tennis?", "options": ["Jeu de Paume", "Lawn Tennis", "Royal Tennis", "Court Tennis"] },
-            { "questionId": "q_25", "number": 25, "question": "In which century did modern rules first emerge?", "options": ["15th", "16th", "19th", "20th"] },
-            { "questionId": "q_26", "number": 26, "question": "Which tournament is considered the oldest?", "options": ["Wimbledon", "US Open", "French Open", "Australian Open"] },
-            { "questionId": "q_27", "number": 27, "question": "What material were early rackets made from?", "options": ["Wood", "Metal", "Graphite", "Aluminium"] },
-            { "questionId": "q_28", "number": 28, "question": "How has television affected the sport?", "options": ["Reduced live attendance", "Increased prize money", "Shortened match times", "Changed dress codes"] }
+            { "questionId": "q_24", "number": 24, "question": "What was the original name of tennis?", "options": [{ "id": "A", "text": "Jeu de Paume" }, { "id": "B", "text": "Lawn Tennis" }, { "id": "C", "text": "Royal Tennis" }, { "id": "D", "text": "Court Tennis" }] },
+            { "questionId": "q_25", "number": 25, "question": "In which century did modern rules first emerge?", "options": [{ "id": "A", "text": "15th" }, { "id": "B", "text": "16th" }, { "id": "C", "text": "19th" }, { "id": "D", "text": "20th" }] },
+            { "questionId": "q_26", "number": 26, "question": "Which tournament is considered the oldest?", "options": [{ "id": "A", "text": "Wimbledon" }, { "id": "B", "text": "US Open" }, { "id": "C", "text": "French Open" }, { "id": "D", "text": "Australian Open" }] },
+            { "questionId": "q_27", "number": 27, "question": "What material were early rackets made from?", "options": [{ "id": "A", "text": "Wood" }, { "id": "B", "text": "Metal" }, { "id": "C", "text": "Graphite" }, { "id": "D", "text": "Aluminium" }] },
+            { "questionId": "q_28", "number": 28, "question": "How has television affected the sport?", "options": [{ "id": "A", "text": "Reduced live attendance" }, { "id": "B", "text": "Increased prize money" }, { "id": "C", "text": "Shortened match times" }, { "id": "D", "text": "Changed dress codes" }] }
           ]
         },
         {
@@ -188,7 +189,13 @@ const readingContentJson = `{
           "select": 2,
           "questionNumbers": [33, 34],
           "question": "Which TWO factors contributed to the global spread of tennis?",
-          "options": ["Television broadcasts", "Colonial expansion", "Olympic inclusion", "Prize money", "Grassroots programmes"]
+          "options": [
+            { "id": "A", "text": "Television broadcasts" },
+            { "id": "B", "text": "Colonial expansion" },
+            { "id": "C", "text": "Olympic inclusion" },
+            { "id": "D", "text": "Prize money" },
+            { "id": "E", "text": "Grassroots programmes" }
+          ]
         },
         {
           "id": "group_9",
@@ -355,6 +362,7 @@ export default function ReadingSchemaPage() {
           <li><code className="text-[10px] font-mono">allowReuse: true</code> on <code className="text-[10px] font-mono">matching_information</code> / <code className="text-[10px] font-mono">matching_features</code> means the same answer can be used for multiple questions</li>
           <li><code className="text-[10px] font-mono">completion</code> = same structure as listening's <code className="text-[10px] font-mono">sentence_completion</code> (<code className="text-[10px] font-mono">questions[]</code> with <code className="text-[10px] font-mono">______</code> blanks). Handles both Sentence Completion and Short Answer.</li>
           <li><code className="text-[10px] font-mono">completion_layout</code> = same layout structure as listening's <code className="text-[10px] font-mono">notes_completion</code> (<code className="text-[10px] font-mono">layout.blocks</code> with heading/paragraph/inline questions), with optional <code className="text-[10px] font-mono">layoutType</code>: <code className="text-[10px] font-mono">summary | notes | table | flowchart | diagram</code></li>
+          <li><code className="text-[10px] font-mono">flowchart_completion</code> uses <code className="text-[10px] font-mono">image_src</code> for the flowchart image (renders any flowchart design), with optional <code className="text-[10px] font-mono">options</code> for matching-style or free-text input for fill-in-the-blanks</li>
           <li>Use exactly <strong>3 passages</strong> (<code className="text-[10px] font-mono">passage_1</code> through <code className="text-[10px] font-mono">passage_3</code>) per reading test</li>
         </ul>
       </div>

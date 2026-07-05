@@ -14,6 +14,7 @@ const testServices = {
     const filter: Record<string, any> = {};
     if (bookId) filter.bookId = new mongoose.Types.ObjectId(bookId);
     return Test.find(filter)
+      .select("-contentJson -answerJson")
       .populate("bookId", "title number")
       .sort({ testNumber: 1 })
       .lean() as unknown as Promise<ITest[]>;
@@ -112,7 +113,7 @@ const testServices = {
     await UserTestResult.findOneAndUpdate(
       { userId: new mongoose.Types.ObjectId(userId), testId: new mongoose.Types.ObjectId(testId), partNum: partIndex + 1 },
       { answers: userAnswers, results, score, total, timeTaken, submittedAt: new Date() },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: "after" }
     );
 
     return { results, score, total };
@@ -189,7 +190,7 @@ const testServices = {
       answerJson: Record<string, any>;
     }>
   ): Promise<ITest | null> =>
-    Test.findByIdAndUpdate(id, data, { new: true, runValidators: true }),
+    Test.findByIdAndUpdate(id, data, { returnDocument: "after", runValidators: true }),
 
   remove: (id: string): Promise<ITest | null> =>
     Test.findByIdAndDelete(id),
@@ -198,7 +199,7 @@ const testServices = {
     id: string,
     status: "draft" | "published" | "archived"
   ): Promise<ITest | null> =>
-    Test.findByIdAndUpdate(id, { status }, { new: true }),
+    Test.findByIdAndUpdate(id, { status }, { returnDocument: "after" }),
 };
 
 function qid(item: any): string | undefined {

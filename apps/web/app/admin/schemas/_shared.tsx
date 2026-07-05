@@ -98,11 +98,16 @@ export const questionTypes = [
       "questionId": "q_1",
       "number": 1,
       "question": "What type of room does the customer book?",
-      "options": ["Single", "Double", "Suite", "Penthouse"]
+      "options": [
+        { "id": "A", "text": "Single room" },
+        { "id": "B", "text": "Double room" },
+        { "id": "C", "text": "Suite" },
+        { "id": "D", "text": "Penthouse" }
+      ]
     }
   ]
 }`,
-    answerExample: '"q_1": "Double"',
+    answerExample: '"q_1": "B"',
   },
   {
     type: "mcq_multiple",
@@ -117,9 +122,14 @@ export const questionTypes = [
   "select": 2,
   "questionNumbers": [17, 18],
   "question": "Which TWO topics are they considering for the project?",
-  "options": ["Climate change", "Urban planning", "Social media", "Global trade"]
+  "options": [
+    { "id": "A", "text": "Climate change" },
+    { "id": "B", "text": "Urban planning" },
+    { "id": "C", "text": "Social media" },
+    { "id": "D", "text": "Global trade" }
+  ]
 }`,
-    answerExample: '"q_17_18": ["Climate change", "Urban planning"]',
+    answerExample: '"q_17_18": ["A", "B"]',
   },
   {
     type: "table_completion",
@@ -160,7 +170,7 @@ export const questionTypes = [
   "id": "group_2",
   "type": "notes_completion",
   "instructions": "Complete the notes below. Write **ONE WORD ONLY** for each answer.",
-  "questionRange": "31-40",
+  "questionRange": "6-10",
   "layout": {
     "blocks": [
       {
@@ -171,14 +181,14 @@ export const questionTypes = [
         "type": "paragraph",
         "content": [
           { "type": "text", "text": "Name: " },
-          { "type": "question", "questionId": "q_6", "number": 6, "question": "Customer full name" }
+          { "type": "question", "questionId": "q_6", "number": 6, "question": "" }
         ]
       },
       {
         "type": "paragraph",
         "content": [
           { "type": "text", "text": "Email: " },
-          { "type": "question", "questionId": "q_7", "number": 7, "question": "Email address" }
+          { "type": "question", "questionId": "q_7", "number": 7, "question": "" }
         ]
       }
     ]
@@ -196,6 +206,7 @@ export const questionTypes = [
   "instructions": "Choose the correct letter A\u2013F.",
   "questionRange": "11-13",
   "image_src": "/maps/map1.png",
+  "title": "Map of the town centre", // optional
   "options": ["A", "B", "C", "D", "E", "F"],
   "questions": [
     { "questionId": "q_11", "number": 11, "question": "Library" },
@@ -206,6 +217,50 @@ export const questionTypes = [
     answerExample: '"q_11": "A"',
   },
   {
+    type: "flowchart_completion",
+    description: "Complete a flowchart rendered as an image — supports both matching-style (with options) and fill-in-the-blanks (free text)",
+    usedFor: "Listening/Reading — flow-chart completion tasks",
+    groupSchema: `───────── With Options (matching-style) ─────────
+{
+  "id": "group_8",
+  "type": "flowchart_completion",
+  "instructions": "Complete the flow-chart below.\\nChoose FOUR answers from the box and write the correct letter, A\\u2013F, next to Questions 27\\u201330.",
+  "questionRange": "27-30",
+  "image_src": "/images/flowchart.png",
+  "title": "Student project: developing a new food product",
+  "options": [
+    { "id": "A", "text": "This was challenging but enjoyable." },
+    { "id": "B", "text": "This led to some disagreement." },
+    { "id": "C", "text": "This was easy to decide on." },
+    { "id": "D", "text": "This was helped by the guidelines provided." },
+    { "id": "E", "text": "This seemed like an unnecessary stage." },
+    { "id": "F", "text": "This involved selecting a new ingredient." }
+  ],
+  "questions": [
+    { "questionId": "q_27", "number": 27, "question": "Initial aim" },
+    { "questionId": "q_28", "number": 28, "question": "Literature review" },
+    { "questionId": "q_29", "number": 29, "question": "Product development" },
+    { "questionId": "q_30", "number": 30, "question": "Product production" }
+  ]
+}
+
+───────── Without Options (fill-in-the-blanks) ─────────
+{
+  "id": "group_9",
+  "type": "flowchart_completion",
+  "instructions": "Complete the flow-chart below.\\nWrite NO MORE THAN TWO WORDS for each answer.",
+  "questionRange": "31-35",
+  "image_src": "/images/flowchart2.png",
+  "title": "Manufacturing process",
+  "questions": [
+    { "questionId": "q_31", "number": 31, "question": "Raw materials are delivered to the ______" },
+    { "questionId": "q_32", "number": 32, "question": "The mixture is heated to a ______ of 150\\u00b0C" },
+    { "questionId": "q_33", "number": 33, "question": "The product is then left to ______ for 24 hours" }
+  ]
+}`,
+    answerExample: 'With options: "q_27": "C"   |   Without options: "q_31": "warehouse"',
+  },
+  {
     type: "matching",
     description: "Match items from a list to the correct questions",
     usedFor: "Listening — matching tasks where students select from a shared list of options",
@@ -214,6 +269,7 @@ export const questionTypes = [
   "type": "matching",
   "instructions": "Choose FOUR answers from the box and write the correct letter, A..F, next to Questions 27-30.",
   "questionRange": "27-30",
+  "questionsTitle": "TV programme",
   "optionsTitle": "Comment about programme",
   "options": [
     { "id": "A", "text": "Its origin is somewhat controversial." },
@@ -364,7 +420,8 @@ export const questionTypes = [
     type: "completion_layout",
     description: "Complete a summary, notes, table, flowchart, or diagram by filling gaps",
     usedFor: 'Reading — summary/notes/flowchart/diagram completion (layout.blocks). Same structure as listening\'s notes_completion, with optional layoutType.',
-    groupSchema: `{
+    groupSchema: `───────── Gap-fill (free text) ─────────
+{
   "id": "group_8",
   "type": "completion_layout",
   "layoutType": "notes",
@@ -380,13 +437,40 @@ export const questionTypes = [
         "type": "paragraph",
         "content": [
           { "type": "text", "text": "The study found that " },
-          { "type": "question", "questionId": "q_31", "number": 31, "question": "main finding" },
+          { "type": "question", "questionId": "q_31", "number": 31, "question": "" },
           { "type": "text", "text": " was the most significant factor." }
         ]
       }
     ]
   }
+}
+
+───────── With word list (selection) ─────────
+{
+  "id": "group_9",
+  "type": "completion_layout",
+  "instructions": "Complete the summary using the list of words below.",
+  "questionRange": "31-36",
+  "layout": {
+    "blocks": [
+      {
+        "type": "paragraph",
+        "content": [
+          { "type": "text", "text": "In the big industries, sugar farming depended on " },
+          { "type": "question", "questionId": "q_31", "number": 31, "question": "", "options": ["A","B","C","D","E","F","G","H","I"] },
+          { "type": "text", "text": ". However, in other parts of the world, " },
+          { "type": "question", "questionId": "q_32", "number": 32, "question": "", "options": ["A","B","C","D","E","F","G","H","I"] },
+          { "type": "text", "text": " continued." }
+        ]
+      }
+    ]
+  },
+  "options": [
+    { "id": "A", "text": "national governments" },
+    { "id": "B", "text": "agricultural developments" },
+    { "id": "C", "text": "less wealthy nations" }
+  ]
 }`,
-    answerExample: '"q_31": "economic impact"',
+    answerExample: 'Free text: "q_31": "economic impact"   |   Word list: "q_31": "C"',
   },
 ]

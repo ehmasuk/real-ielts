@@ -52,6 +52,7 @@ export function useTestPart(testId: string, partNum: number) {
         section: d.section,
       }
       sessionStorage.setItem(`part-result-${testId}-${partNum}`, JSON.stringify({ ...partResult, skill: d.skill }))
+      localStorage.setItem(`part-result-${testId}-${partNum}`, JSON.stringify({ ...partResult, skill: d.skill }))
       router.replace(`/test/${testId}/part/${partNum}/result`)
     }
   }, [existingResult, retrying, testId, partNum, router])
@@ -75,6 +76,17 @@ export function useTestPart(testId: string, partNum: number) {
       const d = dataRef.current
       const result = await submitTestPart(testId, partNum, answersRef.current, elapsedRef.current)
       sessionStorage.setItem(
+        `part-result-${testId}-${partNum}`,
+        JSON.stringify({
+          ...result,
+          testNumber: d?.testNumber,
+          title: d?.title,
+          sectionTitle: d?.section?.title,
+          section: d?.section,
+          skill: d?.skill,
+        })
+      )
+      localStorage.setItem(
         `part-result-${testId}-${partNum}`,
         JSON.stringify({
           ...result,

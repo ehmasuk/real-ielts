@@ -4,8 +4,9 @@ import { Header } from "@/components/header"
 import { formatString } from "@/components/test/shared/formatString"
 import { fetchPartResult } from "@/lib/api"
 import { useQuery } from "@tanstack/react-query"
-import { Check, Loader2, RotateCcw, X, BookOpen, List } from "lucide-react"
+import { Check, Loader2, RotateCcw, X, BookOpen, List, ArrowRight } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
 import * as React from "react"
 
 interface ResultItem {
@@ -97,7 +98,7 @@ export default function ResultPage() {
   const [cachedData] = React.useState<ResultData | null>(() => {
     if (typeof window === "undefined") return null
     try {
-      const stored = sessionStorage.getItem(storageKey)
+      const stored = sessionStorage.getItem(storageKey) || localStorage.getItem(storageKey)
       return stored ? (JSON.parse(stored) as ResultData) : null
     } catch {
       return null
@@ -107,7 +108,12 @@ export default function ResultPage() {
   const { data: fetchedData, isLoading } = useQuery<ResultData>({
     queryKey: ["part-result", testId, partNum],
     queryFn: () => fetchPartResult(testId, partNum),
+    retry: 2,
+    retryDelay: 1000,
   })
+
+  const [manualData, setManualData] = React.useState<ResultData | null>(null)
+  const [manualLoading, setManualLoading] = React.useState(false)
 
   if (!hydrated) {
     return (
@@ -117,9 +123,9 @@ export default function ResultPage() {
     )
   }
 
-  const data = cachedData ?? fetchedData
+  const data = manualData ?? cachedData ?? fetchedData
 
-  if (isLoading && !cachedData) {
+  if ((isLoading && !cachedData) || manualLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground/40" />
@@ -129,15 +135,43 @@ export default function ResultPage() {
 
   if (!data) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4">
-        <p className="text-muted-foreground">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-8">
+        <p className="text-muted-foreground text-center">
           No results found. Please submit your answers first.
         </p>
+        <button
+          onClick={async () => {
+            setManualLoading(true)
+            try {
+              const d = await fetchPartResult(testId, partNum)
+              setManualData(d)
+            } catch {
+              setManualLoading(false)
+            }
+          }}
+          className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700"
+        >
+          <RotateCcw className="h-3 w-3" />
+          Retry
+        </button>
+        <Link
+          href={`/test/${testId}/part/${partNum}`}
+          className="text-xs text-muted-foreground underline hover:text-foreground"
+        >
+          Go back to test
+        </Link>
       </div>
     )
   }
 
   const skill = data?.skill
+  const totalParts: Record<string, number> = { listening: 4, reading: 3, writing: 1, speaking: 1 }
+  const hasNextPart = skill ? partNum < (totalParts[skill] ?? 1) : false
+  const nextPartUrl = skill === "listening"
+    ? `/test/${testId}/listening/${partNum + 1}`
+    : skill === "reading"
+      ? `/test/${testId}/reading/${partNum + 1}`
+      : ""
   const correctCount = data.score ?? data.results.filter((r) => r.correct).length
   const percentage = Math.round((correctCount / data.total) * 100)
   const resultMap = new Map(data.results.map((r) => [r.questionId, r]))
@@ -173,7 +207,7 @@ export default function ResultPage() {
                 You've completed this section. Review your answers below to understand your mistakes and improve your score for next time.
               </p>
               
-              <div className="mt-8">
+              <div className="mt-8 flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => {
                     const base =
@@ -189,6 +223,16 @@ export default function ResultPage() {
                   <RotateCcw className="h-4 w-4" />
                   Try Again
                 </button>
+
+                {hasNextPart && (
+                  <Link
+                    href={nextPartUrl}
+                    className="inline-flex items-center gap-2 rounded-xl border border-indigo-500/30 bg-indigo-500/5 px-6 py-2.5 font-semibold text-indigo-600 dark:text-indigo-400 shadow-sm transition-all hover:bg-indigo-500/10 hover:shadow-md active:scale-95"
+                  >
+                    Next Part
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                )}
               </div>
             </div>
 
@@ -305,7 +349,7 @@ export default function ResultPage() {
             {/* Section Passage Content */}
             {data.section?.passage?.blocks && (
               <div className="rounded-3xl border border-border/30 bg-card/30 p-8 md:p-10 shadow-sm leading-relaxed text-foreground/90">
-                <h2 className="text-2xl font-bold mb-6 font-serif">
+                <h2 className="text-2xl font-bold mb-6">
                   {data.section.title || "Passage"}
                 </h2>
                 <div className="prose prose-neutral dark:prose-invert max-w-none">
@@ -315,7 +359,7 @@ export default function ResultPage() {
                     if (block.type === "paragraph")
                       return <p key={bi} className="mb-4 text-justify leading-7">{formatString(block.text)}</p>
                     if (block.type === "image")
-                      return <div key={bi} className="my-6 italic text-muted-foreground text-center p-4 bg-muted/20 rounded-xl">[Image content: {block.src}]</div>
+                      return <div key={bi} className="my-6 text-muted-foreground text-center p-4 bg-muted/20 rounded-xl">[Image content: {block.src}]</div>
                     if (block.type === "table") {
                       return (
                         <div key={bi} className="overflow-x-auto my-6">
@@ -343,7 +387,7 @@ export default function ResultPage() {
             
             {data.section?.passage?.sections && (
               <div className="rounded-3xl border border-border/30 bg-card/30 p-8 md:p-10 shadow-sm leading-relaxed text-foreground/90">
-                <h2 className="text-2xl font-bold mb-6 font-serif">
+                <h2 className="text-2xl font-bold mb-6">
                   {data.section.title || "Passage"}
                 </h2>
                 <div className="prose prose-neutral dark:prose-invert max-w-none space-y-8">
@@ -376,14 +420,14 @@ export default function ResultPage() {
                   key={group.id || gi}
                   className="rounded-3xl border border-border/40 bg-background/50 p-6 md:p-8 shadow-sm"
                 >
-                  <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/40 pb-6">
+                  <div className="mb-6 space-y-3 border-b border-border/40 pb-6">
                     {group.questionRange && (
                       <span className="inline-flex items-center justify-center rounded-lg bg-indigo-500/10 px-3 py-1 text-sm font-bold text-indigo-600 dark:text-indigo-400">
                         Questions {group.questionRange}
                       </span>
                     )}
                     {group.instructions && (
-                      <p className="text-sm font-medium italic text-muted-foreground max-w-xl">
+                      <p className="text-sm font-medium text-muted-foreground">
                         {formatString(group.instructions)}
                       </p>
                     )}
@@ -403,7 +447,7 @@ export default function ResultPage() {
                     </div>
                   )}
 
-                  <div className="bg-card/40 rounded-2xl p-6 border border-border/30">
+                  <div className="bg-card/40 rounded-2xl border border-border/30">
                      {renderGroupQuestions(group, resultMap)}
                   </div>
                 </div>
@@ -459,28 +503,32 @@ function renderGroupQuestions(group: any, resultMap: Map<string, ResultItem>) {
               </div>
             )}
             
-            <div className="flex flex-col gap-2 mt-2 bg-background/50 rounded-lg p-3 border border-border/40">
+            <div className="flex flex-wrap items-center gap-2 mt-2 bg-background/50 rounded-lg p-3 border border-border/40">
               {userAns && (
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="text-muted-foreground w-20 text-xs font-semibold uppercase tracking-wider">You wrote:</span>
+                  <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">You wrote:</span>
                   <span className={`px-2 py-0.5 rounded font-bold ${isCorrect ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-red-500/10 text-red-600 dark:text-red-400"}`}>
                     {userAns}
                   </span>
                   {isCorrect ? (
-                     <Check className="h-4 w-4 text-emerald-500 ml-auto" />
+                     <Check className="h-4 w-4 text-emerald-500" />
                   ) : (
-                     <X className="h-4 w-4 text-red-500 ml-auto" />
+                     <X className="h-4 w-4 text-red-500" />
                   )}
                 </div>
               )}
               
               {!isCorrect && correctAns && (
-                <div className="flex items-center gap-2 text-sm pt-2 border-t border-border/30 mt-1">
-                  <span className="text-muted-foreground w-20 text-xs font-semibold uppercase tracking-wider">Correct:</span>
-                  <span className="px-2 py-0.5 rounded font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                    {correctAns}
-                  </span>
-                </div>
+                <>
+                  <span className="text-muted-foreground/40">|</span>
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Correct:</span>
+                    <span className="px-2 py-0.5 rounded font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                      {correctAns}
+                    </span>
+                    <Check className="h-4 w-4 text-emerald-500" />
+                  </div>
+                </>
               )}
             </div>
           </div>
@@ -492,7 +540,7 @@ function renderGroupQuestions(group: any, resultMap: Map<string, ResultItem>) {
 
 function renderNoteStyle(group: any, resultMap: Map<string, ResultItem>) {
   return (
-    <div className="space-y-4 font-serif text-lg leading-relaxed text-foreground/90">
+    <div className="space-y-4 text-lg leading-relaxed text-foreground/90">
       {group.layout?.blocks?.map((block: any, bi: number) => {
         if (block.type === "heading") {
           return (
@@ -510,22 +558,27 @@ function renderNoteStyle(group: any, resultMap: Map<string, ResultItem>) {
                 if (item.type === "question") {
                   const r = resultMap.get(item.questionId)
                   const userAns = r ? formatAnswer(r.userAnswer) : null
+                  const correctAns = r ? formatAnswer(r.correctAnswer) : null
                   const isCorrect = r?.correct ?? false
-                  
+
+                  if (item.question && item.question.trim() !== "______") {
+                    return <span key={ci}>{renderQWithAnswer(item.question, userAns, correctAns, isCorrect)}</span>
+                  }
+
                   return (
                     <span key={ci} className="inline-flex items-center mx-1 align-baseline">
                       <span
-                        className={`inline-block border-b-2 px-1 pb-0.5 font-sans text-base font-bold ${
+                        className={`inline-block border-b-2 px-1 pb-0.5 text-base font-bold ${
                           isCorrect
                             ? "border-emerald-500/50 text-emerald-600 dark:text-emerald-400"
                             : "border-red-500/50 text-red-600 dark:text-red-400"
                         }`}
                       >
-                        {userAns || (r ? formatAnswer(r.correctAnswer) : "")}
+                        {userAns || correctAns || ""}
                       </span>
-                      {!isCorrect && r?.correctAnswer && (
-                        <span className="ml-1 inline-flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.5 font-sans text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                          <Check className="h-3 w-3" /> {formatAnswer(r.correctAnswer)}
+                      {!isCorrect && correctAns && (
+                        <span className="ml-1 inline-flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.5 font-bold text-emerald-600 dark:text-emerald-400">
+                          <Check className="h-3 w-3" /> {correctAns}
                         </span>
                       )}
                     </span>
@@ -574,24 +627,30 @@ function renderTableStyle(group: any, resultMap: Map<string, ResultItem>) {
                     if (item.type === "question") {
                       const r = resultMap.get(item.questionId)
                       const userAns = r ? formatAnswer(r.userAnswer) : null
+                      const correctAns = r ? formatAnswer(r.correctAnswer) : null
                       const isCorrect = r?.correct ?? false
+
+                      if (item.question && item.question.trim() !== "______") {
+                        return <span key={ii}>{renderQWithAnswer(item.question, userAns, correctAns, isCorrect)}</span>
+                      }
+
                       return (
-                        <div key={ii} className="inline-flex flex-col gap-1 my-1">
+                        <span key={ii} className="inline-flex items-center gap-1.5 my-1">
                           <span
-                            className={`inline-block rounded px-2 py-0.5 font-bold shadow-sm ${
+                            className={`inline-block rounded px-2 py-0.5 font-bold shadow-sm text-xs ${
                               isCorrect
                                 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                                 : "bg-red-500/10 text-red-600 dark:text-red-400"
                             }`}
                           >
-                            {userAns || (r ? formatAnswer(r.correctAnswer) : "")}
+                            {userAns || correctAns || ""}
                           </span>
-                          {!isCorrect && r?.correctAnswer && (
-                            <span className="inline-flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                              <Check className="h-3 w-3" /> {formatAnswer(r.correctAnswer)}
+                          {!isCorrect && correctAns && (
+                            <span className="inline-flex items-center gap-0.5 rounded bg-emerald-500/10 px-1.5 py-0.5 font-bold text-emerald-600 dark:text-emerald-400">
+                              <Check className="h-2.5 w-2.5" /> {correctAns}
                             </span>
                           )}
-                        </div>
+                        </span>
                       )
                     }
                     return null
@@ -664,6 +723,39 @@ function renderMcqMultiple(group: any, resultMap: Map<string, ResultItem>) {
         )}
       </div>
     </div>
+  )
+}
+
+function renderQWithAnswer(text: string, userAns: string | null, correctAns: string | null, isCorrect: boolean) {
+  if (!text) return <span>{userAns || correctAns || "-"}</span>
+  const parts = text.split("______")
+  if (parts.length <= 1) return <span>{userAns || correctAns || "-"}</span>
+  return (
+    <>
+      {parts.map((part, i) => (
+        <span key={i}>
+          {formatString(part)}
+          {i < parts.length - 1 && (
+            <span className="inline-flex items-center gap-1 align-baseline">
+              <span
+                className={`inline-block rounded px-1 pb-0.5 font-bold ${
+                  isCorrect
+                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                    : "bg-red-500/10 text-red-600 dark:text-red-400"
+                }`}
+              >
+                {userAns || correctAns || ""}
+              </span>
+              {!isCorrect && correctAns && (
+                <span className="inline-flex items-center gap-0.5 rounded bg-emerald-500/10 px-1.5 py-0.5 font-bold text-emerald-600 dark:text-emerald-400">
+                  <Check className="h-2.5 w-2.5" /> {correctAns}
+                </span>
+              )}
+            </span>
+          )}
+        </span>
+      ))}
+    </>
   )
 }
 

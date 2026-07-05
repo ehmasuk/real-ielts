@@ -16,6 +16,7 @@ import {
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
 import { uploadToCloudinary } from "@/lib/cloudinary"
+import { getAccessToken } from "@/lib/token-manager"
 
 interface MediaAsset {
   id: string
@@ -123,8 +124,37 @@ export default function ImportsPage() {
     setTimeout(() => setCopiedId(null), 2000)
   }
 
-  const deleteAsset = (id: string) => {
-    persist(library.filter((a) => a.id !== id))
+  const [deletingIds, setDeletingIds] = React.useState<Set<string>>(new Set())
+
+  const deleteAsset = async (asset: MediaAsset) => {
+    if (!confirm(`Delete "${asset.originalFilename || asset.id}" from the media library? This cannot be undone.`)) return
+    if (deletingIds.has(asset.id)) return
+    setDeletingIds((prev) => new Set(prev).add(asset.id))
+    try {
+      const token = getAccessToken()
+      const res = await fetch("/api/cloudinary/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ public_id: asset.id, type: asset.type }),
+      })
+      if (!res.ok) {
+        const text = await res.text()
+        let message = text
+        try { const j = JSON.parse(text); message = j.error || message } catch {}
+        console.error("Cloudinary delete failed:", message)
+      }
+    } catch (e) {
+      console.error("Cloudinary delete error:", e)
+    }
+    persist(library.filter((a) => a.id !== asset.id))
+    setDeletingIds((prev) => {
+      const next = new Set(prev)
+      next.delete(asset.id)
+      return next
+    })
   }
 
   const filtered = filter === "all" ? library : library.filter((a) => a.type === filter)
@@ -281,11 +311,15 @@ export default function ImportsPage() {
                       </Button>
                       <Button
                         variant="ghost" size="icon-sm"
-                        onClick={() => deleteAsset(asset.id)}
-                        className="h-7 w-7 rounded-lg text-muted-foreground hover:text-rose-500"
+                        onClick={() => deleteAsset(asset)}
+                        disabled={deletingIds.has(asset.id)}
+                        className="h-7 w-7 rounded-lg text-muted-foreground hover:text-rose-500 disabled:opacity-30"
                         title="Remove from library"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        {deletingIds.has(asset.id)
+                          ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          : <Trash2 className="h-3.5 w-3.5" />
+                        }
                       </Button>
                     </div>
                   </div>

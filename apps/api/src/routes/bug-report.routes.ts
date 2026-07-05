@@ -1,9 +1,11 @@
 import express from "express"
 import { createBugReport } from "../controllers/bug-report.controller.js"
 import isAuthenticated from "../middlewares/isAuthenticated.js"
+import { validate } from "../middlewares/validate.js"
+import { createBugReportSchema } from "../validations/index.js"
 
-const router = express.Router()
+const router: express.Router = express.Router()
 
-router.post("/", isAuthenticated, createBugReport)
+router.post("/", isAuthenticated, validate(createBugReportSchema), createBugReport)
 
 export default router

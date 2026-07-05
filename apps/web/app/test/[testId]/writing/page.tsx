@@ -38,8 +38,12 @@ export default function WritingTestPage() {
 
   const sections: WritingSection[] = React.useMemo(() => {
     if (!test) return []
-    const content = typeof test.contentJson === "string" ? JSON.parse(test.contentJson) : test.contentJson
-    return content?.sections ?? []
+    try {
+      const content = typeof test.contentJson === "string" ? JSON.parse(test.contentJson) : test.contentJson
+      return content?.sections ?? []
+    } catch {
+      return []
+    }
   }, [test])
 
   if (isLoading) {

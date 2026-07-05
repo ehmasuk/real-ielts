@@ -60,8 +60,9 @@ export const getValidationIssues = (contentJson: string, answerJson: string, tes
 
   const parsed = ContentSchema.safeParse(parsedContent)
   if (!parsed.success) {
-    parsed.error.errors.forEach((err) => {
-      issues.push({ type: "error", message: err.message || `${err.path.join(".")} is invalid` })
+    const zodIssues = parsed.error?.issues || parsed.error?.errors || []
+    zodIssues.forEach((err: any) => {
+      issues.push({ type: "error", message: err.message || (Array.isArray(err.path) ? err.path.join(".") : String(err.path)) + " is invalid" })
     })
   } else if (parsedContent.sections) {
     parsedContent.sections.forEach((sec: any, sIdx: number) => {
@@ -88,7 +89,8 @@ export const getValidationIssues = (contentJson: string, answerJson: string, tes
         const sectionQuestions = sec.questionGroups ? sec.questionGroups.flatMap((g: any, gIdx: number) => {
           const res = QuestionGroupBase.safeParse(g)
           if (!res.success) {
-            res.error.errors.forEach((err) => {
+            const zodIssues = res.error?.issues || res.error?.errors || []
+            zodIssues.forEach((err: any) => {
               if (err.path[0]) {
                 issues.push({ type: "warning", message: `Question group #${gIdx + 1} in Section #${sIdx + 1} ('${sec.title || sIdx}') is missing '${err.path[0]}'` })
               }
@@ -101,11 +103,23 @@ export const getValidationIssues = (contentJson: string, answerJson: string, tes
               return []
             }
             const ids: any[] = []
-            g.layout.rows.forEach((row: any[], rIdx: number) => {
+            if (!Array.isArray(g.layout.rows)) {
+              issues.push({ type: "error", message: `Table completion group #${gIdx + 1} has invalid 'layout.rows' — must be an array` })
+              return ids
+            }
+            g.layout.rows.forEach((row: any, rIdx: number) => {
+              if (!Array.isArray(row)) {
+                issues.push({ type: "error", message: `Row #${rIdx + 1} in table completion group #${gIdx + 1} must be an array` })
+                return
+              }
+              if (!Array.isArray(g.layout.columns)) {
+                issues.push({ type: "error", message: `Table completion group #${gIdx + 1} has invalid 'layout.columns' — must be an array` })
+                return
+              }
               if (row.length !== g.layout.columns.length) {
                 issues.push({ type: "error", message: `Row #${rIdx + 1} in table completion group #${gIdx + 1} has ${row.length} cells, expected ${g.layout.columns.length}` })
               }
-              row.forEach((cell: any[], cIdx: number) => {
+              row.forEach((cell: any, cIdx: number) => {
                 if (!Array.isArray(cell)) {
                   issues.push({ type: "error", message: `Cell #${cIdx + 1} in row #${rIdx + 1} must be an array of items` })
                   return
@@ -121,9 +135,9 @@ export const getValidationIssues = (contentJson: string, answerJson: string, tes
             return ids
           }
 
-          if (g.type === "notes_completion") {
+          if (g.type === "notes_completion" || g.type === "completion_layout") {
             if (!g.layout?.blocks) {
-              issues.push({ type: "error", message: `Notes completion group #${gIdx + 1} is missing 'layout' with 'blocks'` })
+              issues.push({ type: "error", message: `${g.type === "notes_completion" ? "Notes completion" : "Completion layout"} group #${gIdx + 1} is missing 'layout' with 'blocks'` })
               return []
             }
             const ids: any[] = []
@@ -150,6 +164,13 @@ export const getValidationIssues = (contentJson: string, answerJson: string, tes
             if (!g.image_src) issues.push({ type: "error", message: `Diagram labeling group #${gIdx + 1} is missing 'image_src'` })
             if (!g.options?.length) issues.push({ type: "error", message: `Diagram labeling group #${gIdx + 1} is missing 'options'` })
             if (!g.questions?.length) issues.push({ type: "warning", message: `Diagram labeling group #${gIdx + 1} has no questions` })
+            return (g.questions || []).map((q: any) => ({ questionId: q.questionId ?? (q.number != null ? `q_${q.number}` : undefined), number: q.number || 0 }))
+          }
+
+          if (g.type === "flowchart_completion") {
+            if (!g.image_src) issues.push({ type: "warning", message: `Flowchart completion group #${gIdx + 1} is missing 'image_src' — consider adding a flowchart image` })
+            if (!g.options?.length) issues.push({ type: "error", message: `Flowchart completion group #${gIdx + 1} is missing 'options'` })
+            if (!g.questions?.length) issues.push({ type: "warning", message: `Flowchart completion group #${gIdx + 1} has no questions` })
             return (g.questions || []).map((q: any) => ({ questionId: q.questionId ?? (q.number != null ? `q_${q.number}` : undefined), number: q.number || 0 }))
           }
 

@@ -27,13 +27,23 @@ const listeningContentJson = `{
               "questionId": "q_1",
               "number": 1,
               "question": "What type of room does the customer book?",
-              "options": ["Single", "Double", "Suite", "Penthouse"]
+              "options": [
+                { "id": "A", "text": "Single" },
+                { "id": "B", "text": "Double" },
+                { "id": "C", "text": "Suite" },
+                { "id": "D", "text": "Penthouse" }
+              ]
             },
             {
               "questionId": "q_2",
               "number": 2,
               "question": "How many nights will the customer stay?",
-              "options": ["One", "Two", "Three", "Four"]
+              "options": [
+                { "id": "A", "text": "One" },
+                { "id": "B", "text": "Two" },
+                { "id": "C", "text": "Three" },
+                { "id": "D", "text": "Four" }
+              ]
             }
           ]
         },
@@ -86,6 +96,7 @@ const listeningContentJson = `{
           "type": "matching",
           "instructions": "Choose FOUR answers from the box and write the correct letter, A..F, next to Questions 27-30.",
           "questionRange": "27-30",
+          "questionsTitle": "TV programme",
           "optionsTitle": "Comment about programme",
           "options": [
             { "id": "A", "text": "Its origin is somewhat controversial." },
@@ -119,7 +130,12 @@ const listeningContentJson = `{
           "select": 2,
           "questionNumbers": [17, 18],
           "question": "Which TWO topics are they considering for the project?",
-          "options": ["Climate change", "Urban planning", "Social media", "Global trade"]
+          "options": [
+            { "id": "A", "text": "Climate change" },
+            { "id": "B", "text": "Urban planning" },
+            { "id": "C", "text": "Social media" },
+            { "id": "D", "text": "Global trade" }
+          ]
         },
         {
           "id": "group_5",
@@ -406,6 +422,7 @@ export default function ListeningSchemaPage() {
           <li><code className="text-[10px] font-mono">notes_completion</code> and <code className="text-[10px] font-mono">table_completion</code> use <code className="text-[10px] font-mono">layout</code> instead of <code className="text-[10px] font-mono">questions[]</code>; each table cell is an <strong>array</strong> of inline <code className="text-[10px] font-mono">text</code> and <code className="text-[10px] font-mono">question</code> items</li>
           <li><code className="text-[10px] font-mono">notes_completion</code> = same layout structure as reading's <code className="text-[10px] font-mono">completion_layout</code> (<code className="text-[10px] font-mono">layout.blocks</code> with heading/paragraph/inline questions). Blocks render sequentially: <code className="text-[10px] font-mono">heading</code> as bold title, <code className="text-[10px] font-mono">paragraph</code> with inline <code className="text-[10px] font-mono">text</code> and <code className="text-[10px] font-mono">question</code> items.</li>
           <li><code className="text-[10px] font-mono">diagram_labeling</code> uses <code className="text-[10px] font-mono">image_src</code> for the diagram/map image URL and <code className="text-[10px] font-mono">options</code> (e.g. A–F) shared across all questions</li>
+          <li><code className="text-[10px] font-mono">flowchart_completion</code> uses <code className="text-[10px] font-mono">image_src</code> for the flowchart image (renders any flowchart design), with optional <code className="text-[10px] font-mono">options</code> for matching-style or free-text input for fill-in-the-blanks</li>
         </ul>
       </div>
     </div>

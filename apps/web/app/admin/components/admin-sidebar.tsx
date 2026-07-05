@@ -12,10 +12,10 @@ import {
   PenLine,
   Upload,
   ShieldCheck,
-  GraduationCap,
   ChevronLeft,
   Bug,
 } from "lucide-react"
+import { Logo } from "@/components/Logo"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
 import { Separator } from "@workspace/ui/components/separator"
@@ -103,17 +103,16 @@ export const AdminSidebar = React.memo(function AdminSidebar({ collapsed, onTogg
         <Link
           href="/admin"
           className={cn(
-            "flex items-center gap-2.5 font-bold tracking-tight transition-all",
+            "flex items-center gap-2.5 transition-all",
             collapsed && "justify-center"
           )}
         >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/20">
-            <GraduationCap className="h-5 w-5" />
-          </span>
-          {!collapsed && (
-            <div className="flex flex-col">
-              <span className="text-sm font-bold text-sidebar-foreground">Real IELTS</span>
-              <span className="text-[10px] font-medium text-muted-foreground">Admin Panel</span>
+          {collapsed ? (
+            <Logo variant="short" />
+          ) : (
+            <div className="flex flex-col items-start">
+              <Logo />
+              <span className="text-[10px] font-medium text-muted-foreground -mt-0.5">Admin Panel</span>
             </div>
           )}
         </Link>

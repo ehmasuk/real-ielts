@@ -7,6 +7,7 @@ import { GapFill } from "./common/gap_fill"
 import { LayoutBlocks } from "./common/layout_blocks"
 import { TableCompletion } from "./listening/table_completion"
 import { DiagramLabeling } from "./listening/diagram_labeling"
+import { FlowchartCompletion } from "./listening/flowchart_completion"
 import { Matching } from "./listening/matching"
 import { StatementJudgement } from "./reading/statement_judgement"
 import { MatchingHeadings } from "./reading/matching_headings"
@@ -21,6 +22,7 @@ export const questionTypeMap: Record<string, React.ComponentType<any>> = {
   notes_completion: LayoutBlocks,
   table_completion: TableCompletion,
   diagram_labeling: DiagramLabeling,
+  flowchart_completion: FlowchartCompletion,
   matching: Matching,
   statement_judgement: StatementJudgement,
   matching_headings: MatchingHeadings,

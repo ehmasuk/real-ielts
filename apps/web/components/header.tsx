@@ -5,7 +5,8 @@ import { useSyncExternalStore } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTheme } from "@/providers/theme-provider"
-import { BookOpen, Moon, Sun, Menu, X, GraduationCap, Headphones, PenTool, Mic, LogOut, User, ChevronDown, Mail } from "lucide-react"
+import { BookOpen, Moon, Sun, Menu, X, Headphones, PenTool, Mic, LogOut, User, ChevronDown, Mail } from "lucide-react"
+import { Logo } from "@/components/Logo"
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
@@ -58,13 +59,8 @@ export const Header = React.memo(function Header() {
         
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tight">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/20">
-              <GraduationCap className="h-5 w-5" />
-            </span>
-            <span className="bg-linear-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent">
-              Real IELTS
-            </span>
+          <Link href="/">
+            <Logo />
           </Link>
         </div>
 

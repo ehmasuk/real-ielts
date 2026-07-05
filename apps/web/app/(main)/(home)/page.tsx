@@ -22,7 +22,7 @@ export default function Page() {
           {/* Badge */}
           <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/10 px-3.5 py-1 text-xs font-semibold text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 mb-6 animate-fade-in">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>Updated with Cambridge IELTS 20</span>
+            <span>Updated with Cambridge IELTS 21</span>
           </div>
 
           {/* Heading */}

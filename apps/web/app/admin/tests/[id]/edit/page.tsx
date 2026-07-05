@@ -5,11 +5,20 @@ import Link from "next/link"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import {
   ArrowLeft,
+  Bold,
   CheckCircle,
-  XCircle,
+  Circle,
+  ClipboardPaste,
+  Copy,
+  CornerDownLeft,
+  Delete,
+  Minus,
+  Scissors,
   Sparkles,
   AlertTriangle,
+  ExternalLink,
   Loader2,
+  XCircle,
 } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
@@ -168,6 +177,84 @@ export default function TestEditorPage({ params }: PageProps) {
     togglePublishMutation.mutate(test)
   }
 
+  const previewUrl = React.useMemo(() => {
+    if (!test) return "#"
+    const base = `/test/${test.id}`
+    switch (test.skill) {
+      case "listening": return `${base}/listening/1`
+      case "reading":   return `${base}/reading/1`
+      case "writing":   return `${base}/writing`
+      case "speaking":  return `${base}/speaking`
+      default:          return base
+    }
+  }, [test])
+
+  const contentViewRef = React.useRef<any>(null)
+  const answersViewRef = React.useRef<any>(null)
+
+  const insertAtCursor = (view: any, text: string) => {
+    if (!view) return
+    const { from, to } = view.state.selection.main
+    view.dispatch({ changes: { from, to, insert: text } })
+    view.focus()
+  }
+
+  const wrapAtCursor = (view: any, before: string, after: string) => {
+    if (!view) return
+    const { from, to } = view.state.selection.main
+    if (from === to) {
+      view.dispatch({ changes: { from, to, insert: before + after } })
+    } else {
+      const selected = view.state.sliceDoc(from, to)
+      view.dispatch({ changes: [{ from, to, insert: before + selected + after }] })
+    }
+    view.focus()
+  }
+
+  const copySelection = async (view: any) => {
+    if (!view) return
+    const { from, to } = view.state.selection.main
+    if (from === to) return
+    const text = view.state.sliceDoc(from, to)
+    try {
+      await navigator.clipboard.writeText(text)
+    } catch { /* ignore */ }
+  }
+
+  const cutSelection = async (view: any) => {
+    if (!view) return
+    const { from, to } = view.state.selection.main
+    if (from === to) return
+    const text = view.state.sliceDoc(from, to)
+    try {
+      await navigator.clipboard.writeText(text)
+      view.dispatch({ changes: { from, to, insert: "" } })
+      view.focus()
+    } catch { /* ignore */ }
+  }
+
+  const deleteAtCursor = (view: any) => {
+    if (!view) return
+    const { from, to } = view.state.selection.main
+    if (from === to) {
+      if (from === 0) return
+      view.dispatch({ changes: { from: from - 1, to, insert: "" } })
+    } else {
+      view.dispatch({ changes: { from, to, insert: "" } })
+    }
+    view.focus()
+  }
+
+  const pasteAtCursor = async (view: any) => {
+    if (!view) return
+    try {
+      const text = await navigator.clipboard.readText()
+      const { from, to } = view.state.selection.main
+      view.dispatch({ changes: { from, to, insert: text } })
+      view.focus()
+    } catch { /* ignore */ }
+  }
+
   // Parse for preview & structural checks
   const parsedContent = React.useMemo(() => {
     try {
@@ -187,7 +274,12 @@ export default function TestEditorPage({ params }: PageProps) {
 
   // Compute schema validation reports
   const validationReport = React.useMemo(() => {
-    return getValidationIssues(contentJson, answerJson, test)
+    try {
+      return getValidationIssues(contentJson, answerJson, test)
+    } catch (e) {
+      console.error("Validation crashed:", e)
+      return [{ type: "error" as const, message: "Validation engine encountered an error. Check console for details." }]
+    }
   }, [contentJson, answerJson, test, contentError, answerError])
 
   if (isLoading) {
@@ -251,6 +343,14 @@ export default function TestEditorPage({ params }: PageProps) {
         </div>
 
         <div className="flex items-center gap-2 self-start md:self-center">
+          {test.status === "published" && (
+            <Link href={previewUrl} target="_blank">
+              <Button variant="outline" size="sm" className="text-xs border-border/40">
+                <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
+                View Test
+              </Button>
+            </Link>
+          )}
           <Button
             variant="outline"
             size="sm"
@@ -301,12 +401,34 @@ export default function TestEditorPage({ params }: PageProps) {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-muted-foreground">JSON Schema for Test Content</span>
-              <Button variant="ghost" size="sm" onClick={handleFormatContent} className="h-7 text-[11px] text-indigo-500 hover:text-indigo-600">
-                <Sparkles className="mr-1 h-3 w-3" />
-                Format JSON
-              </Button>
+              <div className="flex items-center gap-1">
+                {[
+                  { icon: CornerDownLeft, insert: () => insertAtCursor(contentViewRef.current, "\\n"), title: "Newline (\\n)" },
+                  { icon: Circle, insert: () => insertAtCursor(contentViewRef.current, "• "), title: "Bullet point (•)" },
+                  { icon: Minus, insert: () => insertAtCursor(contentViewRef.current, "______"), title: "Blank (______)" },
+                  { icon: Bold, insert: () => wrapAtCursor(contentViewRef.current, "**", "**"), title: "Bold (**text**)" },
+                  { icon: Copy, insert: () => copySelection(contentViewRef.current), title: "Copy selected text" },
+                  { icon: Scissors, insert: () => cutSelection(contentViewRef.current), title: "Cut selected text" },
+                  { icon: ClipboardPaste, insert: () => pasteAtCursor(contentViewRef.current), title: "Paste from clipboard" },
+                  { icon: Delete, insert: () => deleteAtCursor(contentViewRef.current), title: "Delete (backspace)" },
+                ].map((btn, i) => {
+                  const Icon = btn.icon
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={btn.insert}
+                      className="flex items-center justify-center rounded-md border border-border/40 p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                      title={btn.title}
+                    ><Icon className="h-3.5 w-3.5" /></button>
+                  )
+                })}
+                <Button variant="ghost" size="sm" onClick={handleFormatContent} className="h-7 text-[11px] text-indigo-500 hover:text-indigo-600">
+                  <Sparkles className="mr-1 h-3 w-3" />
+                  Format JSON
+                </Button>
+              </div>
             </div>
-
             <div className="relative">
               <CodeMirror
                 value={contentJson}
@@ -314,6 +436,7 @@ export default function TestEditorPage({ params }: PageProps) {
                 height="540px"
                 extensions={[json(), EditorView.lineWrapping]}
                 theme="light"
+                onCreateEditor={(view) => { contentViewRef.current = view }}
                 basicSetup={{ lineNumbers: true, foldGutter: true, bracketMatching: true, closeBrackets: true }}
                 className={cn(
                   "rounded-xl border shadow-sm overflow-hidden",
@@ -336,10 +459,33 @@ export default function TestEditorPage({ params }: PageProps) {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-muted-foreground">JSON Schema for Answer Keys</span>
-              <Button variant="ghost" size="sm" onClick={handleFormatAnswers} className="h-7 text-[11px] text-indigo-500 hover:text-indigo-600">
-                <Sparkles className="mr-1 h-3 w-3" />
-                Format JSON
-              </Button>
+              <div className="flex items-center gap-1">
+                {[
+                  { icon: CornerDownLeft, insert: () => insertAtCursor(answersViewRef.current, "\\n"), title: "Newline (\\n)" },
+                  { icon: Circle, insert: () => insertAtCursor(answersViewRef.current, "• "), title: "Bullet point (•)" },
+                  { icon: Minus, insert: () => insertAtCursor(answersViewRef.current, "______"), title: "Blank (______)" },
+                  { icon: Bold, insert: () => wrapAtCursor(answersViewRef.current, "**", "**"), title: "Bold (**text**)" },
+                  { icon: Copy, insert: () => copySelection(answersViewRef.current), title: "Copy selected text" },
+                  { icon: Scissors, insert: () => cutSelection(answersViewRef.current), title: "Cut selected text" },
+                  { icon: ClipboardPaste, insert: () => pasteAtCursor(answersViewRef.current), title: "Paste from clipboard" },
+                  { icon: Delete, insert: () => deleteAtCursor(answersViewRef.current), title: "Delete (backspace)" },
+                ].map((btn, i) => {
+                  const Icon = btn.icon
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={btn.insert}
+                      className="flex items-center justify-center rounded-md border border-border/40 p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                      title={btn.title}
+                    ><Icon className="h-3.5 w-3.5" /></button>
+                  )
+                })}
+                <Button variant="ghost" size="sm" onClick={handleFormatAnswers} className="h-7 text-[11px] text-indigo-500 hover:text-indigo-600">
+                  <Sparkles className="mr-1 h-3 w-3" />
+                  Format JSON
+                </Button>
+              </div>
             </div>
             <div className="relative">
               <CodeMirror
@@ -348,6 +494,7 @@ export default function TestEditorPage({ params }: PageProps) {
                 height="540px"
                 extensions={[json(), EditorView.lineWrapping]}
                 theme="light"
+                onCreateEditor={(view) => { answersViewRef.current = view }}
                 basicSetup={{ lineNumbers: true, foldGutter: true, bracketMatching: true, closeBrackets: true }}
                 className={cn(
                   "rounded-xl border shadow-sm overflow-hidden",

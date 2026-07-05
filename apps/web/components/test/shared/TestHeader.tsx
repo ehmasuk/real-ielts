@@ -5,6 +5,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useAuth } from "@/lib/use-auth"
 import { Settings2, User } from "lucide-react"
+import { Logo } from "@/components/Logo"
 
 export const TestHeader = React.memo(function TestHeader({
   sectionTitle,
@@ -20,8 +21,8 @@ export const TestHeader = React.memo(function TestHeader({
     <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
         <div className="flex items-center gap-4">
-          <Link href="/" className="text-lg font-black tracking-tight">
-            REAL IELTS
+          <Link href="/">
+            <Logo variant="short" />
           </Link>
           <span className="text-sm text-muted-foreground">|</span>
           <span className="text-sm font-bold text-foreground">

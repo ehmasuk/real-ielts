@@ -45,7 +45,7 @@ const bookServices = {
       status: "draft" | "published"
     }>
   ): Promise<IBook | null> =>
-    Book.findByIdAndUpdate(id, data, { new: true, runValidators: true }),
+    Book.findByIdAndUpdate(id, data, { returnDocument: "after", runValidators: true }),
 
   remove: async (id: string): Promise<IBook | null> => {
     const testIds = (await Test.find({ bookId: id }).select("_id")).map(

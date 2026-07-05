@@ -14,7 +14,7 @@ export const Matching = React.memo(function Matching({
   answers,
   onAnswerChange,
 }: Props) {
-  const { questionRange, instructions, optionsTitle, options, questions } =
+  const { questionRange, instructions, questionsTitle, optionsTitle, options, questions } =
     group
   const placeholder =
     options?.length > 1
@@ -27,6 +27,7 @@ export const Matching = React.memo(function Matching({
         <p className="font-medium">{formatString(instructions)}</p>
       )}
       <div className="space-y-3">
+        {questionsTitle && <p className="font-bold">{questionsTitle}</p>}
         {questions?.map((q: any) => {
           const qId = `q_${q.number}`
           return (
@@ -47,7 +48,7 @@ export const Matching = React.memo(function Matching({
         })}
       </div>
       {options && options.length > 0 && (
-        <div className="space-y-1">
+        <div className="space-y-3">
           {optionsTitle && <p className="font-bold">{optionsTitle}</p>}
           {options.map((opt: any, oi: number) => (
             <p key={opt.id ?? oi}>

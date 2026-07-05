@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { GraduationCap, Bug } from "lucide-react"
+import { Bug } from "lucide-react"
+import { Logo } from "@/components/Logo"
 import { ReportBugModal } from "@/components/ReportBugModal"
 
 const quickLinks = [
@@ -23,13 +24,8 @@ export function Footer() {
           
           {/* Brand Info */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tight">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/20">
-                <GraduationCap className="h-5 w-5" />
-              </span>
-              <span className="bg-linear-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent">
-                Real IELTS
-              </span>
+            <Link href="/">
+              <Logo />
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
               Practice computer-delivered IELTS exam simulation with real-time feedback, band score estimation, and direct mistakes analysis.

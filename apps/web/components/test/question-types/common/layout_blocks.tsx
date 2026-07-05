@@ -15,7 +15,7 @@ export const LayoutBlocks = React.memo(function LayoutBlocks({
   answers,
   onAnswerChange,
 }: Props) {
-  const { questionRange, instructions, layout, layoutType } = group
+  const { questionRange, instructions, layout, layoutType, options } = group
   if (!layout?.blocks) return null
 
   return (
@@ -38,7 +38,7 @@ export const LayoutBlocks = React.memo(function LayoutBlocks({
           }
           if (block.type === "paragraph") {
             return (
-              <p key={bi} className="leading-loose">
+              <p key={bi} className="leading-10">
                 {block.content?.map((item: any, ci: number) => {
                   if (item.type === "text")
                     return <span key={ci}>{formatString(item.text)}</span>
@@ -60,6 +60,16 @@ export const LayoutBlocks = React.memo(function LayoutBlocks({
           return null
         })}
       </div>
+      {options && options.length > 0 && (
+        <div className="mt-6 space-y-1 border-t border-border/40 pt-4">
+          <p className="font-bold">Options</p>
+          {options.map((opt: any, oi: number) => (
+            <p key={opt.id ?? oi}>
+              <span className="font-bold">{opt.id}.</span> {formatString(opt.text)}
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   )
 })
