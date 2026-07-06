@@ -69,4 +69,21 @@ export declare const createBugReportSchema: z.ZodObject<{
 export declare const markBugFixedSchema: z.ZodObject<{
     fixed: z.ZodBoolean;
 }, z.core.$strip>;
+export declare const createMediaSchema: z.ZodObject<{
+    title: z.ZodString;
+    url: z.ZodString;
+    publicId: z.ZodString;
+    type: z.ZodEnum<{
+        audio: "audio";
+        image: "image";
+        video: "video";
+        document: "document";
+    }>;
+    filename: z.ZodString;
+    bytes: z.ZodNumber;
+}, z.core.$strip>;
+export declare const updateMediaSchema: z.ZodObject<{
+    title: z.ZodOptional<z.ZodString>;
+    used: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$strip>;
 //# sourceMappingURL=index.d.ts.map

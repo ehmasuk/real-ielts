@@ -31,4 +31,16 @@ export const createBugReportSchema = z.object({
 export const markBugFixedSchema = z.object({
     fixed: z.boolean(),
 });
+export const createMediaSchema = z.object({
+    title: z.string().min(1, "title is required"),
+    url: z.string().url("url must be a valid URL"),
+    publicId: z.string().min(1, "publicId is required"),
+    type: z.enum(["audio", "image", "video", "document"]),
+    filename: z.string().min(1, "filename is required"),
+    bytes: z.number().int().nonnegative(),
+});
+export const updateMediaSchema = z.object({
+    title: z.string().min(1).optional(),
+    used: z.boolean().optional(),
+});
 //# sourceMappingURL=index.js.map

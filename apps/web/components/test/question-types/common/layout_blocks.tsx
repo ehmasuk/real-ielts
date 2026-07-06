@@ -18,6 +18,10 @@ export const LayoutBlocks = React.memo(function LayoutBlocks({
   const { questionRange, instructions, layout, layoutType, options } = group
   if (!layout?.blocks) return null
 
+  const groupOptionLetters = options?.length
+    ? options.map((o: any) => (typeof o === "string" ? o : o.id))
+    : null
+
   return (
     <div className="space-y-2">
       {questionRange && <p className="font-bold">Questions {questionRange}</p>}
@@ -43,10 +47,14 @@ export const LayoutBlocks = React.memo(function LayoutBlocks({
                   if (item.type === "text")
                     return <span key={ci}>{formatString(item.text)}</span>
                   if (item.type === "question") {
+                    const enrichedItem =
+                      !item.options?.length && groupOptionLetters
+                        ? { ...item, options: groupOptionLetters }
+                        : item
                     return (
                       <InlineQuestion
                         key={ci}
-                        item={item}
+                        item={enrichedItem}
                         value={answers[item.questionId] ?? ""}
                         onChange={(v) => onAnswerChange(item.questionId, v)}
                       />

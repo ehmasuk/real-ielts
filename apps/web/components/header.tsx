@@ -30,8 +30,8 @@ interface NavLink {
 const navLinks: NavLink[] = [
   { href: "/listening", label: "Listening", icon: Headphones },
   { href: "/reading", label: "Reading", icon: BookOpen },
-  { href: "/writing", label: "Writing", icon: PenTool },
-  { href: "/speaking", label: "Speaking", icon: Mic },
+  { href: "/writing", label: "Writing", icon: PenTool, disabled: true },
+  { href: "/speaking", label: "Speaking", icon: Mic, disabled: true },
 ]
 
 // SSR-safe client detection — avoids set-state-in-effect lint warning
@@ -73,11 +73,11 @@ export const Header = React.memo(function Header() {
                 <div
                   key={link.label}
                   className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground/40 cursor-not-allowed select-none"
-                  title={`${link.label} - Coming Soon`}
+                  title={`${link.label} - Soon`}
                 >
                   <Icon className="h-4 w-4 text-muted-foreground/30" />
                   {link.label}
-                  <span className="ml-1 rounded-full bg-muted/60 px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground/50 border border-border/20">
+                  <span className="ml-1 rounded-full bg-muted/60 px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground/50 border border-border/20 whitespace-nowrap">
                     Soon
                   </span>
                 </div>
@@ -124,7 +124,7 @@ export const Header = React.memo(function Header() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2 rounded-lg border border-border/40 px-2">
                   <Avatar className="size-8">
-                    <AvatarImage src={user.picture || user.image || undefined} alt={user.name ?? undefined} />
+                    <AvatarImage src={user.picture || user.image || undefined} alt={user.name ?? undefined} referrerPolicy="no-referrer" />
                     <AvatarFallback>{user.name?.charAt(0).toUpperCase() ?? "?"}</AvatarFallback>
                   </Avatar>
                   <ChevronDown className="size-3.5 text-muted-foreground" />
@@ -206,7 +206,7 @@ export const Header = React.memo(function Header() {
                   >
                     <Icon className="h-4 w-4 text-muted-foreground/30" />
                     {link.label}
-                    <span className="ml-auto rounded-full bg-muted/60 px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground/50 border border-border/20">
+                    <span className="ml-auto rounded-full bg-muted/60 px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground/50 border border-border/20 whitespace-nowrap">
                       Soon
                     </span>
                   </div>
@@ -234,7 +234,7 @@ export const Header = React.memo(function Header() {
                 <>
                   <div className="flex items-center gap-3 px-3 py-2">
                     <Avatar className="size-9">
-                      <AvatarImage src={user.picture || user.image || undefined} alt={user.name ?? undefined} />
+                    <AvatarImage src={user.picture || user.image || undefined} alt={user.name ?? undefined} referrerPolicy="no-referrer" />
                       <AvatarFallback>{user.name?.charAt(0).toUpperCase() ?? "?"}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">

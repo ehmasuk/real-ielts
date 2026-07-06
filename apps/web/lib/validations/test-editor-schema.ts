@@ -169,7 +169,6 @@ export const getValidationIssues = (contentJson: string, answerJson: string, tes
 
           if (g.type === "flowchart_completion") {
             if (!g.image_src) issues.push({ type: "warning", message: `Flowchart completion group #${gIdx + 1} is missing 'image_src' — consider adding a flowchart image` })
-            if (!g.options?.length) issues.push({ type: "error", message: `Flowchart completion group #${gIdx + 1} is missing 'options'` })
             if (!g.questions?.length) issues.push({ type: "warning", message: `Flowchart completion group #${gIdx + 1} has no questions` })
             return (g.questions || []).map((q: any) => ({ questionId: q.questionId ?? (q.number != null ? `q_${q.number}` : undefined), number: q.number || 0 }))
           }

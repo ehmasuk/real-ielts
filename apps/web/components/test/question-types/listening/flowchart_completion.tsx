@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { cn } from "@workspace/ui/lib/utils"
 import { formatString } from "../../shared/formatString"
 
 interface Props {
@@ -66,7 +67,10 @@ export const FlowchartCompletion = React.memo(function FlowchartCompletion({
               </span>
             )}
             <input
-              className="border border-black bg-transparent px-2 py-1 font-bold text-center uppercase outline-none dark:border-white/30"
+              className={cn(
+                "border border-black bg-transparent px-2 py-1 outline-none dark:border-white/30",
+                hasOptions && "font-bold text-center uppercase"
+              )}
               style={{ width: hasOptions ? "3rem" : "12rem" }}
               value={answers[q.questionId] ?? ""}
               onChange={(e) =>

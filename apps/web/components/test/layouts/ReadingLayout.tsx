@@ -100,9 +100,9 @@ export const ReadingLayout = React.memo(function ReadingLayout({
 
       <div className="w-1/2 overflow-y-auto px-6 py-8 pb-32">
         <div className="space-y-10">
-          {questionGroups.map((group: any) => (
+          {questionGroups.map((group: any, gi: number) => (
             <QuestionGroup
-              key={group.id}
+              key={`${group.id}__${gi}`}
               group={group}
               answers={answers}
               onAnswerChange={onAnswerChange}

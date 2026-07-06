@@ -6,11 +6,17 @@ import { Bug } from "lucide-react"
 import { Logo } from "@/components/Logo"
 import { ReportBugModal } from "@/components/ReportBugModal"
 
-const quickLinks = [
+interface FooterLink {
+  href: string
+  label: string
+  disabled?: boolean
+}
+
+const quickLinks: FooterLink[] = [
   { href: "/listening", label: "Listening" },
   { href: "/reading", label: "Reading" },
-  { href: "/writing", label: "Writing" },
-  { href: "/speaking", label: "Speaking" },
+  { href: "/writing", label: "Writing", disabled: true },
+  { href: "/speaking", label: "Speaking", disabled: true },
 ]
 
 const currentYear = new Date().getFullYear()
@@ -40,12 +46,21 @@ export function Footer() {
             <ul className="mt-4 space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </Link>
+                  {link.disabled ? (
+                    <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground/40 cursor-not-allowed select-none">
+                      {link.label}
+                      <span className="rounded-full bg-muted/60 px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground/50 border border-border/20 whitespace-nowrap">
+                        Coming Soon
+                      </span>
+                    </span>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>

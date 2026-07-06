@@ -16,16 +16,18 @@ import {
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
 import { uploadToCloudinary } from "@/lib/cloudinary"
-import { getAccessToken } from "@/lib/token-manager"
+import api from "@/lib/axios"
 
 interface MediaAsset {
-  id: string
-  type: "audio" | "image" | "video" | "document"
+  _id: string
+  title: string
   url: string
+  publicId: string
+  type: "audio" | "image" | "video" | "document"
   filename: string
-  originalFilename?: string
   bytes: number
-  uploadedAt: string
+  used: boolean
+  createdAt: string
 }
 
 function detectType(file: File): MediaAsset["type"] {
@@ -49,28 +51,32 @@ function typeBadgeColor(type: MediaAsset["type"]) {
   return "bg-muted text-muted-foreground"
 }
 
-const STORAGE_KEY = "media_library"
-
 export default function ImportsPage() {
   const [dragActive, setDragActive] = React.useState(false)
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null)
+  const [title, setTitle] = React.useState("")
   const [isUploading, setIsUploading] = React.useState(false)
   const [uploadError, setUploadError] = React.useState<string | null>(null)
   const [copiedId, setCopiedId] = React.useState<string | null>(null)
   const [library, setLibrary] = React.useState<MediaAsset[]>([])
+  const [loading, setLoading] = React.useState(true)
   const [filter, setFilter] = React.useState<"all" | "audio" | "image" | "video">("all")
 
-  React.useEffect(() => {
+  const fetchLibrary = React.useCallback(async () => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) setLibrary(JSON.parse(stored))
-    } catch {}
+      setLoading(true)
+      const { data } = await api.get("/admin/media")
+      setLibrary(data)
+    } catch {
+      // handled by interceptor
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
-  const persist = (items: MediaAsset[]) => {
-    setLibrary(items)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
-  }
+  React.useEffect(() => {
+    fetchLibrary()
+  }, [fetchLibrary])
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault()
@@ -92,6 +98,7 @@ export default function ImportsPage() {
 
   const pick = (file: File) => {
     setSelectedFile(file)
+    setTitle(file.name.replace(/\.[^/.]+$/, ""))
     setUploadError(null)
   }
 
@@ -102,18 +109,19 @@ export default function ImportsPage() {
 
     try {
       const result = await uploadToCloudinary(selectedFile)
-      const asset: MediaAsset = {
-        id: result.public_id,
-        type: detectType(selectedFile),
+      await api.post("/admin/media", {
+        title: title.trim() || selectedFile.name,
         url: result.secure_url,
+        publicId: result.public_id,
+        type: detectType(selectedFile),
         filename: selectedFile.name,
         bytes: result.bytes,
-        uploadedAt: new Date().toLocaleString(),
-      }
-      persist([asset, ...library])
+      })
+      await fetchLibrary()
       setSelectedFile(null)
+      setTitle("")
     } catch (err: any) {
-      setUploadError(err.message || "Upload failed")
+      setUploadError(err.response?.data?.message || err.message || "Upload failed")
     } finally {
       setIsUploading(false)
     }
@@ -121,41 +129,40 @@ export default function ImportsPage() {
 
   const copyUrl = (asset: MediaAsset) => {
     navigator.clipboard.writeText(asset.url)
-    setCopiedId(asset.id)
+    setCopiedId(asset._id)
     setTimeout(() => setCopiedId(null), 2000)
   }
 
   const [deletingIds, setDeletingIds] = React.useState<Set<string>>(new Set())
 
   const deleteAsset = async (asset: MediaAsset) => {
-    if (!confirm(`Delete "${asset.originalFilename || asset.id}" from the media library? This cannot be undone.`)) return
-    if (deletingIds.has(asset.id)) return
-    setDeletingIds((prev) => new Set(prev).add(asset.id))
+    const id = asset._id
+    if (!confirm(`Delete "${asset.title}"? This cannot be undone.`)) return
+    if (deletingIds.has(id)) return
+    setDeletingIds((prev) => new Set(prev).add(id))
     try {
-      const token = getAccessToken()
-      const res = await fetch("/api/cloudinary/delete", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({ public_id: asset.id, type: asset.type }),
-      })
-      if (!res.ok) {
-        const text = await res.text()
-        let message = text
-        try { const j = JSON.parse(text); message = j.error || message } catch {}
-        console.error("Cloudinary delete failed:", message)
-      }
-    } catch (e) {
-      console.error("Cloudinary delete error:", e)
+      await api.delete(`/admin/media/${id}`)
+      setLibrary((prev) => prev.filter((a) => a._id !== id))
+    } catch {
+      // handled by interceptor
     }
-    persist(library.filter((a) => a.id !== asset.id))
     setDeletingIds((prev) => {
       const next = new Set(prev)
-      next.delete(asset.id)
+      next.delete(id)
       return next
     })
+  }
+
+  const toggleUsed = async (asset: MediaAsset) => {
+    const id = asset._id
+    try {
+      await api.patch(`/admin/media/${id}`, { used: !asset.used })
+      setLibrary((prev) =>
+        prev.map((a) => (a._id === id ? { ...a, used: !a.used } : a)),
+      )
+    } catch {
+      // handled by interceptor
+    }
   }
 
   const filtered = filter === "all" ? library : library.filter((a) => a.type === filter)
@@ -224,11 +231,21 @@ export default function ImportsPage() {
                   <Button
                     variant="ghost" size="sm"
                     className="h-7 text-xs text-muted-foreground hover:text-foreground"
-                    onClick={() => { setSelectedFile(null); setUploadError(null) }}
+                    onClick={() => { setSelectedFile(null); setTitle(""); setUploadError(null) }}
                     disabled={isUploading}
                   >
                     Clear
                   </Button>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-medium text-muted-foreground">Title</label>
+                  <input
+                    className="w-full rounded-lg border border-border/60 bg-transparent px-3 py-2 text-sm outline-none focus:border-indigo-500"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="e.g. Listening Part 1 Audio"
+                  />
                 </div>
 
                 {uploadError && (
@@ -244,7 +261,7 @@ export default function ImportsPage() {
                   <Button
                     onClick={handleUpload}
                     size="sm"
-                    disabled={isUploading}
+                    disabled={isUploading || !title.trim()}
                     className="bg-linear-to-r from-indigo-600 to-purple-600 text-white text-xs hover:from-indigo-500 hover:to-purple-500"
                   >
                     {isUploading && <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />}
@@ -256,7 +273,11 @@ export default function ImportsPage() {
           </div>
 
           {/* Library */}
-          {library.length > 0 && (
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </div>
+          ) : library.length > 0 ? (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-foreground">
@@ -281,51 +302,70 @@ export default function ImportsPage() {
               </div>
 
               <div className="grid gap-2">
-                {filtered.map((asset) => (
-                  <div
-                    key={asset.id}
-                    className="flex items-center gap-3 p-3 rounded-xl border border-border/40 bg-card hover:border-border/60 transition-colors"
-                  >
-                    <TypeIcon type={asset.type} className="h-5 w-5 text-muted-foreground shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium text-foreground line-clamp-1">{asset.filename}</span>
-                        <span className={cn("text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md border", typeBadgeColor(asset.type))}>
-                          {asset.type}
-                        </span>
+                {filtered.map((asset) => {
+                  const id = asset._id
+                  return (
+                    <div
+                      key={id}
+                      className="flex items-center gap-3 p-3 rounded-xl border border-border/40 bg-card hover:border-border/60 transition-colors"
+                    >
+                      <TypeIcon type={asset.type} className="h-5 w-5 text-muted-foreground shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-medium text-foreground line-clamp-1">{asset.title}</span>
+                          <span className={cn("text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md border", typeBadgeColor(asset.type))}>
+                            {asset.type}
+                          </span>
+                          <span
+                            className={cn(
+                              "text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md border cursor-pointer select-none",
+                              asset.used
+                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                                : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                            )}
+                            onClick={() => toggleUsed(asset)}
+                            title="Toggle used status"
+                          >
+                            {asset.used ? "Used" : "Not Used"}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">
+                          {(asset.bytes / 1024).toFixed(1)} KB • {new Date(asset.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">
-                        {(asset.bytes / 1024).toFixed(1)} KB • {asset.uploadedAt}
-                      </p>
+                      <div className="flex gap-1 shrink-0">
+                        <Button
+                          variant="ghost" size="icon-sm"
+                          onClick={() => copyUrl(asset)}
+                          className="h-7 w-7 rounded-lg text-muted-foreground hover:text-foreground"
+                          title="Copy URL"
+                        >
+                          {copiedId === id
+                            ? <CheckCircle className="h-3.5 w-3.5 text-emerald-500" />
+                            : <Copy className="h-3.5 w-3.5" />
+                          }
+                        </Button>
+                        <Button
+                          variant="ghost" size="icon-sm"
+                          onClick={() => deleteAsset(asset)}
+                          disabled={deletingIds.has(id)}
+                          className="h-7 w-7 rounded-lg text-muted-foreground hover:text-rose-500 disabled:opacity-30"
+                          title="Delete"
+                        >
+                          {deletingIds.has(id)
+                            ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            : <Trash2 className="h-3.5 w-3.5" />
+                          }
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex gap-1 shrink-0">
-                      <Button
-                        variant="ghost" size="icon-sm"
-                        onClick={() => copyUrl(asset)}
-                        className="h-7 w-7 rounded-lg text-muted-foreground hover:text-foreground"
-                        title="Copy URL"
-                      >
-                        {copiedId === asset.id
-                          ? <CheckCircle className="h-3.5 w-3.5 text-emerald-500" />
-                          : <Copy className="h-3.5 w-3.5" />
-                        }
-                      </Button>
-                      <Button
-                        variant="ghost" size="icon-sm"
-                        onClick={() => deleteAsset(asset)}
-                        disabled={deletingIds.has(asset.id)}
-                        className="h-7 w-7 rounded-lg text-muted-foreground hover:text-rose-500 disabled:opacity-30"
-                        title="Remove from library"
-                      >
-                        {deletingIds.has(asset.id)
-                          ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                          : <Trash2 className="h-3.5 w-3.5" />
-                        }
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
+            </div>
+          ) : (
+            <div className="py-12 text-center">
+              <p className="text-sm text-muted-foreground">No assets uploaded yet.</p>
             </div>
           )}
         </div>
@@ -336,8 +376,10 @@ export default function ImportsPage() {
             <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">How to use Media</h3>
             <ol className="text-[11px] leading-relaxed text-muted-foreground space-y-2 list-decimal list-inside">
               <li>Upload your listening audio or passage image.</li>
+              <li>Give it a descriptive title.</li>
               <li>Click <strong>Copy URL</strong> next to the asset.</li>
               <li>Paste the URL into your test&apos;s <code>contentJson</code> in the Test Editor.</li>
+              <li>Toggle <strong>Used / Not Used</strong> to track which assets are in use.</li>
             </ol>
             <div className="mt-3 p-3 bg-muted/40 rounded-xl border border-border/60">
               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Audio Block Reference</p>

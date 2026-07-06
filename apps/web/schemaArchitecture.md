@@ -1345,3 +1345,89 @@ This is a complete valid listening test schema with multiple question types:
 ## Query Parameters
 
 - **`?retry=1`** — When navigating to a test part with this parameter, the system bypasses any existing result and lets the user retake the part. Used by the "Try Again" button on the result page.
+
+
+
+
+
+
+### Note/Summary completion example:
+
+```json
+{
+  "id": "group_4",
+  "type": "completion_layout",
+  "layoutType": "notes",
+  "instructions": "Complete the notes below.\n\nChoose ONE WORD ONLY from the passage for each answer.\n\nWrite your answers in boxes 19-26 on your answer sheet.",
+  "questionRange": "19-26",
+  "layout": {
+    "blocks": [
+      {
+        "type": "heading",
+        "text": "Dar es Salaam's DART Bus Rapid Transit system"
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "**Features**\n"
+          },
+          {
+            "type": "question",
+            "questionId": "q_19",
+            "number": 19,
+            "question": "• the buses use designated ______ to cut down on delays\n"
+          },
+          {
+            "type": "question",
+            "questionId": "q_20",
+            "number": 20,
+            "question": "• passengers pay fares before ______.\n"
+          },
+          {
+            "type": "question",
+            "questionId": "q_21",
+            "number": 21,
+            "question": "• passengers in ______ can use every part of the system\n"
+          },
+          {
+            "type": "text",
+            "text": "**Problems**\n"
+          },
+          {
+            "type": "question",
+            "questionId": "q_22",
+            "number": 22,
+            "question": "• the temperature control is sometimes not activated in order to reduce ______ use\n"
+          },
+          {
+            "type": "question",
+            "questionId": "q_23",
+            "number": 23,
+            "question": "• insufficient number of vehicles are available due to the effects of a severe ______.\n"
+          },
+          {
+            "type": "question",
+            "questionId": "q_24",
+            "number": 24,
+            "question": "• passengers are unable to use ______ because some equipment is out of action\n"
+          },
+          {
+            "type": "question",
+            "questionId": "q_25",
+            "number": 25,
+            "question": "• tickets have to be checked manually at station ______.\n"
+          },
+          {
+            "type": "question",
+            "questionId": "q_26",
+            "number": 26,
+            "question": "• ______ frequently build up during rush hours"
+          }
+        ]
+      }
+    ]
+  }
+}
+```

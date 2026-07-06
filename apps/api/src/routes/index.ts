@@ -5,6 +5,7 @@ import testRoutes from "./test.routes.js";
 import adminTestRoutes from "./admin.test.routes.js";
 import bugReportRoutes from "./bug-report.routes.js";
 import adminBugReportRoutes from "./admin.bug-report.routes.js";
+import adminMediaRoutes from "./admin.media.routes.js";
 
 const routes = (app: any): void => {
   app.use("/api/auth", authRoutes);
@@ -14,6 +15,7 @@ const routes = (app: any): void => {
   app.use("/api/admin/tests", adminTestRoutes);
   app.use("/api/bug-reports", bugReportRoutes);
   app.use("/api/admin/bug-reports", adminBugReportRoutes);
+  app.use("/api/admin/media", adminMediaRoutes);
 };
 
 export default routes;

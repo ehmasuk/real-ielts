@@ -17,7 +17,7 @@ export const MatchingFeatures = React.memo(function MatchingFeatures({ group, an
     : "A–Z"
   return (
     <div className="space-y-4">
-      {questionRange && <p className="font-bold">Questions {questionRange}</p>}
+      {questionRange && <p className="font-bold">Questions{questionRange}</p>}
       {instructions && (
         <p className="font-medium">{formatString(instructions)}</p>
       )}

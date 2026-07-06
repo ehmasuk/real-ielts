@@ -27,8 +27,8 @@ export const MCQMultiple = React.memo(function MCQMultiple({ group, answers, onA
       {instructions && <p className="font-medium">{formatString(instructions)}</p>}
       {group.questionId && (
         <div>
-          <p className="mb-2 flex gap-2">
-            <b>{questionRange}</b>
+          <p className="mb-2">
+            <span className="font-bold mr-2">{questionRange}</span>
             {formatString(group.question)}
           </p>
           <div className="inline-block space-y-2 pl-2">
