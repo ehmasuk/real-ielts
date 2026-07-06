@@ -60,7 +60,7 @@ export const getValidationIssues = (contentJson: string, answerJson: string, tes
 
   const parsed = ContentSchema.safeParse(parsedContent)
   if (!parsed.success) {
-    const zodIssues = parsed.error?.issues || parsed.error?.errors || []
+    const zodIssues = parsed.error?.issues || []
     zodIssues.forEach((err: any) => {
       issues.push({ type: "error", message: err.message || (Array.isArray(err.path) ? err.path.join(".") : String(err.path)) + " is invalid" })
     })
@@ -89,7 +89,7 @@ export const getValidationIssues = (contentJson: string, answerJson: string, tes
         const sectionQuestions = sec.questionGroups ? sec.questionGroups.flatMap((g: any, gIdx: number) => {
           const res = QuestionGroupBase.safeParse(g)
           if (!res.success) {
-            const zodIssues = res.error?.issues || res.error?.errors || []
+            const zodIssues = res.error?.issues || []
             zodIssues.forEach((err: any) => {
               if (err.path[0]) {
                 issues.push({ type: "warning", message: `Question group #${gIdx + 1} in Section #${sIdx + 1} ('${sec.title || sIdx}') is missing '${err.path[0]}'` })

@@ -30,8 +30,13 @@ export const getAllBugReports = async (_req: CustomRequest, res: Response, next:
 
 export const markBugReportAsFixed = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const id = req.params.id
+    if (!id) {
+      res.status(400).json({ message: "Missing bug report id" })
+      return
+    }
     const { fixed } = req.body
-    const report = await bugReportServices.markAsFixed(req.params.id, fixed)
+    const report = await bugReportServices.markAsFixed(id, fixed)
     if (!report) {
       res.status(404).json({ message: "Bug report not found" })
       return
@@ -44,7 +49,12 @@ export const markBugReportAsFixed = async (req: Request, res: Response, next: Ne
 
 export const deleteBugReport = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const report = await bugReportServices.remove(req.params.id)
+    const id = req.params.id
+    if (!id) {
+      res.status(400).json({ message: "Missing bug report id" })
+      return
+    }
+    const report = await bugReportServices.remove(id)
     if (!report) {
       res.status(404).json({ message: "Bug report not found" })
       return

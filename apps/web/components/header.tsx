@@ -124,8 +124,8 @@ export const Header = React.memo(function Header() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2 rounded-lg border border-border/40 px-2">
                   <Avatar className="size-8">
-                    <AvatarImage src={user.picture || user.image} alt={user.name} />
-                    <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                    <AvatarImage src={user.picture || user.image || undefined} alt={user.name ?? undefined} />
+                    <AvatarFallback>{user.name?.charAt(0).toUpperCase() ?? "?"}</AvatarFallback>
                   </Avatar>
                   <ChevronDown className="size-3.5 text-muted-foreground" />
                 </Button>
@@ -133,7 +133,7 @@ export const Header = React.memo(function Header() {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col gap-1">
-                    <p className="text-sm font-medium">{user.name}</p>
+                    <p className="text-sm font-medium">{user.name ?? "User"}</p>
                     <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                       <Mail className="size-3" />
                       {user.email}
@@ -234,11 +234,11 @@ export const Header = React.memo(function Header() {
                 <>
                   <div className="flex items-center gap-3 px-3 py-2">
                     <Avatar className="size-9">
-                      <AvatarImage src={user.picture || user.image} alt={user.name} />
-                      <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                      <AvatarImage src={user.picture || user.image || undefined} alt={user.name ?? undefined} />
+                      <AvatarFallback>{user.name?.charAt(0).toUpperCase() ?? "?"}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium">{user.name}</span>
+                      <span className="text-sm font-medium">{user.name ?? "User"}</span>
                       <span className="text-xs text-muted-foreground">{user.email}</span>
                     </div>
                   </div>

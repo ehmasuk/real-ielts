@@ -30,7 +30,12 @@ export const getAdminBooks = async (req: Request, res: Response, next: NextFunct
 // @access  Private (Admin)
 export const getAdminBookById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const book = await bookServices.getById(req.params.id);
+    const id = req.params.id;
+    if (!id) {
+      res.status(400);
+      throw new Error("Missing book id");
+    }
+    const book = await bookServices.getById(id);
     if (!book) {
       res.status(404);
       throw new Error("Book not found");
@@ -59,8 +64,13 @@ export const createBookHandler = async (req: Request, res: Response, next: NextF
 // @access  Private (Admin)
 export const updateBookHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const id = req.params.id;
+    if (!id) {
+      res.status(400);
+      throw new Error("Missing book id");
+    }
     const { number, title, slug, status } = req.body;
-    const book = await bookServices.update(req.params.id, { number, title, slug, status });
+    const book = await bookServices.update(id, { number, title, slug, status });
     if (!book) {
       res.status(404);
       throw new Error("Book not found");
@@ -76,7 +86,12 @@ export const updateBookHandler = async (req: Request, res: Response, next: NextF
 // @access  Private (Admin)
 export const deleteBookHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const book = await bookServices.remove(req.params.id);
+    const id = req.params.id;
+    if (!id) {
+      res.status(400);
+      throw new Error("Missing book id");
+    }
+    const book = await bookServices.remove(id);
     if (!book) {
       res.status(404);
       throw new Error("Book not found");

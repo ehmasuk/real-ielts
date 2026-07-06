@@ -23,6 +23,7 @@ interface MediaAsset {
   type: "audio" | "image" | "video" | "document"
   url: string
   filename: string
+  originalFilename?: string
   bytes: number
   uploadedAt: string
 }

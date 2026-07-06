@@ -18,12 +18,12 @@ if (!MONGODB_URI) {
 
 async function seed() {
   console.log("Connecting to MongoDB...");
-  await mongoose.connect(MONGODB_URI);
+  await mongoose.connect(MONGODB_URI!);
   console.log("Connected.");
 
   // Drop obsolete indexes from earlier schema versions
   try {
-    await mongoose.connection.db.collection("users").dropIndex("sub_1");
+    await mongoose.connection.db?.collection("users").dropIndex("sub_1");
     console.log("  Dropped obsolete sub_1 index.");
   } catch {
     // index doesn't exist, that's fine

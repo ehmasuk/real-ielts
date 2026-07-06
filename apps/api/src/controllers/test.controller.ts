@@ -21,7 +21,12 @@ export const getAdminTests = async (req: Request, res: Response, next: NextFunct
 // @access  Private (Admin)
 export const getAdminTestByIdHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const test = await testServices.getByIdAdmin(req.params.id);
+    const id = req.params.id;
+    if (!id) {
+      res.status(400);
+      throw new Error("Missing test id");
+    }
+    const test = await testServices.getByIdAdmin(id);
     if (!test) {
       res.status(404);
       throw new Error("Test not found");
@@ -50,8 +55,13 @@ export const createTestHandler = async (req: Request, res: Response, next: NextF
 // @access  Private (Admin)
 export const updateTestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const id = req.params.id;
+    if (!id) {
+      res.status(400);
+      throw new Error("Missing test id");
+    }
     const { bookId, testNumber, skill, status, contentJson, answerJson } = req.body;
-    const test = await testServices.update(req.params.id, { bookId, testNumber, skill, status, contentJson, answerJson });
+    const test = await testServices.update(id, { bookId, testNumber, skill, status, contentJson, answerJson });
     if (!test) {
       res.status(404);
       throw new Error("Test not found");
@@ -67,7 +77,12 @@ export const updateTestHandler = async (req: Request, res: Response, next: NextF
 // @access  Private (Admin)
 export const deleteTestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const test = await testServices.remove(req.params.id);
+    const id = req.params.id;
+    if (!id) {
+      res.status(400);
+      throw new Error("Missing test id");
+    }
+    const test = await testServices.remove(id);
     if (!test) {
       res.status(404);
       throw new Error("Test not found");
@@ -83,7 +98,12 @@ export const deleteTestHandler = async (req: Request, res: Response, next: NextF
 // @access  Private (Admin)
 export const publishTestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const test = await testServices.setStatus(req.params.id, "published");
+    const id = req.params.id;
+    if (!id) {
+      res.status(400);
+      throw new Error("Missing test id");
+    }
+    const test = await testServices.setStatus(id, "published");
     if (!test) {
       res.status(404);
       throw new Error("Test not found");
@@ -99,7 +119,12 @@ export const publishTestHandler = async (req: Request, res: Response, next: Next
 // @access  Private (Admin)
 export const archiveTestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const test = await testServices.setStatus(req.params.id, "archived");
+    const id = req.params.id;
+    if (!id) {
+      res.status(400);
+      throw new Error("Missing test id");
+    }
+    const test = await testServices.setStatus(id, "archived");
     if (!test) {
       res.status(404);
       throw new Error("Test not found");
@@ -132,7 +157,12 @@ export const getTests = async (req: Request, res: Response, next: NextFunction) 
 // @access  Public
 export const getTestByIdHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const test = await testServices.getById(req.params.id);
+    const id = req.params.id;
+    if (!id) {
+      res.status(400);
+      throw new Error("Missing test id");
+    }
+    const test = await testServices.getById(id);
     if (!test) {
       res.status(404);
       throw new Error("Test not found");
@@ -148,8 +178,14 @@ export const getTestByIdHandler = async (req: Request, res: Response, next: Next
 // @access  Public
 export const getTestPartHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const partIndex = parseInt(req.params.partNum, 10) - 1;
-    const result = await testServices.getPart(req.params.id, partIndex);
+    const id = req.params.id;
+    const partNum = req.params.partNum;
+    if (!id || !partNum) {
+      res.status(400);
+      throw new Error("Missing test id or part number");
+    }
+    const partIndex = parseInt(partNum, 10) - 1;
+    const result = await testServices.getPart(id, partIndex);
     if (!result) {
       res.status(404);
       throw new Error("Test or part not found");
@@ -169,13 +205,19 @@ export const submitTestPartHandler = async (req: CustomRequest, res: Response, n
       res.status(401);
       throw new Error("Please login first");
     }
-    const partIndex = parseInt(req.params.partNum, 10) - 1;
+    const id = req.params.id;
+    const partNum = req.params.partNum;
+    if (!id || !partNum) {
+      res.status(400);
+      throw new Error("Missing test id or part number");
+    }
+    const partIndex = parseInt(partNum, 10) - 1;
     const { answers, timeTaken } = req.body;
     if (!answers || typeof answers !== "object") {
       res.status(400);
       throw new Error("Missing or invalid 'answers' object in request body");
     }
-    const result = await testServices.submitPart(req.user.id, req.params.id, partIndex, answers, timeTaken);
+    const result = await testServices.submitPart(req.user.id, id, partIndex, answers, timeTaken);
     if (!result) {
       res.status(404);
       throw new Error("Test or part not found");
@@ -211,8 +253,14 @@ export const getPartResultHandler = async (req: CustomRequest, res: Response, ne
       res.status(401);
       throw new Error("Please login first");
     }
-    const partIndex = parseInt(req.params.partNum, 10) - 1;
-    const result = await testServices.getPartResult(req.user.id, req.params.id, partIndex);
+    const id = req.params.id;
+    const partNum = req.params.partNum;
+    if (!id || !partNum) {
+      res.status(400);
+      throw new Error("Missing test id or part number");
+    }
+    const partIndex = parseInt(partNum, 10) - 1;
+    const result = await testServices.getPartResult(req.user.id, id, partIndex);
     if (!result) {
       res.status(200).json(null);
       return;

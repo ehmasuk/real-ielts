@@ -217,7 +217,7 @@ export const AdminSidebar = React.memo(function AdminSidebar({ collapsed, onTogg
         <div className="border-t border-border/40 p-3">
           <div className="flex items-center gap-3 rounded-lg bg-muted/40 p-2.5">
             <Avatar className="size-8">
-              <AvatarImage src={mounted ? (user?.picture || user?.image) : undefined} alt={mounted ? user?.name : undefined} />
+              <AvatarImage src={mounted ? (user?.picture || user?.image || undefined) : undefined} alt={mounted ? user?.name ?? undefined : undefined} />
               <AvatarFallback className="text-xs font-bold">{mounted && user?.name ? user.name.charAt(0).toUpperCase() : "A"}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">

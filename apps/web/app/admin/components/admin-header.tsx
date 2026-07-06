@@ -101,8 +101,8 @@ export const AdminHeader = React.memo(function AdminHeader({ onMenuToggle }: Adm
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="flex items-center gap-2 rounded-lg border border-border/40 px-2">
                 <Avatar className="size-7">
-                  <AvatarImage src={user.picture || user.image} alt={user.name} />
-                  <AvatarFallback className="text-xs">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                  <AvatarImage src={user.picture || user.image || undefined} alt={user.name ?? undefined} />
+                  <AvatarFallback className="text-xs">{user.name?.charAt(0).toUpperCase() ?? "?"}</AvatarFallback>
                 </Avatar>
                 <span className="hidden sm:block text-sm text-muted-foreground">{user.name}</span>
                 <ChevronDown className="size-3.5 text-muted-foreground" />
@@ -111,7 +111,7 @@ export const AdminHeader = React.memo(function AdminHeader({ onMenuToggle }: Adm
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col gap-1">
-                  <p className="text-sm font-medium">{user.name}</p>
+                  <p className="text-sm font-medium">{user.name ?? "User"}</p>
                   <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                     <Mail className="size-3" />
                     {user.email}
