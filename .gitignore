@@ -19,7 +19,6 @@ out/
 
 # production
 build
-dist
 
 # turbo
 .turbo
