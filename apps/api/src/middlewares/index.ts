@@ -10,7 +10,7 @@ const middlewares = (app: any): void => {
   app.use(cookieParser());
   app.use(
     cors({
-      origin: ["http://localhost:3000", "https://bookora.vercel.app"],
+      origin: ["http://localhost:3000", "https://real-ielts.vercel.app"],
       credentials: true,
       exposedHeaders: ["Content-Disposition"],
     }),
