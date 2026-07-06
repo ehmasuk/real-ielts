@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Geist_Mono, Inter } from "next/font/google"
 
 import { ThemeProvider } from "@/providers/theme-provider"
@@ -8,6 +9,76 @@ import "@workspace/ui/globals.css"
 import { cn } from "@workspace/ui/lib/utils"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
+
+export const metadata: Metadata = {
+  title: {
+    default: "Real IELTS — Practice for the Computer-Delivered IELTS Exam",
+    template: "%s | Real IELTS",
+  },
+  description:
+    "Train under real exam conditions with Cambridge IELTS practice tests. Access comprehensive mocks from Cambridge series 16–21, get instant band score diagnostics, and clear explanations for every error.",
+  keywords: [
+    "IELTS",
+    "IELTS practice",
+    "Cambridge IELTS",
+    "CD-IELTS",
+    "IELTS preparation",
+    "IELTS online",
+    "exam simulation",
+    "IELTS band score",
+    "IELTS listening practice",
+    "IELTS reading practice",
+    "IELTS writing practice",
+    "IELTS speaking practice",
+  ],
+  authors: [{ name: "Real IELTS" }],
+  creator: "Real IELTS",
+  publisher: "Real IELTS",
+  metadataBase: new URL("https://real-ielts.com"),
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Real IELTS",
+    title: "Real IELTS — Practice for the Computer-Delivered IELTS Exam",
+    description:
+      "Train under real exam conditions with Cambridge IELTS practice tests. Access comprehensive mocks from Cambridge series 16–21, get instant band score diagnostics, and clear explanations for every error.",
+    url: "https://real-ielts.com",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Real IELTS — Practice for the Computer-Delivered IELTS Exam",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Real IELTS — Practice for the Computer-Delivered IELTS Exam",
+    description:
+      "Train under real exam conditions with Cambridge IELTS practice tests. Access comprehensive mocks from Cambridge series 16–21, get instant band score diagnostics, and clear explanations for every error.",
+    images: ["/opengraph-image.png"],
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  manifest: "/site.webmanifest",
+  alternates: {
+    canonical: "https://real-ielts.com",
+  },
+}
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
