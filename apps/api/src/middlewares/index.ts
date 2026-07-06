@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import env from "../config/env.js";
 
 const middlewares = (app: any): void => {
   app.use(express.json());
@@ -10,7 +11,7 @@ const middlewares = (app: any): void => {
   app.use(cookieParser());
   app.use(
     cors({
-      origin: ["http://localhost:3000", "https://real-ielts.vercel.app"],
+      origin: env.FRONTEND_URL.split(",").map((o) => o.trim()),
       credentials: true,
       exposedHeaders: ["Content-Disposition"],
     }),

@@ -127,3 +127,4 @@ pnpm dev
 | `JWT_SECRET` | Secret for signing JWTs (min 32 chars) |
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID |
 | `INTERNAL_API_KEY` | Shared secret for auth sync (min 16 chars) |
+| `FRONTEND_URL` | Allowed CORS origin(s) — comma-separated if multiple (e.g. `http://localhost:3000,https://real-ielts.vercel.app`) |

@@ -6,6 +6,7 @@ const envSchema = z.object({
     JWT_SECRET: z.string().min(32),
     GOOGLE_CLIENT_ID: z.string(),
     INTERNAL_API_KEY: z.string().min(16),
+    FRONTEND_URL: z.string().url(),
 });
 const result = envSchema.safeParse(process.env);
 if (!result.success) {
