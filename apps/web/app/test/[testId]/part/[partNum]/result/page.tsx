@@ -27,13 +27,13 @@ interface ResultData {
   skill?: string
 }
 
-function CircularProgress({ percentage }: { percentage: number }) {
+function CircularProgress({ correctCount, total }: { correctCount: number; total: number }) {
   const [offset, setOffset] = React.useState(0)
+  const percentage = Math.round((correctCount / total) * 100)
   const radius = 56
   const circumference = 2 * Math.PI * radius
   
   React.useEffect(() => {
-    // Delay animation slightly for effect
     const timeout = setTimeout(() => {
       setOffset(circumference - (percentage / 100) * circumference)
     }, 100)
@@ -73,7 +73,7 @@ function CircularProgress({ percentage }: { percentage: number }) {
         />
       </svg>
       <div className="absolute flex flex-col items-center justify-center text-foreground">
-        <span className="text-3xl font-black tracking-tight">{percentage}%</span>
+        <span className="text-3xl font-bold tracking-tight">{correctCount}/{total}</span>
         <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mt-0.5">Score</span>
       </div>
     </div>
@@ -173,7 +173,6 @@ export default function ResultPage() {
       ? `/test/${testId}/reading/${partNum + 1}`
       : ""
   const correctCount = data.score ?? data.results.filter((r) => r.correct).length
-  const percentage = Math.round((correctCount / data.total) * 100)
   const resultMap = new Map(data.results.map((r) => [r.questionId, r]))
   const collected = collectQuestions(data.section)
   const allQuestions =
@@ -198,7 +197,7 @@ export default function ResultPage() {
             {/* Left side: Context */}
             <div className="flex-1 text-center md:text-left flex flex-col justify-center">
               <div className="mb-4 inline-flex items-center justify-center md:justify-start gap-2 rounded-full bg-indigo-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
-                {data.sectionTitle || `Part ${partNum}`}
+                {[data.title, data.sectionTitle || `Part ${partNum}`].filter(Boolean).join(" • ")}
               </div>
               <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground mb-4">
                 Test Complete
@@ -239,7 +238,7 @@ export default function ResultPage() {
             {/* Right side: Circular Progress & Stats */}
             <div className="shrink-0 flex items-center justify-center bg-background/50 rounded-2xl border border-border/50 p-6 md:p-8">
               <div className="flex flex-col items-center gap-4">
-                <CircularProgress percentage={percentage} />
+                <CircularProgress correctCount={correctCount} total={data.total} />
                 <div className="flex items-center gap-4 text-center mt-2 border-t border-border/40 pt-4 w-full">
                   <div>
                     <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{correctCount}</p>

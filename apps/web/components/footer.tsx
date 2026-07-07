@@ -72,8 +72,8 @@ export function Footer() {
         <div className="mt-12 border-t border-border/40 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <p>&copy; {currentYear} Real IELTS. All rights reserved.</p>
           <div className="flex gap-4">
-            <Link href="#" className="hover:underline">Privacy Policy</Link>
-            <Link href="#" className="hover:underline">Terms of Service</Link>
+            <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
+            <Link href="/terms" className="hover:underline">Terms of Service</Link>
             <Link href="#" className="hover:underline inline-flex items-center gap-1" onClick={(e) => { e.preventDefault(); setReportOpen(true) }}> <Bug className="h-3 w-3" /> Report Bug</Link>
           </div>
         </div>

@@ -106,6 +106,51 @@ Exactly **3 sections** (`passage_1` through `passage_3`).
 
 **Fallback:** `passage.blocks` — flat array of content blocks without labeled sections. Used when passage doesn't have labeled paragraphs.
 
+**Example — passage with labeled sections:**
+```json
+{
+  "id": "passage_2",
+  "title": "Reading Passage 2",
+  "instructions": "You should spend about 20 minutes on **Questions 14–26**, which are based on Reading Passage 2 below.",
+  "passage": {
+    "title": "Stadiums: past, present and future",
+    "subtitle": "",
+    "sections": [
+      { "id": "section_A", "label": "A", "blocks": [ { "type": "paragraph", "text": "" } ] },
+      { "id": "section_B", "label": "B", "blocks": [ { "type": "paragraph", "text": "" } ] },
+      { "id": "section_C", "label": "C", "blocks": [ { "type": "paragraph", "text": "" } ] },
+      { "id": "section_D", "label": "D", "blocks": [ { "type": "paragraph", "text": "" } ] },
+      { "id": "section_E", "label": "E", "blocks": [ { "type": "paragraph", "text": "" } ] },
+      { "id": "section_F", "label": "F", "blocks": [ { "type": "paragraph", "text": "" } ] },
+      { "id": "section_G", "label": "G", "blocks": [ { "type": "paragraph", "text": "" } ] },
+      { "id": "section_H", "label": "H", "blocks": [ { "type": "paragraph", "text": "" } ] }
+    ]
+  },
+  "questionGroups": [ … ]
+}
+```
+
+**Example — passage without labels (flat blocks):**
+```json
+{
+  "id": "passage_1",
+  "title": "Reading Passage 1",
+  "instructions": "You should spend about 20 minutes on **Questions 1–13**, which are based on Reading Passage 1 below.",
+  "passage": {
+    "title": "The History of Tennis",
+    "subtitle": "",
+    "blocks": [
+      { "type": "heading", "text": "Origins of the Sport", "alignment": "center" },
+      { "type": "paragraph", "text": "The game originated in 12th century France…" },
+      { "type": "paragraph", "text": "By the 16th century…" },
+      { "type": "paragraph", "text": "The modern game emerged in England…" },
+      { "type": "paragraph", "text": "Today the sport is played globally…" }
+    ]
+  },
+  "questionGroups": [ … ]
+}
+```
+
 **Block types** (for both `sections[].blocks` and `passage.blocks`):
 
 | Type | Fields | Description |
