@@ -12,6 +12,7 @@ import {
   Copy,
   CornerDownLeft,
   Delete,
+  IndentIncrease,
   Minus,
   Scissors,
   Sparkles,
@@ -404,7 +405,8 @@ export default function TestEditorPage({ params }: PageProps) {
               <div className="flex items-center gap-1">
                 {[
                   { icon: CornerDownLeft, insert: () => insertAtCursor(contentViewRef.current, "\\n"), title: "Newline (\\n)" },
-                  { icon: Circle, insert: () => insertAtCursor(contentViewRef.current, "• "), title: "Bullet point (•)" },
+                  { icon: IndentIncrease, insert: () => insertAtCursor(contentViewRef.current, "\\t"), title: "Tab (\\t)" },
+                  { icon: Circle, insert: () => insertAtCursor(contentViewRef.current, "\\t• "), title: "Bullet point (•)" },
                   { icon: Minus, insert: () => insertAtCursor(contentViewRef.current, "______"), title: "Blank (______)" },
                   { icon: Bold, insert: () => wrapAtCursor(contentViewRef.current, "**", "**"), title: "Bold (**text**)" },
                   { icon: Copy, insert: () => copySelection(contentViewRef.current), title: "Copy selected text" },
@@ -462,6 +464,7 @@ export default function TestEditorPage({ params }: PageProps) {
               <div className="flex items-center gap-1">
                 {[
                   { icon: CornerDownLeft, insert: () => insertAtCursor(answersViewRef.current, "\\n"), title: "Newline (\\n)" },
+                  { icon: IndentIncrease, insert: () => insertAtCursor(answersViewRef.current, "\\t"), title: "Tab (\\t)" },
                   { icon: Circle, insert: () => insertAtCursor(answersViewRef.current, "• "), title: "Bullet point (•)" },
                   { icon: Minus, insert: () => insertAtCursor(answersViewRef.current, "______"), title: "Blank (______)" },
                   { icon: Bold, insert: () => wrapAtCursor(answersViewRef.current, "**", "**"), title: "Bold (**text**)" },

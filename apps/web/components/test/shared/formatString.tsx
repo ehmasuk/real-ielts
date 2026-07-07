@@ -9,7 +9,12 @@ export function formatString(text: string | undefined | null): React.ReactNode {
     }
     return segment.split("\n").map((line, j, arr) => (
       <React.Fragment key={`${i}-${j}`}>
-        {line}
+        {line.split("\t").map((part, k) => (
+          <React.Fragment key={k}>
+            {k > 0 && <span className="inline-block w-8" />}
+            {part}
+          </React.Fragment>
+        ))}
         {j < arr.length - 1 && <br />}
       </React.Fragment>
     ))

@@ -12,7 +12,7 @@ import { useTestGuard } from "@/components/test/shared/useTestGuard"
 import { LeaveTestModal } from "@/components/test/shared/LeaveTestModal"
 import { ReportBugModal } from "@/components/ReportBugModal"
 import { ListeningLayout } from "@/components/test/layouts/ListeningLayout"
-import { Users, Settings, Bug, AlarmClock } from "lucide-react"
+import { Settings, Bug, AlarmClock } from "lucide-react"
 
 export default function ListeningPartPage() {
   const { showModal, confirmLeave, cancelLeave, bypassOnce } = useTestGuard()
@@ -88,14 +88,13 @@ export default function ListeningPartPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="sticky top-0 z-50 flex h-14 items-center gap-4 bg-[#1a1a1a] px-4 text-xs text-white">
-        <div className="flex min-w-0 items-center gap-2">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10">
-            <Users className="h-3.5 w-3.5 text-white/80" />
-          </div>
-          <span className="truncate font-medium text-white/70">
-            ID: {testId.slice(-6).toUpperCase()}
-          </span>
-        </div>
+        <a
+          href="/listening"
+          className="flex items-center gap-1.5 rounded-md bg-red-600/90 px-3 py-1.5 text-[11px] font-bold text-white transition-colors hover:bg-red-600"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+          Exit
+        </a>
 
         <div className="flex flex-1 items-center justify-center gap-8">
           <div className="flex items-center gap-1.5 font-mono text-sm font-bold tracking-wider text-white">
