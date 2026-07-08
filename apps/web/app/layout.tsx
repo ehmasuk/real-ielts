@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Real IELTS" }],
   creator: "Real IELTS",
   publisher: "Real IELTS",
-  metadataBase: new URL("https://real-ielts.com"),
+  metadataBase: new URL("https://real-ielts.vercel.app"),
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     title: "Real IELTS — Practice for the Computer-Delivered IELTS Exam",
     description:
       "Train under real exam conditions with Cambridge IELTS practice tests. Access comprehensive mocks from Cambridge series 16–21, get instant band score diagnostics, and clear explanations for every error.",
-    url: "https://real-ielts.com",
+    url: "https://real-ielts.vercel.app",
     images: [
       {
         url: "/opengraph-image.png",
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   alternates: {
-    canonical: "https://real-ielts.com",
+    canonical: "https://real-ielts.vercel.app",
   },
 }
 
