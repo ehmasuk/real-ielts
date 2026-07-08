@@ -467,12 +467,25 @@ function renderGroupQuestions(group: any, resultMap: Map<string, ResultItem>) {
   if (group.type === "table_completion") {
     return renderTableStyle(group, resultMap)
   }
+  if (group.type === "form_completion") {
+    return renderFormStyle(group, resultMap)
+  }
   if (group.type === "mcq_multiple") {
     return renderMcqMultiple(group, resultMap)
   }
 
   return (
     <div className="space-y-8">
+      {group.image_src && (
+        <div className="flex justify-center mb-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={group.image_src}
+            alt={group.title || "Diagram"}
+            className="max-w-full h-auto rounded-xl border border-border/40 shadow-sm"
+          />
+        </div>
+      )}
       {group.questions?.map((q: any) => {
         const r = resultMap.get(q.questionId || `q_${q.number}`)
         const userAns = r ? formatAnswer(r.userAnswer) : null
@@ -664,6 +677,55 @@ function renderTableStyle(group: any, resultMap: Map<string, ResultItem>) {
   )
 }
 
+function renderFormStyle(group: any, resultMap: Map<string, ResultItem>) {
+  return (
+    <div className="p-5 space-y-4">
+      {group.layout?.rows?.map((row: any[], ri: number) => (
+        <div key={ri} className="flex items-start gap-4">
+          {row.map((cell: any[], ci: number) => (
+            <div key={ci} className="flex-1">
+              {cell?.map((item: any, ii: number) => {
+                if (item.type === "text")
+                  return <span key={ii} className="text-sm text-foreground/90">{formatString(item.text)}</span>
+                if (item.type === "question") {
+                  const r = resultMap.get(item.questionId)
+                  const userAns = r ? formatAnswer(r.userAnswer) : null
+                  const correctAns = r ? formatAnswer(r.correctAnswer) : null
+                  const isCorrect = r?.correct ?? false
+
+                  if (item.question && item.question.trim() !== "______") {
+                    return <span key={ii}>{renderQWithAnswer(item.question, userAns, correctAns, isCorrect)}</span>
+                  }
+
+                  return (
+                    <span key={ii} className="inline-flex items-center gap-1">
+                      <span
+                        className={`inline-block rounded px-2 py-0.5 font-bold text-xs shadow-sm ${
+                          isCorrect
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                            : "bg-red-500/10 text-red-600 dark:text-red-400"
+                        }`}
+                      >
+                        {userAns || correctAns || ""}
+                      </span>
+                      {!isCorrect && correctAns && (
+                        <span className="inline-flex items-center gap-0.5 rounded bg-emerald-500/10 px-1.5 py-0.5 font-bold text-emerald-600 dark:text-emerald-400">
+                          <Check className="h-2.5 w-2.5" /> {correctAns}
+                        </span>
+                      )}
+                    </span>
+                  )
+                }
+                return null
+              })}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function renderMcqMultiple(group: any, resultMap: Map<string, ResultItem>) {
   const r = group.questionId ? resultMap.get(group.questionId) : undefined
   const userSelected: string[] = (r?.userAnswer as string[]) ?? []
@@ -809,6 +871,7 @@ function collectQuestions(
         }
       }
     }
+
   }
   return result
 }

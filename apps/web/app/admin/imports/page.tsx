@@ -16,6 +16,7 @@ import {
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
 import { uploadToCloudinary } from "@/lib/cloudinary"
+import { getAccessToken } from "@/lib/token-manager"
 import api from "@/lib/axios"
 
 interface MediaAsset {
@@ -141,6 +142,14 @@ export default function ImportsPage() {
     if (deletingIds.has(id)) return
     setDeletingIds((prev) => new Set(prev).add(id))
     try {
+      const token = getAccessToken()
+      if (token) {
+        await fetch("/api/cloudinary/delete", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ public_id: asset.publicId, type: asset.type }),
+        })
+      }
       await api.delete(`/admin/media/${id}`)
       setLibrary((prev) => prev.filter((a) => a._id !== id))
     } catch {

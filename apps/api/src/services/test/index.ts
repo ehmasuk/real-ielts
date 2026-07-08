@@ -241,6 +241,7 @@ function getQuestionMetadata(section: any): Record<string, { type: string, maxSc
           }
         }
       }
+
     }
   }
   

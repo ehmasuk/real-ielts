@@ -7,12 +7,11 @@ import { useAuth } from "@/lib/use-auth"
 import { useTestPart } from "@/components/test/shared/useTestPart"
 import { TestHeader } from "@/components/test/shared/TestHeader"
 import { AuthGate } from "@/components/test/shared/AuthGate"
-import { TestTimer } from "@/components/test/shared/TestTimer"
 import { useTestGuard } from "@/components/test/shared/useTestGuard"
 import { LeaveTestModal } from "@/components/test/shared/LeaveTestModal"
 import { ReportBugModal } from "@/components/ReportBugModal"
 import { ListeningLayout } from "@/components/test/layouts/ListeningLayout"
-import { Settings, Bug, AlarmClock } from "lucide-react"
+import { Settings, Bug } from "lucide-react"
 
 export default function ListeningPartPage() {
   const { showModal, confirmLeave, cancelLeave, bypassOnce } = useTestGuard()
@@ -40,13 +39,14 @@ export default function ListeningPartPage() {
   const audioRef = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
+    if (!isAuthenticated) return
     const audio = audioRef.current
     if (!audio) return
     audio.play().catch(() => {
       audio.muted = true
       audio.play().catch(() => {})
     })
-  }, [audio_url])
+  }, [audio_url, isAuthenticated])
 
   const layout = useMemo(() => (
     <ListeningLayout
@@ -97,12 +97,9 @@ export default function ListeningPartPage() {
         </a>
 
         <div className="flex flex-1 items-center justify-center gap-8">
-          <div className="flex items-center gap-1.5 font-mono text-sm font-bold tracking-wider text-white">
-            <AlarmClock className="size-4" />
-            <TestTimer initialElapsed={elapsed} formatTime={formatTime} />
-          </div>
+
           {audio_url && (
-            <audio ref={audioRef} controls autoPlay controlsList="noplaybackrate nodownload" className="h-8 w-72" src={audio_url} />
+            <audio ref={audioRef} controls controlsList="noplaybackrate nodownload" className="h-8 w-72" src={audio_url} />
           )}
         </div>
 

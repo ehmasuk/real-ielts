@@ -78,7 +78,7 @@ export default function SpeakingPage() {
           </p>
         </div>
         <div className="text-xs font-medium text-muted-foreground bg-card/60 border border-border/40 rounded-xl px-4 py-2 self-start md:self-auto shadow-sm">
-          Available books: <strong className="text-foreground">{filteredBooks.length}</strong> of {books.length}
+          Available books: <strong className="text-foreground">{filteredBooks.length}</strong>
         </div>
       </div>
 

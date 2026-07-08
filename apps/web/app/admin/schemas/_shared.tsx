@@ -163,6 +163,44 @@ export const questionTypes = [
     answerExample: '"q_6": "John Smith"',
   },
   {
+    type: "form_completion",
+    description: "Complete a form — same as table_completion but rendered without borders or column headers",
+    usedFor: "Listening — form completion tasks (e.g. booking forms, registration forms, application forms)",
+    groupSchema: `{
+  "id": "group_2",
+  "type": "form_completion",
+  "title": "Customer Information",
+  "instructions": "Complete the form below. Write **NO MORE THAN TWO WORDS AND/OR A NUMBER** for each answer.",
+  "questionRange": "6-10",
+  "layout": {
+    "rows": [
+      [
+        [{ "type": "text", "text": "Name:" }],
+        [{ "type": "question", "questionId": "q_6", "number": 6, "question": "" }]
+      ],
+      [
+        [{ "type": "text", "text": "Address:" }],
+        [{ "type": "question", "questionId": "q_7", "number": 7, "question": "" }]
+      ],
+      [
+        [{ "type": "text", "text": "Postcode:" }],
+        [{ "type": "question", "questionId": "q_8", "number": 8, "question": "" }]
+      ],
+      [
+        [{ "type": "text", "text": "Phone:" }],
+        [
+          { "type": "text", "text": "Area code: " },
+          { "type": "question", "questionId": "q_9", "number": 9, "question": "" },
+          { "type": "text", "text": " Number: " },
+          { "type": "question", "questionId": "q_10", "number": 10, "question": "" }
+        ]
+      ]
+    ]
+  }
+}`,
+    answerExample: '"q_6": "John Smith", "q_9": "0208"',
+  },
+  {
     type: "notes_completion",
     description: "Complete a set of notes with inline blanks",
     usedFor: "Listening — notes/summary filling with headings and paragraphs (layout.blocks). Same structure as reading's completion_layout.",

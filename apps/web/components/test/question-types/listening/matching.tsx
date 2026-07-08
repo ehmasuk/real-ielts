@@ -26,6 +26,18 @@ export const Matching = React.memo(function Matching({
       {instructions && (
         <p className="font-medium">{formatString(instructions)}</p>
       )}
+
+      {options && options.length > 0 && (
+        <div className="space-y-3">
+          {optionsTitle && <p className="font-bold">{optionsTitle}</p>}
+          {options.map((opt: any, oi: number) => (
+            <p key={opt.id ?? oi}>
+              <b className="">{opt.id}.</b> {formatString(opt.text)}
+            </p>
+          ))}
+        </div>
+      )}
+
       <div className="space-y-3">
         {questionsTitle && <p className="font-bold">{questionsTitle}</p>}
         {questions?.map((q: any) => {
@@ -47,16 +59,7 @@ export const Matching = React.memo(function Matching({
           )
         })}
       </div>
-      {options && options.length > 0 && (
-        <div className="space-y-3">
-          {optionsTitle && <p className="font-bold">{optionsTitle}</p>}
-          {options.map((opt: any, oi: number) => (
-            <p key={opt.id ?? oi}>
-              <b className="">{opt.id}.</b> {formatString(opt.text)}
-            </p>
-          ))}
-        </div>
-      )}
+
     </div>
   )
 })

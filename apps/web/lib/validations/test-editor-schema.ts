@@ -135,6 +135,32 @@ export const getValidationIssues = (contentJson: string, answerJson: string, tes
             return ids
           }
 
+          if (g.type === "form_completion") {
+            if (!g.layout?.rows) {
+              issues.push({ type: "error", message: `Form completion group #${gIdx + 1} is missing 'layout' with 'rows'` })
+              return []
+            }
+            return (g.layout.rows || []).flatMap((row: any, rIdx: number) => {
+              if (!Array.isArray(row)) {
+                issues.push({ type: "error", message: `Row #${rIdx + 1} in form completion group #${gIdx + 1} must be an array` })
+                return []
+              }
+              return row.flatMap((cell: any, cIdx: number) => {
+                if (!Array.isArray(cell)) {
+                  issues.push({ type: "error", message: `Cell #${cIdx + 1} in row #${rIdx + 1} of form completion group #${gIdx + 1} must be an array` })
+                  return []
+                }
+                return cell.flatMap((item: any) => {
+                  if (item.type === "question") {
+                    if (!item.questionId) issues.push({ type: "error", message: `Question item in cell #${cIdx + 1} row #${rIdx + 1} of form completion group #${gIdx + 1} is missing 'questionId'` })
+                    else return [{ questionId: item.questionId, number: item.number || 0 }]
+                  }
+                  return []
+                })
+              })
+            })
+          }
+
           if (g.type === "notes_completion" || g.type === "completion_layout") {
             if (!g.layout?.blocks) {
               issues.push({ type: "error", message: `${g.type === "notes_completion" ? "Notes completion" : "Completion layout"} group #${gIdx + 1} is missing 'layout' with 'blocks'` })

@@ -6,6 +6,7 @@ import { MCQMultiple } from "./common/mcq_multiple"
 import { GapFill } from "./common/gap_fill"
 import { LayoutBlocks } from "./common/layout_blocks"
 import { TableCompletion } from "./listening/table_completion"
+import { FormCompletion } from "./listening/form_completion"
 import { DiagramLabeling } from "./listening/diagram_labeling"
 import { FlowchartCompletion } from "./listening/flowchart_completion"
 import { Matching } from "./listening/matching"
@@ -21,6 +22,7 @@ export const questionTypeMap: Record<string, React.ComponentType<any>> = {
   sentence_completion: GapFill,
   notes_completion: LayoutBlocks,
   table_completion: TableCompletion,
+  form_completion: FormCompletion,
   diagram_labeling: DiagramLabeling,
   flowchart_completion: FlowchartCompletion,
   matching: Matching,
