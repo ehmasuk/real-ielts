@@ -66,8 +66,13 @@ export const getValidationIssues = (contentJson: string, answerJson: string, tes
     })
   } else if (parsedContent.sections) {
     parsedContent.sections.forEach((sec: any, sIdx: number) => {
-      if (test.skill === "listening" && !sec.audio_url) {
-        issues.push({ type: "warning", message: `Section #${sIdx + 1} ('${sec.id || "?"}') is missing audio source URL ('audio_url')` })
+      if (test.skill === "listening") {
+        if (!sec.audio_url) {
+          issues.push({ type: "warning", message: `Section #${sIdx + 1} ('${sec.id || "?"}') is missing audio source URL ('audio_url')` })
+        }
+        if (!sec.script) {
+          issues.push({ type: "warning", message: `Section #${sIdx + 1} ('${sec.id || "?"}') is missing 'script' — consider adding an audio transcript` })
+        }
       }
       if (test.skill === "reading" && !sec.instructions) {
         issues.push({ type: "warning", message: `Section #${sIdx + 1} is missing section 'instructions'` })

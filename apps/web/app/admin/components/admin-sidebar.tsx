@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   ChevronLeft,
   Bug,
+  Users,
 } from "lucide-react"
 import { Logo } from "@/components/Logo"
 import { cn } from "@workspace/ui/lib/utils"
@@ -54,13 +55,14 @@ const navGroups: NavGroup[] = [
       { href: "/admin/tests", label: "All Tests", icon: FileText },
     ],
   },
-  {
-    title: "Operations",
-    items: [
-      { href: "/admin/imports", label: "Imports", icon: Upload },
-      { href: "/admin/bug-reports", label: "Bug Reports", icon: Bug },
-    ],
-  },
+    {
+      title: "Operations",
+      items: [
+        { href: "/admin/users", label: "Users", icon: Users },
+        { href: "/admin/imports", label: "Imports", icon: Upload },
+        { href: "/admin/bug-reports", label: "Bug Reports", icon: Bug },
+      ],
+    },
   {
     title: "Schemas",
     items: [

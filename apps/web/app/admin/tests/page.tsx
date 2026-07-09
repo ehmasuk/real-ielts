@@ -119,6 +119,7 @@ export default function TestsPage() {
         id: `part_${i + 1}`,
         title: `Part ${i + 1}`,
         audio_url: "",
+        script: [],
         instructions: "You will hear...",
         questionGroups: [
           {

@@ -124,3 +124,15 @@ export const deleteBugReport = async (id: string) => {
   const res = await api.delete(`/admin/bug-reports/${id}`)
   return res.data
 }
+
+// ─── Users ────────────────────────────────────────────────────────────────────
+
+export const fetchUsers = async (params?: { page?: number; limit?: number; search?: string; role?: string; status?: string }) => {
+  const res = await api.get("/admin/users", { params })
+  return res.data
+}
+
+export const updateUser = async ({ id, data }: { id: string; data: Record<string, unknown> }) => {
+  const res = await api.patch(`/admin/users/${id}`, data)
+  return res.data
+}

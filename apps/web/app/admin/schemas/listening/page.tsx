@@ -16,6 +16,26 @@ const listeningContentJson = `{
       "id": "part_1",
       "title": "Part 1",
       "audio_url": "https://res.cloudinary.com/.../part1.mp3",
+      "script": [
+        {
+          "speaker": "Receptionist",
+          "text": "Can I take your surname please?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "Yes, it's ==Morris==.",
+          "answers": [1]
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "And your phone number?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "It's ==01482 678901==.",
+          "answers": [2]
+        }
+      ],
       "questionGroups": [
         {
           "id": "group_1",
@@ -154,6 +174,24 @@ const listeningContentJson = `{
       "title": "Part 4",
       "audio_url": "https://res.cloudinary.com/.../part4.mp3",
       "passage": "You will hear a lecture on marine biology.",
+      "script": [
+        {
+          "text": "Much of the world now lives in an ==industrial civilisation==."
+        },
+        {
+          "text": "It's now used in over ==40,000 products==.",
+          "answers": [31]
+        },
+        {
+          "text": "Rubber trees don't spring up ==overnight==.",
+          "answers": [32]
+        },
+        {
+          "text": "Farmers have to plan ==eight years== ahead.",
+          "answers": [33],
+          "paragraphBreak": true
+        }
+      ],
       "questionGroups": [
         {
           "id": "group_6",
@@ -411,6 +449,13 @@ export default function ListeningSchemaPage() {
         <h4 className="text-xs font-bold text-amber-700 dark:text-amber-400">Schema Notes</h4>
         <ul className="text-[11px] text-amber-600/80 dark:text-amber-400/80 space-y-1 list-disc list-inside">
           <li><code className="text-[10px] font-mono">audio_url</code> is required for each listening part (per-section)</li>
+          <li><code className="text-[10px] font-mono">script</code> is optional — an array of lines per section</li>
+          <li>Each <strong>text object</strong> is one line/sentence. For monologues, each paragraph or sentence gets its own object. Use <code className="text-[10px] font-mono">paragraphBreak: true</code> to add spacing before a new paragraph.</li>
+          <li>For <strong>dialogue</strong>, add <code className="text-[10px] font-mono">speaker</code> per line — renders as <code className="text-[10px] font-mono"><strong>Name</strong>: text</code></li>
+          <li>For <strong>monologue/narration</strong>, omit <code className="text-[10px] font-mono">speaker</code> — plain text (see Part 4 example)</li>
+          <li>Use <code className="text-[10px] font-mono">==text==</code> (preferred) or <code className="text-[10px] font-mono">__**text**__</code> to <span className="bg-yellow-200/70 dark:bg-yellow-400/30 px-0.5 rounded">highlight answer text</span> within a line.</li>
+          <li>Use <code className="text-[10px] font-mono">answers: [1]</code> / <code className="text-[10px] font-mono">answers: [32, 33]</code> to associate question numbers — renders as <code className="text-[10px] font-mono">(Q1)</code> / <code className="text-[10px] font-mono">(Q32, Q33)</code> after the text automatically.</li>
+          <li>Other markup: <code className="text-[10px] font-mono">**text**</code> for <strong>bold</strong>, <code className="text-[10px] font-mono">__text__</code> for <u>underline</u></li>
           <li>Use exactly <strong>4 parts</strong> (<code className="text-[10px] font-mono">part_1</code> through <code className="text-[10px] font-mono">part_4</code>) per listening test</li>
           <li>Each question must have a unique <code className="text-[10px] font-mono">questionId</code> across all sections</li>
           <li><code className="text-[10px] font-mono">number</code> is the global question number within the test (continuous across parts)</li>

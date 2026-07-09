@@ -2,9 +2,11 @@
 
 import { Header } from "@/components/header"
 import { formatString } from "@/components/test/shared/formatString"
+import { AudioPlayer } from "@/components/test/shared/AudioPlayer"
+import { AudioScript } from "@/components/test/shared/AudioScript"
 import { fetchPartResult } from "@/lib/api"
 import { useQuery } from "@tanstack/react-query"
-import { Check, Loader2, RotateCcw, X, BookOpen, List, ArrowRight } from "lucide-react"
+import { Check, Loader2, RotateCcw, X, BookOpen, List, ArrowRight, ScrollText } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import * as React from "react"
@@ -87,7 +89,7 @@ export default function ResultPage() {
   const partNum = parseInt(params.partNum as string, 10)
 
   const [hydrated, setHydrated] = React.useState(false)
-  const [activeTab, setActiveTab] = React.useState<"summary" | "review">("summary")
+  const [activeTab, setActiveTab] = React.useState<"summary" | "review" | "script">("summary")
 
   React.useEffect(() => {
     setHydrated(true)
@@ -255,9 +257,20 @@ export default function ResultPage() {
           </div>
         </div>
 
+        {/* Audio Player for Listening */}
+        {skill === "listening" && data?.section?.audio_url && (
+          <div className="mb-8">
+            <AudioPlayer
+              src={data.section.audio_url}
+              title={data.sectionTitle || `Part ${partNum} Audio`}
+            />
+          </div>
+        )}
+
         {/* Tabs Control */}
-        <div className="mb-8 flex items-center justify-center border-b border-border/40">
-          <div className="flex gap-8">
+        <div className="sticky top-16 z-40 mb-8 -mx-4 border-b border-border/40 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 sm:-mx-6">
+          <div className="flex items-center justify-center px-4 sm:px-6">
+            <div className="flex gap-8">
             <button
               onClick={() => setActiveTab("summary")}
               className={`flex items-center gap-2 px-1 py-4 text-sm font-semibold transition-all border-b-2 -mb-[1px] ${
@@ -280,6 +293,20 @@ export default function ResultPage() {
               <BookOpen className="h-4 w-4" />
               Detailed Review
             </button>
+            {skill === "listening" && data?.section?.script && Array.isArray(data.section.script) && data.section.script.length > 0 && (
+              <button
+                onClick={() => setActiveTab("script")}
+                className={`flex items-center gap-2 px-1 py-4 text-sm font-semibold transition-all border-b-2 -mb-[1px] ${
+                  activeTab === "script"
+                    ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <ScrollText className="h-4 w-4" />
+                Audio Script
+              </button>
+            )}
+          </div>
           </div>
         </div>
 
@@ -452,6 +479,16 @@ export default function ResultPage() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Tab 3: Audio Script */}
+        {activeTab === "script" && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <AudioScript
+              lines={data.section?.script ?? []}
+              title={`${data.sectionTitle || `Part ${partNum}`} — Audio Script`}
+            />
           </div>
         )}
 
