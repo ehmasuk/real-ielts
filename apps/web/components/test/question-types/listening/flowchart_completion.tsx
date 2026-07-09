@@ -81,6 +81,7 @@ export const FlowchartCompletion = React.memo(function FlowchartCompletion({
               }
               maxLength={hasOptions ? 1 : undefined}
               placeholder={hasOptions ? optPlaceholder : ""}
+              data-question-id={q.questionId}
             />
           </div>
         ))}

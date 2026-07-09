@@ -46,6 +46,7 @@ export const MatchingHeadings = React.memo(function MatchingHeadings({
                 className="border border-black px-2 py-1 outline-none dark:border-white/30"
                 value={answers[qId] ?? ""}
                 onChange={(e) => onAnswerChange(qId, e.target.value)}
+                data-question-id={qId}
               >
                 <option value="">Select</option>
                 {headings?.map((h: any) => (

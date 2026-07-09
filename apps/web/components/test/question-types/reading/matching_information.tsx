@@ -35,6 +35,7 @@ export const MatchingInformation = React.memo(function MatchingInformation({ gro
                 placeholder={placeholder}
                 value={answers[qId] ?? ""}
                 onChange={(e) => onAnswerChange(qId, e.target.value)}
+                data-question-id={qId}
               />
             </div>
           )

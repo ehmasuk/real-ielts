@@ -35,6 +35,7 @@ export const MatchingFeatures = React.memo(function MatchingFeatures({ group, an
                 placeholder={placeholder}
                 value={answers[qId] ?? ""}
                 onChange={(e) => onAnswerChange(qId, e.target.value)}
+                data-question-id={qId}
               />
             </div>
           )

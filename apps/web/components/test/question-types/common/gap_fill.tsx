@@ -34,6 +34,7 @@ export const GapFill = React.memo(function GapFill({ group, answers, onAnswerCha
                       onChange={(e) =>
                         onAnswerChange(q.questionId, e.target.value)
                       }
+                      data-question-id={q.questionId}
                     />
                   )}
                 </React.Fragment>

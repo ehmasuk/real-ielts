@@ -38,6 +38,7 @@ export const DiagramLabeling = React.memo(function DiagramLabeling({
               onChange={(e) => onAnswerChange(q.questionId, e.target.value.toUpperCase())}
               placeholder={options?.length ? `${options[0]}–${options[options.length - 1]}` : ""}
               maxLength={1}
+              data-question-id={q.questionId}
             />
           </div>
         ))}

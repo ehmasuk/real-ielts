@@ -40,13 +40,14 @@ export const MCQSingle = React.memo(function MCQSingle({ group, answers, onAnswe
                 key={oi}
                 className="-mt-px -ml-px flex cursor-pointer items-center gap-2"
               >
-                <input
-                  type="radio"
-                  name={q.questionId}
-                  value={optValue(opt)}
-                  checked={answers[q.questionId] === optValue(opt)}
-                  onChange={() => onAnswerChange(q.questionId, optValue(opt))}
-                />
+                  <input
+                    type="radio"
+                    name={q.questionId}
+                    value={optValue(opt)}
+                    checked={answers[q.questionId] === optValue(opt)}
+                    onChange={() => onAnswerChange(q.questionId, optValue(opt))}
+                    data-question-id={q.questionId}
+                  />
                 {optLabel(opt)}
               </label>
             ))}

@@ -51,6 +51,7 @@ export const MCQMultiple = React.memo(function MCQMultiple({ group, answers, onA
                         : [...selected, val]
                       onAnswerChange(group.questionId, next)
                     }}
+                    data-question-id={group.questionId}
                   />
                   {optLabel(opt)}
                 </label>

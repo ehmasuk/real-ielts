@@ -25,6 +25,7 @@ export const InlineQuestion = React.memo(function InlineQuestion({
         maxLength={1}
         value={value}
         onChange={(e) => onChange(e.target.value.toUpperCase())}
+        data-question-id={item.questionId}
       />
     )
   }
@@ -36,6 +37,7 @@ export const InlineQuestion = React.memo(function InlineQuestion({
         placeholder={item.number ? String(item.number) : "..."}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        data-question-id={item.questionId}
       />
     )
   }
@@ -52,6 +54,7 @@ export const InlineQuestion = React.memo(function InlineQuestion({
               placeholder={item.number ? String(item.number) : "..."}
               value={value}
               onChange={(e) => onChange(e.target.value)}
+              data-question-id={item.questionId}
             />
           )}
         </React.Fragment>

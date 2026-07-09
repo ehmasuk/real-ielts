@@ -55,6 +55,7 @@ export const StatementJudgement = React.memo(function StatementJudgement({ group
                       value={opt}
                       checked={answers[q.questionId] === opt}
                       onChange={() => onAnswerChange(q.questionId, opt)}
+                      data-question-id={q.questionId}
                     />
                     {opt}
                   </label>

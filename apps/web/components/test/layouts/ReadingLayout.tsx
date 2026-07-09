@@ -2,7 +2,10 @@
 
 import * as React from "react"
 import { QuestionGroup } from "../question-types"
-import { SubmitButton } from "../shared/SubmitButton"
+import {
+  NavigationBar,
+  extractQuestionsFromGroups,
+} from "../shared/NavigationBar"
 import { formatString } from "../shared/formatString"
 
 export const ReadingLayout = React.memo(function ReadingLayout({
@@ -26,8 +29,35 @@ export const ReadingLayout = React.memo(function ReadingLayout({
   submitting: boolean
   isAuthenticated: boolean
 }) {
+  const [activeQuestionId, setActiveQuestionId] = React.useState<string | null>(
+    null,
+  )
+
+  React.useEffect(() => {
+    const handler = (e: FocusEvent) => {
+      const el = e.target as HTMLElement | null
+      const qId = el?.getAttribute("data-question-id")
+      setActiveQuestionId(qId ?? null)
+    }
+    document.addEventListener("focusin", handler)
+    return () => document.removeEventListener("focusin", handler)
+  }, [])
+
+  const questions = React.useMemo(
+    () => extractQuestionsFromGroups(questionGroups, answers, activeQuestionId),
+    [questionGroups, answers, activeQuestionId],
+  )
+
+  const scrollToQuestion = React.useCallback((questionId: string) => {
+    const el = document.querySelector(`[data-question-id="${questionId}"]`)
+    if (el) {
+      el.scrollIntoView({ block: "center" })
+      ;(el as HTMLElement).focus()
+    }
+  }, [])
+
   const passageContent = React.useMemo(() => (
-    <div className="w-1/2 overflow-y-auto border-r border-border px-6 py-8">
+    <div className="w-1/2 overflow-y-auto border-r border-border px-6 py-8 pb-6">
       {sectionTitle && (
         <h2 className="mb-2 text-xl leading-tight font-bold">
           {formatString(sectionTitle)}
@@ -95,24 +125,33 @@ export const ReadingLayout = React.memo(function ReadingLayout({
   ), [sectionTitle, instructions, passage])
 
   return (
-    <div className="flex w-full">
-      {passageContent}
+    <div className="flex min-h-0 flex-1 flex-col w-full">
+      <div className="flex min-h-0 flex-1 w-full">
+        {passageContent}
 
-      <div className="w-1/2 overflow-y-auto px-6 py-8 pb-32">
-        <div className="space-y-10">
-          {questionGroups.map((group: any, gi: number) => (
-            <QuestionGroup
-              key={`${group.id}__${gi}`}
-              group={group}
-              answers={answers}
-              onAnswerChange={onAnswerChange}
-            />
-          ))}
+        <div className="w-1/2 overflow-y-auto px-6 py-8 pb-6">
+          <div className="space-y-10">
+            {questionGroups.map((group: any, gi: number) => (
+              <QuestionGroup
+                key={`${group.id}__${gi}`}
+                group={group}
+                answers={answers}
+                onAnswerChange={onAnswerChange}
+              />
+            ))}
+          </div>
         </div>
-        {isAuthenticated && (
-          <SubmitButton submitting={submitting} onClick={handleSubmit} />
-        )}
       </div>
+
+      {isAuthenticated && (
+        <NavigationBar
+          fixed={false}
+          questions={questions}
+          onQuestionClick={scrollToQuestion}
+          onSubmit={handleSubmit}
+          submitting={submitting}
+        />
+      )}
     </div>
   )
 })

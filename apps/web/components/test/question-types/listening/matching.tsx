@@ -54,6 +54,7 @@ export const Matching = React.memo(function Matching({
                 onChange={(e) =>
                   onAnswerChange(qId, e.target.value.toUpperCase())
                 }
+                data-question-id={qId}
               />
             </div>
           )
