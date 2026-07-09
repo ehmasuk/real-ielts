@@ -130,3 +130,7 @@
     cursor: pointer;
     }
 }
+
+/* ── CSS Custom Highlight API ─────────────────────────────────────── */
+/* ::highlight() styles are injected in usePassageHighlight.ts        */
+/* because Turbopack's CSS parser does not support the syntax yet.    */
