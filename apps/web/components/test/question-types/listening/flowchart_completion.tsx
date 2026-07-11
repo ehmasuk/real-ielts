@@ -47,11 +47,11 @@ export const FlowchartCompletion = React.memo(function FlowchartCompletion({
       {image_src && (
         <div className="h-auto max-w-full space-y-2">
           {title && (
-            <p className="mb-2 text-center font-bold">{formatString(title)}</p>
+            <p className="mb-2 font-bold">{formatString(title)}</p>
           )}
           <img
             src={image_src}
-            className="mx-auto h-auto w-full max-w-[500px]"
+            className="h-auto w-full max-w-[500px]"
             alt={title || "Flowchart"}
           />
         </div>

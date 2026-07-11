@@ -18,22 +18,36 @@ const listeningContentJson = `{
       "audio_url": "https://res.cloudinary.com/.../part1.mp3",
       "script": [
         {
-          "speaker": "Receptionist",
-          "text": "Can I take your surname please?"
+          "text": "Can I take your surname please?",
+          "speaker": "WOMAN",
+          "start": 10.5,
+          "end": 12.3,
+          "id": 0
         },
         {
-          "speaker": "Customer",
           "text": "Yes, it's ==Morris==.",
-          "answers": [1]
+          "speaker": "MAN",
+          "start": 13.0,
+          "end": 14.8,
+          "id": 1,
+          "reason": true,
+          "question_ids": [1]
         },
         {
-          "speaker": "Receptionist",
-          "text": "And your phone number?"
+          "text": "And your phone number?",
+          "speaker": "WOMAN",
+          "start": 15.5,
+          "end": 17.0,
+          "id": 2
         },
         {
-          "speaker": "Customer",
           "text": "It's ==01482 678901==.",
-          "answers": [2]
+          "speaker": "MAN",
+          "start": 17.5,
+          "end": 19.8,
+          "id": 3,
+          "reason": true,
+          "question_ids": [2]
         }
       ],
       "questionGroups": [
@@ -176,19 +190,34 @@ const listeningContentJson = `{
       "passage": "You will hear a lecture on marine biology.",
       "script": [
         {
-          "text": "Much of the world now lives in an ==industrial civilisation==."
+          "text": "Much of the world now lives in an ==industrial civilisation==.",
+          "start": 0.0,
+          "end": 4.5,
+          "id": 0
         },
         {
           "text": "It's now used in over ==40,000 products==.",
-          "answers": [31]
+          "start": 5.0,
+          "end": 8.2,
+          "id": 1,
+          "reason": true,
+          "question_ids": [31]
         },
         {
           "text": "Rubber trees don't spring up ==overnight==.",
-          "answers": [32]
+          "start": 9.0,
+          "end": 12.5,
+          "id": 2,
+          "reason": true,
+          "question_ids": [32]
         },
         {
           "text": "Farmers have to plan ==eight years== ahead.",
-          "answers": [33],
+          "start": 13.0,
+          "end": 16.8,
+          "id": 3,
+          "reason": true,
+          "question_ids": [33],
           "paragraphBreak": true
         }
       ],
@@ -451,10 +480,12 @@ export default function ListeningSchemaPage() {
           <li><code className="text-[10px] font-mono">audio_url</code> is required for each listening part (per-section)</li>
           <li><code className="text-[10px] font-mono">script</code> is optional — an array of lines per section</li>
           <li>Each <strong>text object</strong> is one line/sentence. For monologues, each paragraph or sentence gets its own object. Use <code className="text-[10px] font-mono">paragraphBreak: true</code> to add spacing before a new paragraph.</li>
+          <li>Each script line has a unique <code className="text-[10px] font-mono">id</code> (0-indexed) and optional <code className="text-[10px] font-mono">start</code>/<code className="text-[10px] font-mono">end</code> timestamps in seconds for audio sync</li>
           <li>For <strong>dialogue</strong>, add <code className="text-[10px] font-mono">speaker</code> per line — renders as <code className="text-[10px] font-mono"><strong>Name</strong>: text</code></li>
           <li>For <strong>monologue/narration</strong>, omit <code className="text-[10px] font-mono">speaker</code> — plain text (see Part 4 example)</li>
           <li>Use <code className="text-[10px] font-mono">==text==</code> (preferred) or <code className="text-[10px] font-mono">__**text**__</code> to <span className="bg-yellow-200/70 dark:bg-yellow-400/30 px-0.5 rounded">highlight answer text</span> within a line.</li>
-          <li>Use <code className="text-[10px] font-mono">answers: [1]</code> / <code className="text-[10px] font-mono">answers: [32, 33]</code> to associate question numbers — renders as <code className="text-[10px] font-mono">(Q1)</code> / <code className="text-[10px] font-mono">(Q32, Q33)</code> after the text automatically.</li>
+          <li>Use <code className="text-[10px] font-mono">question_ids: [1]</code> / <code className="text-[10px] font-mono">question_ids: [32, 33]</code> to associate question numbers — renders as <code className="text-[10px] font-mono">(Q1)</code> / <code className="text-[10px] font-mono">(Q32, Q33)</code> after the text automatically.</li>
+          <li>Set <code className="text-[10px] font-mono">reason: true</code> on lines that contain the answer to a question (for answer highlighting)</li>
           <li>Other markup: <code className="text-[10px] font-mono">**text**</code> for <strong>bold</strong>, <code className="text-[10px] font-mono">__text__</code> for <u>underline</u></li>
           <li>Use exactly <strong>4 parts</strong> (<code className="text-[10px] font-mono">part_1</code> through <code className="text-[10px] font-mono">part_4</code>) per listening test</li>
           <li>Each question must have a unique <code className="text-[10px] font-mono">questionId</code> across all sections</li>

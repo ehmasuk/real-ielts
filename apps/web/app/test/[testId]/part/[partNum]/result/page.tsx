@@ -4,6 +4,7 @@ import { Header } from "@/components/header"
 import { formatString } from "@/components/test/shared/formatString"
 import { AudioPlayer } from "@/components/test/shared/AudioPlayer"
 import { AudioScript } from "@/components/test/shared/AudioScript"
+import { AudioProvider } from "@/components/test/shared/AudioContext"
 import { fetchPartResult } from "@/lib/api"
 import { useQuery } from "@tanstack/react-query"
 import { Check, Loader2, RotateCcw, X, BookOpen, List, ArrowRight, ScrollText } from "lucide-react"
@@ -189,6 +190,7 @@ export default function ResultPage() {
   return (
     <>
       <Header />
+      <AudioProvider src={skill === "listening" ? data?.section?.audio_url : undefined}>
       <div className="mx-auto w-full max-w-5xl px-4 py-12 pb-32 sm:px-6">
         
         {/* Hero Score Card */}
@@ -261,7 +263,6 @@ export default function ResultPage() {
         {skill === "listening" && data?.section?.audio_url && (
           <div className="mb-8">
             <AudioPlayer
-              src={data.section.audio_url}
               title={data.sectionTitle || `Part ${partNum} Audio`}
             />
           </div>
@@ -493,6 +494,7 @@ export default function ResultPage() {
         )}
 
       </div>
+      </AudioProvider>
     </>
   )
 }

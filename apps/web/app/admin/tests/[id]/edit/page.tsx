@@ -20,12 +20,14 @@ import {
   ExternalLink,
   Loader2,
   XCircle,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
 import { Badge } from "@workspace/ui/components/badge"
 import type { TestItem } from "../../../lib/mock-data"
-import { fetchTestById, updateTest, publishTest } from "@/lib/api"
+import { fetchTestById, fetchTests, updateTest, publishTest } from "@/lib/api"
 import { formatString } from "@/components/test/shared/formatString"
 import CodeMirror, { EditorView } from "@uiw/react-codemirror"
 import { json } from "@codemirror/lang-json"
@@ -58,6 +60,26 @@ export default function TestEditorPage({ params }: PageProps) {
     queryKey: ["test", id],
     queryFn: () => fetchTestById(id),
   })
+
+  const bookId = rawTest?.bookId?._id || rawTest?.bookId
+  const { data: siblingTests } = useQuery({
+    queryKey: ["tests", "book", bookId],
+    queryFn: () => fetchTests(bookId),
+    enabled: !!bookId,
+  })
+
+  const navigation = React.useMemo(() => {
+    if (!siblingTests || !rawTest) return { prev: null, next: null }
+    const sameSkillTests = siblingTests
+      .filter((t: any) => t.skill === rawTest.skill)
+      .sort((a: any, b: any) => a.testNumber - b.testNumber)
+    const currentIdx = sameSkillTests.findIndex((t: any) => (t._id || t.id) === id)
+    if (currentIdx === -1) return { prev: null, next: null }
+    return {
+      prev: currentIdx > 0 ? sameSkillTests[currentIdx - 1] : null,
+      next: currentIdx < sameSkillTests.length - 1 ? sameSkillTests[currentIdx + 1] : null,
+    }
+  }, [siblingTests, rawTest, id])
 
   const updateMutation = useMutation({
     mutationFn: updateTest,
@@ -317,6 +339,20 @@ export default function TestEditorPage({ params }: PageProps) {
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
+          {navigation.prev && (
+            <Link href={`/admin/tests/${navigation.prev._id || navigation.prev.id}/edit`}>
+              <Button variant="ghost" size="icon-sm" className="rounded-lg border border-border/40" title={`Test ${navigation.prev.testNumber}`}>
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+          )}
+          {navigation.next && (
+            <Link href={`/admin/tests/${navigation.next._id || navigation.next.id}/edit`}>
+              <Button variant="ghost" size="icon-sm" className="rounded-lg border border-border/40" title={`Test ${navigation.next.testNumber}`}>
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          )}
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-xl font-bold tracking-tight text-foreground">

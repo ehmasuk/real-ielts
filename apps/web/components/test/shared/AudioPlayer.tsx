@@ -11,17 +11,18 @@ import {
   VolumeX,
   Music,
 } from "lucide-react"
+import { useAudio } from "./AudioContext"
 
 interface AudioPlayerProps {
-  src: string
   title?: string
 }
 
-export function AudioPlayer({ src, title = "Listening Audio" }: AudioPlayerProps) {
-  const audioRef = useRef<HTMLAudioElement>(null)
+export function AudioPlayer({ title = "Listening Audio" }: AudioPlayerProps) {
+  const ctx = useAudio()
+  const audioRef = ctx?.audioRef
+  const ctxTime = ctx?.currentTime ?? 0
+  const ctxPlaying = ctx?.playing ?? false
   const progressRef = useRef<HTMLDivElement>(null)
-  const [playing, setPlaying] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [volume, setVolume] = useState(1)
   const [muted, setMuted] = useState(false)
@@ -37,28 +38,23 @@ export function AudioPlayer({ src, title = "Listening Audio" }: AudioPlayerProps
     return `${m.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`
   }
 
-  const handleTimeUpdate = useCallback(() => {
-    if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime)
-    }
-  }, [])
-
-  const handleLoadedMetadata = useCallback(() => {
-    if (audioRef.current) {
-      setDuration(audioRef.current.duration)
-    }
-  }, [])
+  useEffect(() => {
+    if (!audioRef?.current) return
+    const audio = audioRef.current
+    const onLoaded = () => setDuration(audio.duration)
+    audio.addEventListener("loadedmetadata", onLoaded)
+    if (audio.readyState >= 1) onLoaded()
+    return () => audio.removeEventListener("loadedmetadata", onLoaded)
+  }, [audioRef])
 
   const togglePlay = useCallback(() => {
-    if (!audioRef.current) return
+    if (!audioRef?.current) return
     if (audioRef.current.paused) {
       audioRef.current.play()
-      setPlaying(true)
     } else {
       audioRef.current.pause()
-      setPlaying(false)
     }
-  }, [])
+  }, [audioRef])
 
   useEffect(() => {
     const el = document.querySelector("[data-audio-player]")
@@ -80,49 +76,48 @@ export function AudioPlayer({ src, title = "Listening Audio" }: AudioPlayerProps
 
   const handleProgressClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!audioRef.current || !progressRef.current || !duration) return
+      if (!audioRef?.current || !progressRef.current || !duration) return
       const rect = progressRef.current.getBoundingClientRect()
       const x = e.clientX - rect.left
       const pct = Math.max(0, Math.min(1, x / rect.width))
       audioRef.current.currentTime = pct * duration
     },
-    [duration]
+    [duration, audioRef]
   )
 
   const skip = useCallback((seconds: number) => {
-    if (!audioRef.current) return
+    if (!audioRef?.current) return
     const d = audioRef.current.duration || 0
     audioRef.current.currentTime = Math.max(
       0,
       Math.min(audioRef.current.currentTime + seconds, d)
     )
-  }, [])
+  }, [audioRef])
 
   const changeVolume = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const v = parseFloat(e.target.value)
     setVolume(v)
-    if (audioRef.current) {
+    if (audioRef?.current) {
       audioRef.current.volume = v
-      if (v === 0) setMuted(true)
-      else setMuted(false)
+      setMuted(v === 0)
     }
-  }, [])
+  }, [audioRef])
 
   const toggleMute = useCallback(() => {
-    if (!audioRef.current) return
+    if (!audioRef?.current) return
     audioRef.current.muted = !audioRef.current.muted
     setMuted(audioRef.current.muted)
-  }, [])
+  }, [audioRef])
 
   const changeSpeed = useCallback((speed: number) => {
-    if (audioRef.current) {
+    if (audioRef?.current) {
       audioRef.current.playbackRate = speed
       setPlaybackRate(speed)
     }
     setShowSpeedMenu(false)
-  }, [])
+  }, [audioRef])
 
-  const progress = duration ? (currentTime / duration) * 100 : 0
+  const progress = duration ? (ctxTime / duration) * 100 : 0
 
   return (
     <div
@@ -130,15 +125,6 @@ export function AudioPlayer({ src, title = "Listening Audio" }: AudioPlayerProps
       tabIndex={0}
       className="rounded-2xl border border-border/40 bg-card/60 p-4 md:p-5 shadow-sm"
     >
-      <audio
-        ref={audioRef}
-        src={src}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
-        onEnded={() => setPlaying(false)}
-        preload="metadata"
-      />
-
       <div className="mb-3 flex items-center gap-2">
         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
           <Music className="h-3.5 w-3.5" />
@@ -175,7 +161,7 @@ export function AudioPlayer({ src, title = "Listening Audio" }: AudioPlayerProps
             onClick={togglePlay}
             className="mx-1 flex h-9 w-9 items-center justify-center rounded-full bg-indigo-600 text-white shadow-sm shadow-indigo-500/20 hover:bg-indigo-700 hover:shadow-md active:scale-95 transition-all"
           >
-            {playing ? (
+            {ctxPlaying ? (
               <Pause className="h-4 w-4" />
             ) : (
               <Play className="ml-0.5 h-4 w-4" />
@@ -192,7 +178,7 @@ export function AudioPlayer({ src, title = "Listening Audio" }: AudioPlayerProps
         </div>
 
         <div className="text-[11px] font-medium tabular-nums text-muted-foreground">
-          {formatTime(currentTime)} / {formatTime(duration)}
+          {formatTime(ctxTime)} / {formatTime(duration)}
         </div>
 
         <div className="flex items-center gap-1">

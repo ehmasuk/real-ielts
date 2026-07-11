@@ -52,12 +52,17 @@ function typeBadgeColor(type: MediaAsset["type"]) {
   return "bg-muted text-muted-foreground"
 }
 
+interface QueuedFile {
+  file: File
+  title: string
+  status: "pending" | "uploading" | "done" | "error"
+  error?: string
+}
+
 export default function ImportsPage() {
   const [dragActive, setDragActive] = React.useState(false)
-  const [selectedFile, setSelectedFile] = React.useState<File | null>(null)
-  const [title, setTitle] = React.useState("")
+  const [queue, setQueue] = React.useState<QueuedFile[]>([])
   const [isUploading, setIsUploading] = React.useState(false)
-  const [uploadError, setUploadError] = React.useState<string | null>(null)
   const [copiedId, setCopiedId] = React.useState<string | null>(null)
   const [library, setLibrary] = React.useState<MediaAsset[]>([])
   const [loading, setLoading] = React.useState(true)
@@ -90,42 +95,73 @@ export default function ImportsPage() {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
-    if (e.dataTransfer.files?.[0]) pick(e.dataTransfer.files[0])
+    if (e.dataTransfer.files?.length) {
+      addFiles(Array.from(e.dataTransfer.files))
+    }
   }
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) pick(e.target.files[0])
+    if (e.target.files?.length) {
+      addFiles(Array.from(e.target.files))
+      e.target.value = ""
+    }
   }
 
-  const pick = (file: File) => {
-    setSelectedFile(file)
-    setTitle(file.name.replace(/\.[^/.]+$/, ""))
-    setUploadError(null)
+  const addFiles = (files: File[]) => {
+    const newQueue: QueuedFile[] = files.map((file) => ({
+      file,
+      title: file.name.replace(/\.[^/.]+$/, ""),
+      status: "pending" as const,
+    }))
+    setQueue((prev) => [...prev, ...newQueue])
+  }
+
+  const removeFile = (index: number) => {
+    setQueue((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const updateTitle = (index: number, title: string) => {
+    setQueue((prev) => prev.map((item, i) => (i === index ? { ...item, title } : item)))
+  }
+
+  const clearQueue = () => {
+    setQueue([])
   }
 
   const handleUpload = async () => {
-    if (!selectedFile) return
-    setIsUploading(true)
-    setUploadError(null)
+    const pendingFiles = queue.filter((item) => item.status === "pending")
+    if (pendingFiles.length === 0) return
 
-    try {
-      const result = await uploadToCloudinary(selectedFile)
-      await api.post("/admin/media", {
-        title: title.trim() || selectedFile.name,
-        url: result.secure_url,
-        publicId: result.public_id,
-        type: detectType(selectedFile),
-        filename: selectedFile.name,
-        bytes: result.bytes,
-      })
-      await fetchLibrary()
-      setSelectedFile(null)
-      setTitle("")
-    } catch (err: any) {
-      setUploadError(err.response?.data?.message || err.message || "Upload failed")
-    } finally {
-      setIsUploading(false)
+    setIsUploading(true)
+
+    for (let i = 0; i < queue.length; i++) {
+      const item = queue[i]
+      if (!item || item.status !== "pending") continue
+
+      setQueue((prev) => prev.map((q, idx) => (idx === i ? { ...q, status: "uploading" } : q)))
+
+      try {
+        const result = await uploadToCloudinary(item.file)
+        await api.post("/admin/media", {
+          title: item.title.trim() || item.file.name,
+          url: result.secure_url,
+          publicId: result.public_id,
+          type: detectType(item.file),
+          filename: item.file.name,
+          bytes: result.bytes,
+        })
+        setQueue((prev) => prev.map((q, idx) => (idx === i ? { ...q, status: "done" } : q)))
+      } catch (err: any) {
+        setQueue((prev) =>
+          prev.map((q, idx) =>
+            idx === i ? { ...q, status: "error", error: err.response?.data?.message || err.message || "Upload failed" } : q,
+          ),
+        )
+      }
     }
+
+    await fetchLibrary()
+    setIsUploading(false)
   }
 
   const copyUrl = (asset: MediaAsset) => {
@@ -176,10 +212,9 @@ export default function ImportsPage() {
 
   const filtered = filter === "all" ? library : library.filter((a) => a.type === filter)
 
-  const getFileIcon = (file: File) => {
-    const t = detectType(file)
-    return <TypeIcon type={t} className="h-8 w-8 text-indigo-500 shrink-0" />
-  }
+  const pendingCount = queue.filter((f) => f.status === "pending").length
+  const doneCount = queue.filter((f) => f.status === "done").length
+  const errorCount = queue.filter((f) => f.status === "error").length
 
   return (
     <div className="space-y-8">
@@ -203,17 +238,17 @@ export default function ImportsPage() {
             className={cn(
               "flex flex-col items-center justify-center border border-dashed rounded-2xl px-4 text-center transition-all bg-card shadow-sm",
               dragActive ? "border-indigo-500 bg-indigo-500/5" : "border-border/60 hover:border-border/80",
-              selectedFile ? "py-8 items-start" : "py-14"
+              queue.length > 0 ? "py-6" : "py-14"
             )}
           >
-            {!selectedFile ? (
+            {queue.length === 0 ? (
               <>
                 <div className="flex h-14 w-14 rounded-xl bg-muted/60 items-center justify-center text-muted-foreground mb-4">
                   <Upload className="h-6 w-6" />
                 </div>
-                <h3 className="text-sm font-semibold text-foreground">Drop a media file here</h3>
+                <h3 className="text-sm font-semibold text-foreground">Drop media files here</h3>
                 <p className="text-xs text-muted-foreground mt-1 max-w-xs leading-normal">
-                  Supports audio (.mp3, .wav), images (.jpg, .png, .webp), and video.
+                  Supports audio (.mp3, .wav), images (.jpg, .png, .webp), and video. You can select multiple files at once.
                 </p>
                 <label className="mt-5">
                   <Button variant="outline" size="sm" asChild>
@@ -222,6 +257,7 @@ export default function ImportsPage() {
                   <input
                     type="file"
                     accept="audio/*,image/*,video/*"
+                    multiple
                     onChange={handleFileSelect}
                     className="hidden"
                   />
@@ -229,52 +265,100 @@ export default function ImportsPage() {
               </>
             ) : (
               <div className="w-full space-y-4">
-                <div className="flex items-center gap-3 border-b border-border/20 pb-3">
-                  {getFileIcon(selectedFile)}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-foreground truncate">{selectedFile.name}</p>
-                    <p className="text-[10px] text-muted-foreground">
-                      {(selectedFile.size / 1024 / 1024).toFixed(2)} MB • {selectedFile.type}
-                    </p>
+                <div className="flex items-center justify-between border-b border-border/20 pb-3">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-semibold text-foreground">{queue.length} file(s) selected</h3>
+                    {isUploading && (
+                      <span className="text-[10px] text-muted-foreground">
+                        {doneCount} uploaded, {pendingCount} remaining
+                        {errorCount > 0 && `, ${errorCount} failed`}
+                      </span>
+                    )}
                   </div>
-                  <Button
-                    variant="ghost" size="sm"
-                    className="h-7 text-xs text-muted-foreground hover:text-foreground"
-                    onClick={() => { setSelectedFile(null); setTitle(""); setUploadError(null) }}
-                    disabled={isUploading}
-                  >
-                    Clear
-                  </Button>
+                  <div className="flex gap-2">
+                    {!isUploading && (
+                      <label>
+                        <Button variant="outline" size="sm" asChild className="text-xs">
+                          <span className="cursor-pointer">Add more</span>
+                        </Button>
+                        <input
+                          type="file"
+                          accept="audio/*,image/*,video/*"
+                          multiple
+                          onChange={handleFileSelect}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                    <Button
+                      variant="ghost" size="sm"
+                      className="h-7 text-xs text-muted-foreground hover:text-foreground"
+                      onClick={clearQueue}
+                      disabled={isUploading}
+                    >
+                      Clear all
+                    </Button>
+                  </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-medium text-muted-foreground">Title</label>
-                  <input
-                    className="w-full rounded-lg border border-border/60 bg-transparent px-3 py-2 text-sm outline-none focus:border-indigo-500"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g. Listening Part 1 Audio"
-                  />
+                <div className="max-h-64 overflow-y-auto space-y-2">
+                  {queue.map((item, i) => (
+                    <div
+                      key={i}
+                      className={cn(
+                        "flex items-center gap-3 p-2.5 rounded-xl border transition-colors",
+                        item.status === "done" && "border-emerald-500/20 bg-emerald-500/5",
+                        item.status === "error" && "border-rose-500/20 bg-rose-500/5",
+                        item.status === "uploading" && "border-indigo-500/20 bg-indigo-500/5",
+                        item.status === "pending" && "border-border/40 bg-card",
+                      )}
+                    >
+                      <div className="shrink-0">
+                        {item.status === "done" && <CheckCircle className="h-4 w-4 text-emerald-500" />}
+                        {item.status === "error" && <AlertTriangle className="h-4 w-4 text-rose-500" />}
+                        {item.status === "uploading" && <Loader2 className="h-4 w-4 text-indigo-500 animate-spin" />}
+                        {item.status === "pending" && <TypeIcon type={detectType(item.file)} className="h-4 w-4 text-muted-foreground" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        {item.status === "pending" ? (
+                          <input
+                            className="w-full bg-transparent text-xs font-medium text-foreground outline-none"
+                            value={item.title}
+                            onChange={(e) => updateTitle(i, e.target.value)}
+                            disabled={isUploading}
+                          />
+                        ) : (
+                          <p className="text-xs font-medium text-foreground truncate">{item.title}</p>
+                        )}
+                        <p className="text-[10px] text-muted-foreground">
+                          {item.file.name} • {(item.file.size / 1024 / 1024).toFixed(2)} MB
+                          {item.status === "error" && item.error && (
+                            <span className="text-rose-500 ml-1">— {item.error}</span>
+                          )}
+                        </p>
+                      </div>
+                      {item.status === "pending" && !isUploading && (
+                        <Button
+                          variant="ghost" size="icon-sm"
+                          className="h-6 w-6 text-muted-foreground hover:text-rose-500"
+                          onClick={() => removeFile(i)}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
                 </div>
 
-                {uploadError && (
-                  <div className="bg-rose-500/5 border border-rose-500/10 rounded-xl p-3">
-                    <p className="flex items-start gap-1.5 text-[11px] text-rose-600 dark:text-rose-400">
-                      <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                      {uploadError}
-                    </p>
-                  </div>
-                )}
-
-                <div className="flex justify-end pt-1">
+                <div className="flex justify-end gap-2 pt-1">
                   <Button
                     onClick={handleUpload}
                     size="sm"
-                    disabled={isUploading || !title.trim()}
+                    disabled={isUploading || pendingCount === 0}
                     className="bg-linear-to-r from-indigo-600 to-purple-600 text-white text-xs hover:from-indigo-500 hover:to-purple-500"
                   >
                     {isUploading && <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />}
-                    {isUploading ? "Uploading..." : "Upload to Cloudinary"}
+                    {isUploading ? "Uploading..." : `Upload ${pendingCount} file(s)`}
                   </Button>
                 </div>
               </div>
@@ -340,6 +424,9 @@ export default function ImportsPage() {
                         </div>
                         <p className="text-[10px] text-muted-foreground mt-0.5">
                           {(asset.bytes / 1024).toFixed(1)} KB • {new Date(asset.createdAt).toLocaleDateString()}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground/70 font-mono truncate mt-0.5 select-all" title={asset.url}>
+                          {asset.url}
                         </p>
                       </div>
                       <div className="flex gap-1 shrink-0">
