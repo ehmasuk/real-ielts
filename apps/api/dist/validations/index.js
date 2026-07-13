@@ -43,4 +43,9 @@ export const updateMediaSchema = z.object({
     title: z.string().min(1).optional(),
     used: z.boolean().optional(),
 });
+export const updateDrillProgressSchema = z.object({
+    levelNumber: z.number().int().positive("levelNumber must be a positive integer"),
+    stars: z.number().int().min(0).max(3, "stars must be between 0 and 3"),
+    accuracy: z.number().min(0).max(100, "accuracy must be between 0 and 100"),
+});
 //# sourceMappingURL=index.js.map

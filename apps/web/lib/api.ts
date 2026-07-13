@@ -136,3 +136,15 @@ export const updateUser = async ({ id, data }: { id: string; data: Record<string
   const res = await api.patch(`/admin/users/${id}`, data)
   return res.data
 }
+
+// ─── Drill Progress ───────────────────────────────────────────────────────────
+
+export const fetchDrillProgress = async (drillId: string) => {
+  const res = await api.get(`/drills/${drillId}`)
+  return res.data
+}
+
+export const updateDrillProgress = async (drillId: string, data: { levelNumber: number; stars: number; accuracy: number }) => {
+  const res = await api.put(`/drills/${drillId}`, data)
+  return res.data
+}

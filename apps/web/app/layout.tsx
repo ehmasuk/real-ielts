@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Script from "next/script"
 import { Geist_Mono, Inter } from "next/font/google"
 
 import { ThemeProvider } from "@/providers/theme-provider"
@@ -102,7 +103,9 @@ export default function RootLayout({
       )}
     >
       <head>
-        <script
+        <Script
+          id="theme-setup"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var e=localStorage.getItem("theme");var t=window.matchMedia("(prefers-color-scheme: dark)").matches;var n=e==="system"||!e?(t?"dark":"light"):e;document.documentElement.classList.add(n);document.documentElement.style.colorScheme=n}catch(e){}})();`,
           }}

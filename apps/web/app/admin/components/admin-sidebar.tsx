@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   Bug,
   Users,
+  SpellCheck,
 } from "lucide-react"
 import { Logo } from "@/components/Logo"
 import { cn } from "@workspace/ui/lib/utils"
@@ -49,10 +50,16 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
-    title: "Content",
+    title: "IELTS",
     items: [
       { href: "/admin/books", label: "Books", icon: BookOpen },
       { href: "/admin/tests", label: "All Tests", icon: FileText },
+    ],
+  },
+  {
+    title: "Drills",
+    items: [
+      { href: "/admin/drills/spelling", label: "Spelling Challenge", icon: SpellCheck },
     ],
   },
     {

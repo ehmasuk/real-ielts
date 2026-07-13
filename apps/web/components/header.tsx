@@ -5,7 +5,7 @@ import { useSyncExternalStore } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTheme } from "@/providers/theme-provider"
-import { BookOpen, Moon, Sun, Menu, X, Headphones, PenTool, Mic, LogOut, User, ChevronDown, Mail, Layers } from "lucide-react"
+import { BookOpen, Moon, Sun, Menu, X, Headphones, PenTool, Mic, LogOut, User, ChevronDown, Mail, Layers, Gamepad2 } from "lucide-react"
 import { Logo } from "@/components/Logo"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -123,6 +123,17 @@ export const Header = React.memo(function Header() {
               })}
             </HoverCardContent>
           </HoverCard>
+          <Link
+            href="/drills"
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+              pathname.startsWith("/drills")
+                ? "bg-muted text-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Gamepad2 className={`h-4 w-4 ${pathname.startsWith("/drills") ? "text-primary" : "text-muted-foreground/75"}`} />
+            Drills
+          </Link>
         </nav>
 
         {/* Action Controls */}
@@ -249,6 +260,15 @@ export const Header = React.memo(function Header() {
                 </Link>
               )
             })}
+            <p className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">Drills</p>
+            <Link
+              href="/drills"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${pathname.startsWith("/drills") ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+            >
+              <Gamepad2 className={`h-4 w-4 ${pathname.startsWith("/drills") ? "text-primary" : "text-muted-foreground"}`} />
+              Drills
+            </Link>
             <div className="mt-4 flex flex-col gap-2 border-t border-border/40 pt-4">
               {isAuthenticated && user ? (
                 <>

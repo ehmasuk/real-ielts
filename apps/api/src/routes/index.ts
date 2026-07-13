@@ -7,11 +7,13 @@ import bugReportRoutes from "./bug-report.routes.js";
 import adminBugReportRoutes from "./admin.bug-report.routes.js";
 import adminMediaRoutes from "./admin.media.routes.js";
 import adminUsersRoutes from "./admin.users.routes.js";
+import drillProgressRoutes from "./drill-progress.routes.js";
 
 const routes = (app: any): void => {
   app.use("/api/auth", authRoutes);
   app.use("/api/books", bookRoutes);
   app.use("/api/tests", testRoutes);
+  app.use("/api/drills", drillProgressRoutes);
   app.use("/api/admin/books", adminBookRoutes);
   app.use("/api/admin/tests", adminTestRoutes);
   app.use("/api/admin/bug-reports", adminBugReportRoutes);

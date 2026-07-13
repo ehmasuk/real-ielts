@@ -86,4 +86,9 @@ export declare const updateMediaSchema: z.ZodObject<{
     title: z.ZodOptional<z.ZodString>;
     used: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>;
+export declare const updateDrillProgressSchema: z.ZodObject<{
+    levelNumber: z.ZodNumber;
+    stars: z.ZodNumber;
+    accuracy: z.ZodNumber;
+}, z.core.$strip>;
 //# sourceMappingURL=index.d.ts.map
