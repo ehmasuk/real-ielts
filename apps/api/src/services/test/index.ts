@@ -49,63 +49,80 @@ const testServices = {
     if (!test || test.status !== "published") return null;
     const sections = (test.contentJson as any)?.sections as any[] | undefined;
     if (!sections || partIndex < 0 || partIndex >= sections.length) return null;
-    const answerMap = (test.answerJson as any)?.answers as Record<string, any> | undefined;
-    if (!answerMap) return { score: 0, total: 0, results: [] };
+    const rawAnswerJson = test.answerJson as Record<string, any> | undefined;
+    const answerMap = rawAnswerJson?.answers ? rawAnswerJson.answers : rawAnswerJson;
+    if (!answerMap || Object.keys(answerMap).length === 0) return { score: 0, total: 0, results: [] };
 
     const section = sections[partIndex];
-    const meta = getQuestionMetadata(section);
+    const { meta, mcqGroupMap } = getQuestionMetadata(section);
     const questionIds = Object.keys(meta);
-    
+
     let totalScore = 0;
     let totalMax = 0;
+    const processedMcqGroups = new Set<string>();
+
+    const normalizeString = (str: any) => String(str ?? "").trim().toLowerCase().replace(/\s+/g, " ");
 
     const results = questionIds.map((qId) => {
-      const userAnswer = userAnswers[qId];
-      const correctAnswer = answerMap[qId];
       const qMeta = meta[qId] || { type: "unknown", maxScore: 1 };
-      
       let score = 0;
       let correct = false;
+      let userAnswer = userAnswers[qId] ?? null;
+      let correctAnswer = answerMap[qId];
 
       if (qMeta.type === "mcq_multiple") {
-        const userArr = Array.isArray(userAnswer) ? userAnswer : [];
-        const correctArr = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
-        
-        const userSet = new Set(userArr.filter(Boolean).map(v => String(v).trim().toLowerCase()));
-        const correctSet = new Set(correctArr.filter(Boolean).map(v => String(v).trim().toLowerCase()));
-        
-        let matchCount = 0;
-        userSet.forEach(v => {
-          if (correctSet.has(v)) matchCount++;
-        });
-        
-        score = Math.min(matchCount, qMeta.maxScore);
-        correct = score === qMeta.maxScore;
-      } else {
-        if (Array.isArray(correctAnswer)) {
-          const uAns = String(userAnswer ?? "").trim().toLowerCase();
-          const match = correctAnswer.some(ans => String(ans).trim().toLowerCase() === uAns);
-          score = match ? 1 : 0;
-          correct = match;
-        } else {
-          const match = String(userAnswer ?? "").trim().toLowerCase() === String(correctAnswer ?? "").trim().toLowerCase();
-          score = match ? 1 : 0;
-          correct = match;
+        const groupId = Object.keys(mcqGroupMap).find(gid => mcqGroupMap[gid]?.includes(qId)) ?? "";
+        if (groupId && !processedMcqGroups.has(groupId)) {
+          processedMcqGroups.add(groupId);
         }
+        const userSelection: string[] = Array.isArray(userAnswers[groupId]) ? userAnswers[groupId] : [];
+        const expectedCount = mcqGroupMap[groupId]?.length || 1;
+
+        if (userSelection.length > expectedCount) {
+          correct = false;
+          score = 0;
+          userAnswer = userSelection;
+        } else {
+          const userSet = new Set(userSelection.filter(Boolean).map(normalizeString));
+          const normalizedCorrect = normalizeString(correctAnswer);
+          const match = userSet.has(normalizedCorrect);
+          score = match ? 1 : 0;
+          correct = match;
+          userAnswer = userSelection.length > 0 ? userSelection : null;
+        }
+      } else if (typeof correctAnswer === "string" && correctAnswer.includes(" & ")) {
+        // Multi-blank question: "plants & animals" — each blank scored independently
+        const correctParts = correctAnswer.split(" & ").map(normalizeString);
+        const userParts = typeof userAnswer === "string"
+          ? userAnswer.split(" & ").map(normalizeString)
+          : [];
+        const allMatch = correctParts.every((cp, i) => cp === (userParts[i] ?? ""));
+        score = allMatch ? 1 : 0;
+        correct = allMatch;
+      } else if (Array.isArray(correctAnswer)) {
+        const uAns = normalizeString(userAnswer);
+        const match = correctAnswer.some(ans => normalizeString(ans) === uAns);
+        score = match ? 1 : 0;
+        correct = match;
+      } else {
+        const match = normalizeString(userAnswer) === normalizeString(correctAnswer);
+        score = match ? 1 : 0;
+        correct = match;
       }
 
       totalScore += score;
       totalMax += qMeta.maxScore;
 
-      return { 
-        questionId: qId, 
-        correct, 
+      return {
+        questionId: qId,
+        correct,
         score,
         maxScore: qMeta.maxScore,
-        userAnswer: userAnswer ?? null, 
-        correctAnswer 
+        userAnswer,
+        correctAnswer,
       };
     });
+
 
     const score = totalScore;
     const total = totalMax;
@@ -206,53 +223,54 @@ function qid(item: any): string | undefined {
   return item.questionId ?? (item.number != null ? `q_${item.number}` : undefined);
 }
 
-function getQuestionMetadata(section: any): Record<string, { type: string, maxScore: number }> {
+function getQuestionMetadata(section: any): {
+  meta: Record<string, { type: string, maxScore: number }>;
+  mcqGroupMap: Record<string, string[]>;
+} {
   const meta: Record<string, { type: string, maxScore: number }> = {};
+  const mcqGroupMap: Record<string, string[]> = {};
+
+  const extractQuestionsFromLayout = (obj: any, groupType: string) => {
+    if (!obj || typeof obj !== "object") return;
+    if (Array.isArray(obj)) {
+      for (const item of obj) extractQuestionsFromLayout(item, groupType);
+      return;
+    }
+    if (obj.type === "question") {
+      const id = qid(obj);
+      if (id) meta[id] = { type: groupType, maxScore: 1 };
+    }
+    for (const key of Object.keys(obj)) {
+      if (key !== "type" && typeof obj[key] === "object") {
+        extractQuestionsFromLayout(obj[key], groupType);
+      }
+    }
+  };
+
   for (const group of section.questionGroups ?? []) {
     if (group.type === "mcq_multiple" && group.questionId) {
-      meta[group.questionId] = { 
-        type: "mcq_multiple", 
-        maxScore: group.questionNumbers?.length || group.select || 1 
-      };
+      const questionIds = (group.questionNumbers ?? []).map((n: number) => `q_${n}`);
+      mcqGroupMap[group.questionId] = questionIds;
+      for (const qId of questionIds) {
+        meta[qId] = { type: "mcq_multiple", maxScore: 1 };
+      }
     } else {
       for (const q of group.questions ?? []) {
         const id = qid(q);
         if (id) meta[id] = { type: group.type, maxScore: 1 };
       }
-      if (group.layout?.blocks) {
-        for (const block of group.layout.blocks) {
-          for (const item of block.content ?? []) {
-            if (item.type === "question") {
-              const id = qid(item);
-              if (id) meta[id] = { type: group.type, maxScore: 1 };
-            }
-          }
-        }
-      }
-      if (group.layout?.rows) {
-        for (const row of group.layout.rows) {
-          for (const cell of row) {
-            for (const item of cell ?? []) {
-              if (item.type === "question") {
-                const id = qid(item);
-                if (id) meta[id] = { type: group.type, maxScore: 1 };
-              }
-            }
-          }
-        }
-      }
-
+      extractQuestionsFromLayout(group.layout, group.type);
     }
   }
-  
+
   if (!section.questionGroups || section.questionGroups.length === 0) {
     for (const q of section.questions ?? []) {
       const id = qid(q);
       if (id) meta[id] = { type: "standard", maxScore: 1 };
     }
   }
-  
-  return meta;
+
+  return { meta, mcqGroupMap };
 }
 
 export default testServices;

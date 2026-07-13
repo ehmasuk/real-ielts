@@ -76,23 +76,23 @@ export function AudioPlayer({ title = "Listening Audio" }: AudioPlayerProps) {
 
   const handleProgressClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!audioRef?.current || !progressRef.current || !duration) return
+      if (!audioRef?.current || !progressRef.current || !duration || !ctx) return
       const rect = progressRef.current.getBoundingClientRect()
       const x = e.clientX - rect.left
       const pct = Math.max(0, Math.min(1, x / rect.width))
-      audioRef.current.currentTime = pct * duration
+      ctx.seekTo(pct * duration)
     },
-    [duration, audioRef]
+    [duration, audioRef, ctx]
   )
 
   const skip = useCallback((seconds: number) => {
-    if (!audioRef?.current) return
+    if (!audioRef?.current || !ctx) return
     const d = audioRef.current.duration || 0
-    audioRef.current.currentTime = Math.max(
+    ctx.seekTo(Math.max(
       0,
       Math.min(audioRef.current.currentTime + seconds, d)
-    )
-  }, [audioRef])
+    ))
+  }, [audioRef, ctx])
 
   const changeVolume = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const v = parseFloat(e.target.value)

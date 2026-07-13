@@ -1,7 +1,6 @@
-import type { Response, NextFunction } from "express";
-import type { CustomRequest } from "../types/index.js";
-export declare const getAllMedia: (req: CustomRequest, res: Response, next: NextFunction) => Promise<void>;
-export declare const createMedia: (req: CustomRequest, res: Response, next: NextFunction) => Promise<void>;
-export declare const updateMedia: (req: CustomRequest, res: Response, next: NextFunction) => Promise<void>;
-export declare const deleteMedia: (req: CustomRequest, res: Response, next: NextFunction) => Promise<void>;
+import type { Response } from "express";
+export declare const getAllMedia: (req: import("express").Request, res: Response, next: import("express").NextFunction) => void;
+export declare const createMedia: (req: import("express").Request, res: Response, next: import("express").NextFunction) => void;
+export declare const updateMedia: (req: import("express").Request, res: Response, next: import("express").NextFunction) => void;
+export declare const deleteMedia: (req: import("express").Request, res: Response, next: import("express").NextFunction) => void;
 //# sourceMappingURL=media.controller.d.ts.map

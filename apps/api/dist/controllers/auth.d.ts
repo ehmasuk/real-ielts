@@ -1,8 +1,7 @@
-import type { NextFunction, Request, Response } from "express";
-import type { CustomRequest } from "../types/index.js";
+import type { Request, Response } from "express";
 declare const _default: {
-    sync: (req: Request, res: Response, next: NextFunction) => Promise<void>;
-    me: (req: CustomRequest, res: Response, next: NextFunction) => Promise<void>;
+    sync: (req: Request, res: Response, next: import("express").NextFunction) => void;
+    me: (req: Request, res: Response, next: import("express").NextFunction) => void;
 };
 export default _default;
 //# sourceMappingURL=auth.d.ts.map

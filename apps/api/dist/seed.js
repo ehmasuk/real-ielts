@@ -423,7 +423,7 @@ function makeListeningAnswers(testNumber) {
         q_39: "sea walls",
         q_40: "2 million",
     };
-    return { answers };
+    return answers;
 }
 function makeReadingContent(bookNumber, testNumber) {
     return {
@@ -567,7 +567,7 @@ function makeReadingAnswers(testNumber) {
         q_30: "NOT GIVEN",
         q_31: "YES",
     };
-    return { answers };
+    return answers;
 }
 seed().catch((err) => {
     console.error("Seed failed:", err);

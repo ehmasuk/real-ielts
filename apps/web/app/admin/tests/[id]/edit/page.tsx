@@ -62,24 +62,34 @@ export default function TestEditorPage({ params }: PageProps) {
   })
 
   const bookId = rawTest?.bookId?._id || rawTest?.bookId
-  const { data: siblingTests } = useQuery({
-    queryKey: ["tests", "book", bookId],
-    queryFn: () => fetchTests(bookId),
-    enabled: !!bookId,
+  const { data: allTests } = useQuery({
+    queryKey: ["tests"],
+    queryFn: () => fetchTests(),
   })
 
   const navigation = React.useMemo(() => {
-    if (!siblingTests || !rawTest) return { prev: null, next: null }
-    const sameSkillTests = siblingTests
-      .filter((t: any) => t.skill === rawTest.skill)
-      .sort((a: any, b: any) => a.testNumber - b.testNumber)
+    if (!allTests || !rawTest) return { prev: null, next: null }
+    const currentBookNumber = rawTest.bookId?.number
+    const currentSkill = rawTest.skill
+    if (!currentBookNumber || !currentSkill) return { prev: null, next: null }
+
+    const sameSkillTests = (allTests as any[])
+      .filter((t: any) => t.skill === currentSkill)
+      .sort((a: any, b: any) => {
+        const aBook = a.bookId?.number ?? 0
+        const bBook = b.bookId?.number ?? 0
+        if (aBook !== bBook) return aBook - bBook
+        return a.testNumber - b.testNumber
+      })
+
     const currentIdx = sameSkillTests.findIndex((t: any) => (t._id || t.id) === id)
     if (currentIdx === -1) return { prev: null, next: null }
+
     return {
       prev: currentIdx > 0 ? sameSkillTests[currentIdx - 1] : null,
       next: currentIdx < sameSkillTests.length - 1 ? sameSkillTests[currentIdx + 1] : null,
     }
-  }, [siblingTests, rawTest, id])
+  }, [allTests, rawTest, id])
 
   const updateMutation = useMutation({
     mutationFn: updateTest,
@@ -341,14 +351,14 @@ export default function TestEditorPage({ params }: PageProps) {
           </Link>
           {navigation.prev && (
             <Link href={`/admin/tests/${navigation.prev._id || navigation.prev.id}/edit`}>
-              <Button variant="ghost" size="icon-sm" className="rounded-lg border border-border/40" title={`Test ${navigation.prev.testNumber}`}>
+              <Button variant="ghost" size="icon-sm" className="rounded-lg border border-border/40" title={`Book ${navigation.prev.bookId?.number ?? "?"} — Test ${navigation.prev.testNumber}`}>
                 <ChevronLeft className="h-4 w-4" />
               </Button>
             </Link>
           )}
           {navigation.next && (
             <Link href={`/admin/tests/${navigation.next._id || navigation.next.id}/edit`}>
-              <Button variant="ghost" size="icon-sm" className="rounded-lg border border-border/40" title={`Test ${navigation.next.testNumber}`}>
+              <Button variant="ghost" size="icon-sm" className="rounded-lg border border-border/40" title={`Book ${navigation.next.bookId?.number ?? "?"} — Test ${navigation.next.testNumber}`}>
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </Link>

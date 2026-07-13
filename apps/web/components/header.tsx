@@ -5,7 +5,7 @@ import { useSyncExternalStore } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTheme } from "@/providers/theme-provider"
-import { BookOpen, Moon, Sun, Menu, X, Headphones, PenTool, Mic, LogOut, User, ChevronDown, Mail } from "lucide-react"
+import { BookOpen, Moon, Sun, Menu, X, Headphones, PenTool, Mic, LogOut, User, ChevronDown, Mail, Layers } from "lucide-react"
 import { Logo } from "@/components/Logo"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -16,6 +16,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@workspace/ui/components/hover-card"
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar"
 import { useAuth } from "@/lib/use-auth"
 
@@ -66,39 +71,58 @@ export const Header = React.memo(function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => {
-            const Icon = link.icon
-            if (link.disabled) {
-              return (
-                <div
-                  key={link.label}
-                  className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground/40 cursor-not-allowed select-none"
-                  title={`${link.label} - Soon`}
-                >
-                  <Icon className="h-4 w-4 text-muted-foreground/30" />
-                  {link.label}
-                  <span className="ml-1 rounded-full bg-muted/60 px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground/50 border border-border/20 whitespace-nowrap">
-                    Soon
-                  </span>
-                </div>
-              )
-            }
-            return (
-              <Link
-                key={link.label}
-                href={link.href}
-                className={`group relative flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.startsWith(link.href) ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+          <HoverCard openDelay={100} closeDelay={200}>
+            <HoverCardTrigger asChild>
+              <button
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  navLinks.some((l) => !l.disabled && pathname.startsWith(l.href))
+                    ? "bg-muted text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
-                <Icon className={`h-4 w-4 transition-colors ${pathname.startsWith(link.href) ? "text-primary" : "text-muted-foreground/75 group-hover:text-primary"}`} />
-                {link.label}
-                {link.badge && (
-                  <span className="ml-1 rounded-full bg-indigo-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
-                    {link.badge}
-                  </span>
-                )}
-              </Link>
-            )
-          })}
+                <Layers className={`h-4 w-4 ${
+                  navLinks.some((l) => !l.disabled && pathname.startsWith(l.href))
+                    ? "text-primary"
+                    : "text-muted-foreground/75"
+                }`} />
+                Practice Tests
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/60" />
+              </button>
+            </HoverCardTrigger>
+            <HoverCardContent align="start" className="w-48 p-1.5">
+              {navLinks.map((link) => {
+                const Icon = link.icon
+                if (link.disabled) {
+                  return (
+                    <div
+                      key={link.label}
+                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground/40 cursor-not-allowed select-none"
+                    >
+                      <Icon className="h-4 w-4 text-muted-foreground/30" />
+                      {link.label}
+                      <span className="ml-auto rounded-full bg-muted/60 px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground/50 border border-border/20">
+                        Soon
+                      </span>
+                    </div>
+                  )
+                }
+                return (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                      pathname.startsWith(link.href)
+                        ? "bg-muted text-foreground"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    }`}
+                  >
+                    <Icon className={`h-4 w-4 ${pathname.startsWith(link.href) ? "text-primary" : "text-muted-foreground"}`} />
+                    {link.label}
+                  </Link>
+                )
+              })}
+            </HoverCardContent>
+          </HoverCard>
         </nav>
 
         {/* Action Controls */}
@@ -196,6 +220,7 @@ export const Header = React.memo(function Header() {
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-md px-4 py-4 animate-in fade-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col gap-2">
+            <p className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">Practice Tests</p>
             {navLinks.map((link) => {
               const Icon = link.icon
               if (link.disabled) {
@@ -221,11 +246,6 @@ export const Header = React.memo(function Header() {
                 >
                   <Icon className={`h-4 w-4 ${pathname.startsWith(link.href) ? "text-primary" : "text-muted-foreground"}`} />
                   {link.label}
-                  {link.badge && (
-                    <span className="ml-auto rounded-full bg-indigo-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
-                      {link.badge}
-                    </span>
-                  )}
                 </Link>
               )
             })}

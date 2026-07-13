@@ -113,7 +113,7 @@ export function extractQuestionsFromGroups(
         const questions = group.questions as any[] | undefined
         if (!questions) break
         for (const q of questions) {
-          const qId = `q_${q.number}`
+          const qId = q.questionId ?? `q_${q.number}`
           result.push({
             number: q.number ?? 0,
             questionId: qId,

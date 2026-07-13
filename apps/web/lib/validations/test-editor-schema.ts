@@ -207,10 +207,9 @@ export const getValidationIssues = (contentJson: string, answerJson: string, tes
           if (g.type === "mcq_multiple") {
             if (!g.select || typeof g.select !== "number" || g.select < 1) issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} is missing valid 'select' (number of answers to pick)` })
             if (!g.questionNumbers?.length) issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} is missing 'questionNumbers'` })
-            if (!g.questionId) issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} is missing 'questionId'` })
             if (!g.question) issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} is missing 'question'` })
             if (!g.options || !Array.isArray(g.options) || g.options.length < (g.select || 1)) issues.push({ type: "error", message: `MCQ multiple group #${gIdx + 1} must have at least 'select' options` })
-            return g.questionId ? [{ questionId: g.questionId, number: 0 }] : []
+            return (g.questionNumbers || []).map((n: number) => ({ questionId: `q_${n}`, number: n }))
           }
 
           if (g.type === "statement_judgement") {

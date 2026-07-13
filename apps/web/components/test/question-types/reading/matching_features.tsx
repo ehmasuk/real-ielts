@@ -24,7 +24,7 @@ export const MatchingFeatures = React.memo(function MatchingFeatures({ group, an
 
       <div className="space-y-3">
         {questions?.map((q: any) => {
-          const qId = `q_${q.number}`
+          const qId = q.questionId ?? `q_${q.number}`
           return (
             <div key={q.number} className="flex items-start gap-3">
               <span className="w-8 shrink-0 pt-0.5 font-bold">{q.number}.</span>

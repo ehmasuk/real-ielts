@@ -98,22 +98,32 @@ function ScriptLineGroup({
   audioCtx: AudioContextValue | null
 }) {
   const hasAudio = !!audioCtx
+  const groupRef = React.useRef<HTMLDivElement>(null)
 
-  const groupActive = hasAudio && group.start != null && group.end != null &&
-    audioCtx.currentTime >= group.start && audioCtx.currentTime < group.end
+  const gStart = group.start ?? group.lines[0]?.start
+  const gEnd = group.end ?? group.lines[group.lines.length - 1]?.end
+
+  const groupActive = hasAudio && gStart != null &&
+    audioCtx.currentTime >= gStart && (gEnd == null || audioCtx.currentTime < gEnd)
 
   const activeIdx = hasAudio
-    ? group.lines.findIndex(
-        (l) =>
-          l.start != null &&
-          l.end != null &&
-          audioCtx.currentTime >= l.start &&
-          audioCtx.currentTime < l.end
-      )
+    ? group.lines.findIndex((l, i) => {
+        if (l.start == null) return false
+        const end = l.end ?? group.lines[i + 1]?.start ?? gEnd
+        if (end == null) return audioCtx.currentTime >= l.start
+        return audioCtx.currentTime >= l.start && audioCtx.currentTime < end
+      })
     : -1
+
+  React.useEffect(() => {
+    if (groupActive && audioCtx?.playing && groupRef.current) {
+      groupRef.current.scrollIntoView({ behavior: "smooth", block: "center" })
+    }
+  }, [groupActive, audioCtx?.playing])
 
   return (
     <div
+      ref={groupRef}
       className={`flex items-start gap-2 rounded-lg px-2 py-1.5 transition-all duration-200 ${
         hasAudio ? "cursor-pointer" : ""
       } ${group.paragraphBreak ? "mt-3" : ""} ${
@@ -141,23 +151,22 @@ function ScriptLineGroup({
             e.stopPropagation()
             if (!audioCtx) return
 
-            if (line.start != null && line.end != null) {
-              const nextLine = group.lines[i + 1]
-              const end = nextLine?.start ?? group.end ?? line.end
+            const start = line.start ?? gStart
+            const end = line.end ?? group.lines[i + 1]?.start ?? gEnd
+
+            if (start != null) {
               const isCurrentlyPlaying =
-                audioCtx.currentTime >= line.start && audioCtx.currentTime < end && audioCtx.playing
+                audioCtx.currentTime >= start && (end == null || audioCtx.currentTime < end) && audioCtx.playing
+              
               if (isCurrentlyPlaying) {
-                audioCtx.seekTo(line.start)
+                audioCtx.seekTo(start)
               } else {
-                audioCtx.playSegment(line.start, end)
-              }
-            } else if (group.start != null && group.end != null) {
-              const isCurrentlyPlaying =
-                audioCtx.currentTime >= group.start && audioCtx.currentTime < group.end && audioCtx.playing
-              if (isCurrentlyPlaying) {
-                audioCtx.seekTo(group.start)
-              } else {
-                audioCtx.playSegment(group.start, group.end)
+                if (end != null) {
+                  audioCtx.playSegment(start, end)
+                } else {
+                  audioCtx.seekTo(start)
+                  audioCtx.audioRef.current?.play()
+                }
               }
             }
           }
@@ -172,7 +181,7 @@ function ScriptLineGroup({
                 {formatString(line.text)}
               </span>
               {qids?.length ? (
-                <strong className="text-indigo-600 dark:text-indigo-400">
+                <strong className="text-indigo-600 dark:text-indigo-400 ml-1">
                   (Q{qids.join(", Q")})
                 </strong>
               ) : null}

@@ -766,17 +766,32 @@ function renderFormStyle(group: any, resultMap: Map<string, ResultItem>) {
 }
 
 function renderMcqMultiple(group: any, resultMap: Map<string, ResultItem>) {
-  const r = group.questionId ? resultMap.get(group.questionId) : undefined
-  const userSelected: string[] = (r?.userAnswer as string[]) ?? []
-  const correctAnswers: string[] = (r?.correctAnswer as string[]) ?? []
-  const isCorrect = r?.correct ?? false
+  const questionIds: string[] = (group.questionNumbers ?? []).map((n: number) => `q_${n}`)
+  const userSelected: string[] = []
+  const correctAnswers: string[] = []
+  let allCorrect = true
+
+  for (const qId of questionIds) {
+    const r = resultMap.get(qId)
+    if (r) {
+      correctAnswers.push(String(r.correctAnswer ?? ""))
+      if (Array.isArray(r.userAnswer)) {
+        userSelected.push(...r.userAnswer)
+      } else if (r.userAnswer) {
+        userSelected.push(String(r.userAnswer))
+      }
+      if (!r.correct) allCorrect = false
+    }
+  }
+
+  const uniqueCorrect = [...new Set(correctAnswers.filter(Boolean))]
 
   return (
     <div className="space-y-4 bg-background/50 rounded-xl p-5 border border-border/40">
       <p className="font-medium text-foreground/90 leading-relaxed">
-        {group.questionNumbers?.length ? (
+        {questionIds.length ? (
           <span className="mr-2 inline-flex h-6 items-center rounded-md bg-muted px-2 text-xs font-bold text-muted-foreground">
-            {group.questionNumbers.join(" & ")}
+            {group.questionNumbers?.join(" & ")}
           </span>
         ) : null}
         {formatString(group.question)}
@@ -800,8 +815,8 @@ function renderMcqMultiple(group: any, resultMap: Map<string, ResultItem>) {
           <div className="flex items-start gap-2 text-sm">
             <span className="text-muted-foreground w-20 text-xs font-semibold uppercase tracking-wider mt-0.5">Selected:</span>
             <div className="flex flex-wrap gap-1.5">
-              {userSelected.map((ans, i) => (
-                <span key={i} className={`px-2.5 py-1 rounded-md font-bold text-xs shadow-sm ${isCorrect ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-red-500/10 text-red-600 dark:text-red-400"}`}>
+              {[...new Set(userSelected)].map((ans, i) => (
+                <span key={i} className={`px-2.5 py-1 rounded-md font-bold text-xs shadow-sm ${allCorrect ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-red-500/10 text-red-600 dark:text-red-400"}`}>
                   {ans}
                 </span>
               ))}
@@ -809,11 +824,11 @@ function renderMcqMultiple(group: any, resultMap: Map<string, ResultItem>) {
           </div>
         )}
         
-        {!isCorrect && correctAnswers.length > 0 && (
+        {!allCorrect && uniqueCorrect.length > 0 && (
           <div className="flex items-start gap-2 text-sm pt-3 border-t border-border/30">
             <span className="text-muted-foreground w-20 text-xs font-semibold uppercase tracking-wider mt-0.5">Correct:</span>
             <div className="flex flex-wrap gap-1.5">
-              {correctAnswers.map((ans, i) => (
+              {uniqueCorrect.map((ans, i) => (
                  <span key={i} className="px-2.5 py-1 rounded-md font-bold text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm">
                    {ans}
                  </span>
@@ -821,6 +836,24 @@ function renderMcqMultiple(group: any, resultMap: Map<string, ResultItem>) {
             </div>
           </div>
         )}
+
+        {questionIds.map(qId => {
+          const r = resultMap.get(qId)
+          if (!r) return null
+          const num = qId.replace("q_", "")
+          return (
+            <div key={qId} className="flex items-center gap-2 text-xs pt-2 border-t border-border/20">
+              <span className="font-bold text-muted-foreground">Q{num}:</span>
+              {r.correct ? (
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Correct ✓</span>
+              ) : (
+                <span className="text-red-600 dark:text-red-400 font-semibold">
+                  Your answer: {Array.isArray(r.userAnswer) ? r.userAnswer.join(", ") : (r.userAnswer || "-")} → Correct: {String(r.correctAnswer)}
+                </span>
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -830,6 +863,11 @@ function renderQWithAnswer(text: string, userAns: string | null, correctAns: str
   if (!text) return <span>{userAns || correctAns || "-"}</span>
   const parts = text.split("______")
   if (parts.length <= 1) return <span>{userAns || correctAns || "-"}</span>
+
+  // Split multi-blank answers stored as "word1 & word2"
+  const userParts = userAns ? userAns.split(" & ") : []
+  const correctParts = correctAns ? correctAns.split(" & ") : []
+
   return (
     <>
       {parts.map((part, i) => (
@@ -844,11 +882,11 @@ function renderQWithAnswer(text: string, userAns: string | null, correctAns: str
                     : "bg-red-500/10 text-red-600 dark:text-red-400"
                 }`}
               >
-                {userAns || correctAns || ""}
+                {userParts[i] || correctParts[i] || ""}
               </span>
-              {!isCorrect && correctAns && (
+              {!isCorrect && correctParts[i] && (
                 <span className="inline-flex items-center gap-0.5 rounded bg-emerald-500/10 px-1.5 py-0.5 font-bold text-emerald-600 dark:text-emerald-400">
-                  <Check className="h-2.5 w-2.5" /> {correctAns}
+                  <Check className="h-2.5 w-2.5" /> {correctParts[i]}
                 </span>
               )}
             </span>
@@ -858,6 +896,7 @@ function renderQWithAnswer(text: string, userAns: string | null, correctAns: str
     </>
   )
 }
+
 
 function formatAnswer(val: string | string[] | null): string {
   if (val === null || val === undefined) return "-"
@@ -875,12 +914,14 @@ function collectQuestions(
   const result: { id: string; number: number; text: string }[] = []
   if (!section?.questionGroups) return result
   for (const group of section.questionGroups) {
-    if (group.type === "mcq_multiple" && group.questionId && group.question) {
-      result.push({
-        id: group.questionId,
-        number: group.questionNumbers?.[0] ?? 0,
-        text: group.question,
-      })
+    if (group.type === "mcq_multiple" && group.questionNumbers?.length) {
+      for (const num of group.questionNumbers) {
+        result.push({
+          id: `q_${num}`,
+          number: num,
+          text: group.question || "",
+        })
+      }
       continue
     }
     for (const q of group.questions ?? []) {
