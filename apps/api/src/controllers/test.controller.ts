@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 import type { CustomRequest } from "../types/index.js";
+import mongoose from "mongoose";
+import { Test } from "../models/test.model.js";
 import testServices from "../services/test/index.js";
 import catchAsync from "../utils/catchAsync.js";
 
@@ -11,6 +13,14 @@ import catchAsync from "../utils/catchAsync.js";
 export const getAdminTests = catchAsync(async (req: Request, res: Response) => {
   const tests = await testServices.getAllAdmin(req.query.bookId as string | undefined);
   res.status(200).json(tests);
+});
+
+// @desc    Get test count (admin)
+// @route   GET /api/admin/tests/count
+// @access  Private (Admin)
+export const getTestCount = catchAsync(async (req: Request, res: Response) => {
+  const count = await testServices.countAll();
+  res.status(200).json({ count });
 });
 
 // @desc    Get a single test by ID (admin) — includes answerJson
@@ -121,6 +131,17 @@ export const getTests = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json(tests);
 });
 
+// @desc    Get all published tests — lightweight (no contentJson/answerJson)
+// @route   GET /api/tests/list?skill=<skill>
+// @access  Public
+export const getTestsList = catchAsync(async (req: Request, res: Response) => {
+  const filters: { bookId?: string; skill?: string } = {};
+  if (req.query.bookId) filters.bookId = req.query.bookId as string;
+  if (req.query.skill) filters.skill = req.query.skill as string;
+  const tests = await testServices.getAllLightweight(filters);
+  res.status(200).json(tests);
+});
+
 // @desc    Get a single published test — answerJson excluded
 // @route   GET /api/tests/:id
 // @access  Public
@@ -218,4 +239,105 @@ export const getPartResultHandler = catchAsync(async (req: CustomRequest, res: R
     return;
   }
   res.status(200).json(result);
+});
+
+// ─── Full Test Endpoints ─────────────────────────────────────────────────────
+
+// @desc    Get all sections of a published test (full test mode)
+// @route   GET /api/tests/:id/full
+// @access  Public
+export const getFullTestHandler = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  if (!id) {
+    res.status(400);
+    throw new Error("Missing test id");
+  }
+  const result = await testServices.getFullTest(id);
+  if (!result) {
+    res.status(404);
+    throw new Error("Test not found");
+  }
+  res.status(200).json(result);
+});
+
+// @desc    Submit all parts of a full test and get combined results
+// @route   POST /api/tests/:id/full/submit
+// @access  Authenticated
+export const submitFullTestHandler = catchAsync(async (req: CustomRequest, res: Response) => {
+  if (!req.user?.id) {
+    res.status(401);
+    throw new Error("Please login first");
+  }
+  const id = req.params.id;
+  if (!id) {
+    res.status(400);
+    throw new Error("Missing test id");
+  }
+  const { allAnswers, timeTaken, mode } = req.body;
+  if (!allAnswers || typeof allAnswers !== "object") {
+    res.status(400);
+    throw new Error("Missing or invalid 'allAnswers' object in request body");
+  }
+
+  // Determine skill from test (lightweight query)
+  const testDoc = await Test.findOne(
+    { _id: new mongoose.Types.ObjectId(id) },
+    { skill: 1 }
+  ).lean();
+  if (!testDoc) {
+    res.status(404);
+    throw new Error("Test not found");
+  }
+
+  const result = await testServices.submitFullTest(
+    req.user.id,
+    id,
+    testDoc.skill,
+    allAnswers,
+    timeTaken,
+    mode
+  );
+  if (!result) {
+    res.status(404);
+    throw new Error("Failed to submit full test");
+  }
+  res.status(200).json(result);
+});
+
+// @desc    Get saved full test result
+// @route   GET /api/tests/:id/full/result
+// @access  Authenticated
+export const getFullTestResultHandler = catchAsync(async (req: CustomRequest, res: Response) => {
+  if (!req.user?.id) {
+    res.status(401);
+    throw new Error("Please login first");
+  }
+  const id = req.params.id;
+  if (!id) {
+    res.status(400);
+    throw new Error("Missing test id");
+  }
+  const skill = req.query.skill as string;
+  if (!skill || !["listening", "reading"].includes(skill)) {
+    res.status(400);
+    throw new Error("Missing or invalid 'skill' query parameter");
+  }
+  const result = await testServices.getFullTestResult(req.user.id, id, skill);
+  if (!result) {
+    res.status(200).json(null);
+    return;
+  }
+  res.status(200).json(result);
+});
+
+// @desc    Get all full test results for the current user
+// @route   GET /api/tests/full-results
+// @access  Authenticated
+export const getUserFullTestResultsHandler = catchAsync(async (req: CustomRequest, res: Response) => {
+  if (!req.user?.id) {
+    res.status(401);
+    throw new Error("Please login first");
+  }
+  const results = await testServices.getUserFullTestResults(req.user.id);
+  res.status(200).json(results);
 });

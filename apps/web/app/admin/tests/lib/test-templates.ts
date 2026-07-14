@@ -133,7 +133,7 @@ export function generateTestTemplate(skill: "reading" | "listening" | "writing" 
         },
       ],
     }));
-    answerKeys = { q_1: "True", q_2: "False", q_3: "Not Given", q_6: "answer", q_7: "answer" };
+    answerKeys = { q_1: "TRUE", q_2: "FALSE", q_3: "NOT GIVEN", q_6: "answer", q_7: "answer" };
   }
 
   return {

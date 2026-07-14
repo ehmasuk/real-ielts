@@ -16,6 +16,7 @@ import {
   Bug,
   Users,
   SpellCheck,
+  Type,
 } from "lucide-react"
 import { Logo } from "@/components/Logo"
 import { cn } from "@workspace/ui/lib/utils"
@@ -59,7 +60,8 @@ const navGroups: NavGroup[] = [
   {
     title: "Drills",
     items: [
-      { href: "/admin/drills/spelling", label: "Spelling Challenge", icon: SpellCheck },
+      { href: "/admin/drills/spelling_challenge", label: "Spelling Challenge", icon: SpellCheck },
+      { href: "/admin/drills/sentence_dictation", label: "Sentence Dictation", icon: SpellCheck },
     ],
   },
     {
@@ -77,6 +79,8 @@ const navGroups: NavGroup[] = [
       { href: "/admin/schemas/reading", label: "Reading Schema", icon: BookOpen },
       { href: "/admin/schemas/writing", label: "Writing Schema", icon: PenLine },
       { href: "/admin/schemas/speaking", label: "Speaking Schema", icon: MessageSquare },
+      { href: "/admin/schemas/spelling", label: "Spelling Schema", icon: SpellCheck },
+      { href: "/admin/schemas/sentence-dictation", label: "Sentence Dictation Schema", icon: Type },
     ],
   },
 ]
@@ -138,7 +142,7 @@ export const AdminSidebar = React.memo(function AdminSidebar({ collapsed, onTogg
       </div>
 
       {/* Navigation */}
-      <ScrollArea className="flex-1 px-3 py-4">
+      <ScrollArea className="flex-1 min-h-0 px-3 py-4">
         <nav className="flex flex-col gap-1">
           {navGroups.map((group, groupIdx) => (
             <div key={group.title || `group-${groupIdx}`}>

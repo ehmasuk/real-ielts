@@ -5,7 +5,7 @@ import { useSyncExternalStore } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTheme } from "@/providers/theme-provider"
-import { BookOpen, Moon, Sun, Menu, X, Headphones, PenTool, Mic, LogOut, User, ChevronDown, Mail, Layers, Gamepad2 } from "lucide-react"
+import { BookOpen, Moon, Sun, Menu, X, Headphones, LogOut, User, ChevronDown, Mail, Gamepad2, BrainIcon } from "lucide-react"
 import { Logo } from "@/components/Logo"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -35,8 +35,6 @@ interface NavLink {
 const navLinks: NavLink[] = [
   { href: "/listening", label: "Listening", icon: Headphones },
   { href: "/reading", label: "Reading", icon: BookOpen },
-  { href: "/writing", label: "Writing", icon: PenTool, disabled: true },
-  { href: "/speaking", label: "Speaking", icon: Mic, disabled: true },
 ]
 
 // SSR-safe client detection — avoids set-state-in-effect lint warning
@@ -80,7 +78,7 @@ export const Header = React.memo(function Header() {
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <Layers className={`h-4 w-4 ${
+                <BrainIcon className={`h-4 w-4 ${
                   navLinks.some((l) => !l.disabled && pathname.startsWith(l.href))
                     ? "text-primary"
                     : "text-muted-foreground/75"

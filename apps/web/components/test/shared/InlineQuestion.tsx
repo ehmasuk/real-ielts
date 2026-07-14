@@ -74,7 +74,7 @@ export const InlineQuestion = React.memo(function InlineQuestion({
   }
 
   return (
-    <span>
+    <span className="block">
       {parts.map((part: string, pi: number, arr: string[]) => (
         <React.Fragment key={pi}>
           <span>{formatString(part)}</span>

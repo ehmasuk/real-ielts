@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { Book } from "./models/book.model.js";
 import { Test } from "./models/test.model.js";
 import { User } from "./models/user.model.js";
+import { DrillSchemaModel } from "./models/drill-schema.model.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const MONGODB_URI = process.env["MONGODB_URI"];
@@ -36,6 +37,66 @@ async function seed() {
     }
     const books = await Book.find({}).sort({ number: 1 });
     console.log(`  ${books.length} books ready.`);
+    // ---- Drill Schemas ----
+    const spellingSchema = {
+        id: "spelling_challenge",
+        title: "Spelling Challenge",
+        description: "Listen to each word and type the correct spelling.",
+        version: 1,
+        category: "Listening",
+        skills: ["Listening", "Spelling"],
+        audio: {
+            provider: "browser_tts",
+            language: "en-GB",
+            rate: 0.9,
+            pitch: 1,
+            volume: 1,
+        },
+        levels: [
+            { id: 1, title: "Everyday Words", description: "Simple everyday English words.", difficulty: "easy", settings: { questions: 5, replayLimit: -1, passingScore: 80 }, questions: [{ id: 1, type: "spell_word", word: "hotel" }, { id: 2, type: "spell_word", word: "garden" }, { id: 3, type: "spell_word", word: "doctor" }, { id: 4, type: "spell_word", word: "student" }, { id: 5, type: "spell_word", word: "library" }] },
+            { id: 2, title: "Travel", description: "Common travel vocabulary.", difficulty: "easy", settings: { questions: 5, replayLimit: 3, passingScore: 80 }, questions: [{ id: 1, type: "spell_word", word: "airport" }, { id: 2, type: "spell_word", word: "passport" }, { id: 3, type: "spell_word", word: "journey" }, { id: 4, type: "spell_word", word: "luggage" }, { id: 5, type: "spell_word", word: "boarding" }] },
+            { id: 3, title: "Education", description: "School and university vocabulary.", difficulty: "easy", settings: { questions: 5, replayLimit: 3, passingScore: 80 }, questions: [{ id: 1, type: "spell_word", word: "university" }, { id: 2, type: "spell_word", word: "lecture" }, { id: 3, type: "spell_word", word: "assignment" }, { id: 4, type: "spell_word", word: "research" }, { id: 5, type: "spell_word", word: "certificate" }] },
+            { id: 4, title: "Work", description: "Vocabulary related to jobs and careers.", difficulty: "medium", settings: { questions: 5, replayLimit: 2, passingScore: 80 }, questions: [{ id: 1, type: "spell_word", word: "employee" }, { id: 2, type: "spell_word", word: "manager" }, { id: 3, type: "spell_word", word: "interview" }, { id: 4, type: "spell_word", word: "promotion" }, { id: 5, type: "spell_word", word: "experience" }] },
+            { id: 5, title: "Health", description: "Health and medical vocabulary.", difficulty: "medium", settings: { questions: 5, replayLimit: 2, passingScore: 80 }, questions: [{ id: 1, type: "spell_word", word: "medicine" }, { id: 2, type: "spell_word", word: "hospital" }, { id: 3, type: "spell_word", word: "exercise" }, { id: 4, type: "spell_word", word: "nutrition" }, { id: 5, type: "spell_word", word: "appointment" }] },
+            { id: 6, title: "Environment", description: "Environmental vocabulary commonly seen in IELTS.", difficulty: "medium", settings: { questions: 5, replayLimit: 2, passingScore: 80 }, questions: [{ id: 1, type: "spell_word", word: "environment" }, { id: 2, type: "spell_word", word: "pollution" }, { id: 3, type: "spell_word", word: "recycling" }, { id: 4, type: "spell_word", word: "wildlife" }, { id: 5, type: "spell_word", word: "conservation" }] },
+            { id: 7, title: "Technology", description: "Technology and communication vocabulary.", difficulty: "medium", settings: { questions: 5, replayLimit: 2, passingScore: 80 }, questions: [{ id: 1, type: "spell_word", word: "computer" }, { id: 2, type: "spell_word", word: "software" }, { id: 3, type: "spell_word", word: "internet" }, { id: 4, type: "spell_word", word: "database" }, { id: 5, type: "spell_word", word: "application" }] },
+            { id: 8, title: "Academic Vocabulary", description: "Frequently used academic words.", difficulty: "hard", settings: { questions: 5, replayLimit: 1, passingScore: 80 }, questions: [{ id: 1, type: "spell_word", word: "analysis" }, { id: 2, type: "spell_word", word: "significant" }, { id: 3, type: "spell_word", word: "methodology" }, { id: 4, type: "spell_word", word: "assessment" }, { id: 5, type: "spell_word", word: "evaluation" }] },
+            { id: 9, title: "Commonly Misspelled Words", description: "Words that IELTS learners often misspell.", difficulty: "hard", settings: { questions: 5, replayLimit: 1, passingScore: 80 }, questions: [{ id: 1, type: "spell_word", word: "accommodation" }, { id: 2, type: "spell_word", word: "necessary" }, { id: 3, type: "spell_word", word: "government" }, { id: 4, type: "spell_word", word: "recommend" }, { id: 5, type: "spell_word", word: "restaurant" }] },
+            { id: 10, title: "Master Challenge", description: "A mixed review of everything you've learned.", difficulty: "hard", settings: { questions: 5, replayLimit: 1, passingScore: 80 }, questions: [{ id: 1, type: "spell_word", word: "entrepreneur" }, { id: 2, type: "spell_word", word: "questionnaire" }, { id: 3, type: "spell_word", word: "temperature" }, { id: 4, type: "spell_word", word: "opportunity" }, { id: 5, type: "spell_word", word: "responsibility" }] },
+        ],
+    };
+    console.log("Seeding drill schemas...");
+    await DrillSchemaModel.findOneAndUpdate({ drillId: "spelling_challenge" }, { drillId: "spelling_challenge", schema: spellingSchema, version: 1 }, { upsert: true });
+    console.log("  Spelling Challenge schema seeded.");
+    const sentenceDictationSchema = {
+        id: "sentence_dictation",
+        title: "Sentence Dictation",
+        description: "Listen to a sentence and type exactly what you hear.",
+        version: 1,
+        category: "Listening",
+        skills: ["Listening", "Dictation"],
+        audio: {
+            provider: "browser_tts",
+            language: "en-GB",
+            rate: 0.85,
+            pitch: 1,
+            volume: 1,
+        },
+        levels: [
+            { id: 1, title: "Simple Sentences", description: "Short, clear sentences with basic vocabulary.", difficulty: "easy", settings: { questions: 5, replayLimit: -1, passingScore: 80 }, questions: [{ id: 1, type: "dictate_sentence", sentence: "The cat sat on the mat." }, { id: 2, type: "dictate_sentence", sentence: "I like to read books." }, { id: 3, type: "dictate_sentence", sentence: "She goes to school every day." }, { id: 4, type: "dictate_sentence", sentence: "The weather is nice today." }, { id: 5, type: "dictate_sentence", sentence: "We have a small garden." }] },
+            { id: 2, title: "Daily Routines", description: "Sentences about everyday activities.", difficulty: "easy", settings: { questions: 5, replayLimit: 3, passingScore: 80 }, questions: [{ id: 1, type: "dictate_sentence", sentence: "I wake up at seven o'clock every morning." }, { id: 2, type: "dictate_sentence", sentence: "She drinks a cup of coffee before work." }, { id: 3, type: "dictate_sentence", sentence: "He takes the bus to the office." }, { id: 4, type: "dictate_sentence", sentence: "We usually have dinner at six." }, { id: 5, type: "dictate_sentence", sentence: "They watch television in the evening." }] },
+            { id: 3, title: "Descriptions", description: "Sentences describing people, places, and things.", difficulty: "easy", settings: { questions: 5, replayLimit: 3, passingScore: 80 }, questions: [{ id: 1, type: "dictate_sentence", sentence: "The tall building has many windows." }, { id: 2, type: "dictate_sentence", sentence: "My brother is taller than my sister." }, { id: 3, type: "dictate_sentence", sentence: "The red car is parked outside." }, { id: 4, type: "dictate_sentence", sentence: "She wore a beautiful blue dress." }, { id: 5, type: "dictate_sentence", sentence: "The restaurant serves excellent food." }] },
+            { id: 4, title: "Travel and Places", description: "Sentences about traveling and different locations.", difficulty: "medium", settings: { questions: 5, replayLimit: 2, passingScore: 80 }, questions: [{ id: 1, type: "dictate_sentence", sentence: "The airport is about thirty minutes from the city centre." }, { id: 2, type: "dictate_sentence", sentence: "We need to book our hotel reservation before the trip." }, { id: 3, type: "dictate_sentence", sentence: "She packed her suitcase with all the essentials." }, { id: 4, type: "dictate_sentence", sentence: "The train departs from platform five at nine." }, { id: 5, type: "dictate_sentence", sentence: "They visited several museums during their holiday." }] },
+            { id: 5, title: "Work and Career", description: "Sentences related to professional life.", difficulty: "medium", settings: { questions: 5, replayLimit: 2, passingScore: 80 }, questions: [{ id: 1, type: "dictate_sentence", sentence: "The manager held a meeting with all the employees." }, { id: 2, type: "dictate_sentence", sentence: "She submitted her application before the deadline." }, { id: 3, type: "dictate_sentence", sentence: "The company is planning to expand into new markets." }, { id: 4, type: "dictate_sentence", sentence: "He received a promotion after five years of service." }, { id: 5, type: "dictate_sentence", sentence: "The interview went very well and she got the job." }] },
+            { id: 6, title: "Health and Lifestyle", description: "Sentences about health, fitness, and wellbeing.", difficulty: "medium", settings: { questions: 5, replayLimit: 2, passingScore: 80 }, questions: [{ id: 1, type: "dictate_sentence", sentence: "Regular exercise is important for maintaining good health." }, { id: 2, type: "dictate_sentence", sentence: "The doctor recommended eating more fruits and vegetables." }, { id: 3, type: "dictate_sentence", sentence: "She goes to the gym three times a week." }, { id: 4, type: "dictate_sentence", sentence: "Getting enough sleep is essential for concentration." }, { id: 5, type: "dictate_sentence", sentence: "He decided to quit smoking for the sake of his health." }] },
+            { id: 7, title: "Environment", description: "Sentences about nature and environmental issues.", difficulty: "medium", settings: { questions: 5, replayLimit: 2, passingScore: 80 }, questions: [{ id: 1, type: "dictate_sentence", sentence: "Climate change is one of the biggest challenges we face today." }, { id: 2, type: "dictate_sentence", sentence: "Recycling plastic helps reduce pollution in our oceans." }, { id: 3, type: "dictate_sentence", sentence: "The government introduced new regulations to protect wildlife." }, { id: 4, type: "dictate_sentence", sentence: "Solar energy is becoming increasingly popular around the world." }, { id: 5, type: "dictate_sentence", sentence: "Deforestation has a significant impact on biodiversity." }] },
+            { id: 8, title: "Education and Learning", description: "Sentences about education systems and academic life.", difficulty: "hard", settings: { questions: 5, replayLimit: 1, passingScore: 80 }, questions: [{ id: 1, type: "dictate_sentence", sentence: "The university offers a wide range of undergraduate and postgraduate programmes." }, { id: 2, type: "dictate_sentence", sentence: "Students are required to submit their assignments by the end of the semester." }, { id: 3, type: "dictate_sentence", sentence: "Critical thinking is an essential skill for academic success." }, { id: 4, type: "dictate_sentence", sentence: "The research findings were published in a reputable scientific journal." }, { id: 5, type: "dictate_sentence", sentence: "She decided to pursue a career in environmental science after graduating." }] },
+            { id: 9, title: "Complex Structures", description: "Sentences with complex grammar and advanced vocabulary.", difficulty: "hard", settings: { questions: 5, replayLimit: 1, passingScore: 80 }, questions: [{ id: 1, type: "dictate_sentence", sentence: "Although the experiment was conducted several times, the results remained inconclusive." }, { id: 2, type: "dictate_sentence", sentence: "The committee decided to postpone the project until additional funding could be secured." }, { id: 3, type: "dictate_sentence", sentence: "Notwithstanding the challenges they faced, the team managed to complete the assignment on time." }, { id: 4, type: "dictate_sentence", sentence: "The phenomenon has been extensively studied by researchers in numerous countries." }, { id: 5, type: "dictate_sentence", sentence: "It is imperative that the regulations be implemented without further delay." }] },
+            { id: 10, title: "Master Dictation", description: "The ultimate test of your listening and transcription skills.", difficulty: "hard", settings: { questions: 5, replayLimit: 1, passingScore: 80 }, questions: [{ id: 1, type: "dictate_sentence", sentence: "The juxtaposition of traditional and modern architectural styles creates a fascinating visual contrast throughout the city." }, { id: 2, type: "dictate_sentence", sentence: "Despite the numerous obstacles encountered during the investigation, the detectives remained steadfast in their pursuit of the truth." }, { id: 3, type: "dictate_sentence", sentence: "The implementation of comprehensive educational reforms necessitated a substantial reallocation of government resources." }, { id: 4, type: "dictate_sentence", sentence: "Contemporary environmental challenges demand unprecedented levels of international cooperation and collective responsibility." }, { id: 5, type: "dictate_sentence", sentence: "The ramifications of the economic downturn were felt across virtually every sector of the global marketplace." }] },
+        ],
+    };
+    await DrillSchemaModel.findOneAndUpdate({ drillId: "sentence_dictation" }, { drillId: "sentence_dictation", schema: sentenceDictationSchema, version: 1 }, { upsert: true });
+    console.log("  Sentence Dictation schema seeded.");
     // ---- Ensure admin user ----
     let adminUser = await User.findOne({ email: "admin@example.com" });
     if (!adminUser) {
@@ -389,7 +450,7 @@ function makeListeningAnswers(testNumber) {
         q_4: "city centre",
         q_5: "120",
         q_6: "4",
-        q_7: "Yes",
+        q_7: "YES",
         q_8: "parking space",
         q_9: "sarah.j@email.com",
         q_10: "evening",

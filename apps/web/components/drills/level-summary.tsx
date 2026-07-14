@@ -1,4 +1,3 @@
-import React from 'react'
 import { Target, TrendingUp, CheckCircle2, Star } from 'lucide-react'
 
 interface LevelSummaryProps {
@@ -55,7 +54,7 @@ export function LevelSummary({
   )
 }
 
-function StatCard({ icon: Icon, label, value, iconColor = "text-primary" }: any) {
+function StatCard({ icon: Icon, label, value, iconColor = "text-primary" }: { icon: React.ElementType; label: string; value: string; iconColor?: string }) {
   return (
     <div className="flex items-center gap-4 p-4 rounded-2xl bg-secondary/30 border border-border/40 hover:bg-secondary/50 transition-colors">
       <div className={`p-3 rounded-xl bg-background shadow-xs border border-border/50 ${iconColor}`}>

@@ -11,7 +11,7 @@ import { useTestGuard } from "@/components/test/shared/useTestGuard"
 import { LeaveTestModal } from "@/components/test/shared/LeaveTestModal"
 import { ReportBugModal } from "@/components/ReportBugModal"
 import { ListeningLayout } from "@/components/test/layouts/ListeningLayout"
-import { Settings, Bug } from "lucide-react"
+import { Bug } from "lucide-react"
 
 export default function ListeningPartPage() {
   const { showModal, confirmLeave, cancelLeave, bypassOnce } = useTestGuard()
@@ -57,6 +57,7 @@ export default function ListeningPartPage() {
       handleSubmit={handleSubmit}
       submitting={submitting}
       isAuthenticated={isAuthenticated}
+      hideSubmit
     />
   ), [sectionTitle, questionGroups, answers, handleAnswerChange, handleSubmit, submitting, isAuthenticated])
 
@@ -104,12 +105,15 @@ export default function ListeningPartPage() {
         </div>
 
         <div className="flex items-center gap-1">
-          <button className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-white/70 transition-colors hover:bg-white/10 hover:text-white">
-            <Settings className="h-3.5 w-3.5" />
-            <span className="hidden text-[11px] font-medium sm:inline">
-              Settings
-            </span>
-          </button>
+          {isAuthenticated && (
+            <button
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-1.5 text-[11px] font-bold text-white transition-colors hover:bg-indigo-500 disabled:opacity-50"
+            >
+              {submitting ? "Submitting..." : "Submit"}
+            </button>
+          )}
           <button onClick={() => setReportOpen(true)} className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-white/70 transition-colors hover:bg-white/10 hover:text-white">
             <Bug className="h-3.5 w-3.5" />
             <span className="hidden text-[11px] font-medium sm:inline">

@@ -14,7 +14,7 @@ const isAuthenticated = async (req, _res, next) => {
         if (!validUser) {
             throw newError({ message: "Invalid or expired token", statusCode: 401 });
         }
-        req.user = { id: validUser.id };
+        req.user = { id: validUser.id, role: validUser.role };
         next();
     }
     catch (error) {

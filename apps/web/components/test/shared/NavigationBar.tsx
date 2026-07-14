@@ -151,6 +151,7 @@ interface NavigationBarProps {
   onSubmit: () => void
   submitting: boolean
   fixed?: boolean
+  hideSubmit?: boolean
 }
 
 export const NavigationBar = React.memo(function NavigationBar({
@@ -159,6 +160,7 @@ export const NavigationBar = React.memo(function NavigationBar({
   onSubmit,
   submitting,
   fixed = true,
+  hideSubmit = false,
 }: NavigationBarProps) {
   const navRef = React.useRef<HTMLDivElement>(null)
 
@@ -190,16 +192,18 @@ export const NavigationBar = React.memo(function NavigationBar({
           ))}
         </div>
 
-        <button
-          onClick={onSubmit}
-          disabled={submitting}
-          className="flex shrink-0 items-center gap-2 rounded bg-indigo-600 px-4 py-1.5 text-xs font-bold text-white transition-colors hover:bg-indigo-500 disabled:opacity-50 sm:px-6 sm:text-sm"
-        >
-          {submitting ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : null}
-          {submitting ? "Submitting..." : "Submit Test"}
-        </button>
+        {!hideSubmit && (
+          <button
+            onClick={onSubmit}
+            disabled={submitting}
+            className="flex shrink-0 items-center gap-2 rounded bg-indigo-600 px-4 py-1.5 text-xs font-bold text-white transition-colors hover:bg-indigo-500 disabled:opacity-50 sm:px-6 sm:text-sm"
+          >
+            {submitting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : null}
+            {submitting ? "Submitting..." : "Submit Test"}
+          </button>
+        )}
       </div>
     </div>
   )

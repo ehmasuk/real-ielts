@@ -15,6 +15,7 @@ export const ListeningLayout = React.memo(function ListeningLayout({
   handleSubmit,
   submitting,
   isAuthenticated,
+  hideSubmit = false,
 }: {
   sectionTitle: string
   questionGroups: any[]
@@ -23,6 +24,7 @@ export const ListeningLayout = React.memo(function ListeningLayout({
   handleSubmit: () => void
   submitting: boolean
   isAuthenticated: boolean
+  hideSubmit?: boolean
 }) {
   const [activeQuestionId, setActiveQuestionId] = React.useState<string | null>(null)
 
@@ -108,6 +110,7 @@ export const ListeningLayout = React.memo(function ListeningLayout({
           onQuestionClick={scrollToQuestion}
           onSubmit={handleSubmit}
           submitting={submitting}
+          hideSubmit={hideSubmit}
         />
       )}
     </div>

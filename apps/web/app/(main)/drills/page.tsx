@@ -2,22 +2,30 @@
 
 import * as React from "react"
 import { Gamepad2 } from "lucide-react"
-import { DrillCard } from "@/components/drills/drill-card"
-import { drillManifests } from "@/lib/drills/schemas"
+import { useQuery } from "@tanstack/react-query"
+import { DrillCardWithProgress } from "@/components/drills/drill-card-with-progress"
+import { drillManifests, fetchAllDrillManifests, type DrillManifest } from "@/lib/drills/schemas"
 
 export default function DrillsPage() {
   const [activeSkill, setActiveSkill] = React.useState<string>("All")
 
+  const { data: manifests = drillManifests, isLoading, error } = useQuery<DrillManifest[]>({
+    queryKey: ["drill-manifests"],
+    queryFn: fetchAllDrillManifests,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  })
+
   const allSkills = React.useMemo(() => {
     const set = new Set<string>()
-    drillManifests.forEach((d) => d.skills.forEach((s) => set.add(s)))
+    manifests.forEach((d) => d.skills.forEach((s) => set.add(s)))
     return Array.from(set).sort()
-  }, [])
+  }, [manifests])
 
   const filteredDrills = React.useMemo(() => {
-    if (activeSkill === "All") return drillManifests
-    return drillManifests.filter((d) => d.skills.includes(activeSkill))
-  }, [activeSkill])
+    if (activeSkill === "All") return manifests
+    return manifests.filter((d) => d.skills.includes(activeSkill))
+  }, [activeSkill, manifests])
 
   return (
     <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-12 pb-24">
@@ -60,16 +68,14 @@ export default function DrillsPage() {
         {filteredDrills.map((drill) => {
           const levelCount = (drill.schema.levels as unknown[])?.length ?? 0
           return (
-            <DrillCard
+            <DrillCardWithProgress
               key={drill.id}
+              drillId={drill.id}
               title={drill.title}
               description={drill.description}
               icon={drill.icon}
               category={drill.category}
               levelCount={levelCount}
-              progress={0}
-              currentLevel={0}
-              accuracy={0}
               features={[
                 { icon: "🎮", text: `${levelCount} Progressive Levels` },
                 { icon: "🏆", text: "Earn Stars" },
@@ -95,6 +101,13 @@ export default function DrillsPage() {
           </div>
         )}
       </div>
+
+      {/* Error state */}
+      {error && (
+        <div className="mt-8 text-center text-sm text-muted-foreground bg-destructive/5 border border-destructive/20 rounded-xl p-4">
+          Failed to load drills. Showing cached data.
+        </div>
+      )}
     </div>
   )
 }

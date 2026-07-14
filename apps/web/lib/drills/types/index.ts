@@ -7,13 +7,11 @@ export interface DrillSchema {
   category: string
   theme: string
   totalLevels: number
-  configuration: DrillConfiguration
-}
-
-export interface DrillConfiguration {
-  timeLimit?: number
-  unlockRequirement?: string
-  showExplanation?: boolean
+  configuration: {
+    timeLimit?: number
+    unlockRequirement?: string
+    showExplanation?: boolean
+  }
 }
 
 export interface LevelSchema {
@@ -25,28 +23,24 @@ export interface LevelSchema {
   description: string
   difficulty: string
   estimatedTime: string
-  configuration: LevelConfiguration
-  rewards: LevelRewards
+  configuration: {
+    replayLimit: number
+    passingScore: number
+    allowSkip: boolean
+    showCorrectAnswer: boolean
+    shuffleQuestions: boolean
+  }
+  rewards: {
+    stars: number
+    xp: number
+  }
   questions: Question[]
-}
-
-export interface LevelConfiguration {
-  replayLimit: number
-  passingScore: number
-  allowSkip: boolean
-  showCorrectAnswer: boolean
-  shuffleQuestions: boolean
-}
-
-export interface LevelRewards {
-  stars: number
-  xp: number
 }
 
 export interface Question {
   id: string
   type: string
-  data: any
+  data: Record<string, unknown>
   explanation?: string
 }
 

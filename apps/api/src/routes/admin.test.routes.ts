@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getAdminTests,
+  getTestCount,
   getAdminTestByIdHandler,
   createTestHandler,
   updateTestHandler,
@@ -18,6 +19,7 @@ const router: express.Router = express.Router();
 router.use(isAuthenticated, requireRole("admin"));
 
 router.get("/", getAdminTests);
+router.get("/count", getTestCount);
 router.get("/:id", getAdminTestByIdHandler);
 router.post("/", validate(createTestSchema), createTestHandler);
 router.put("/:id", validate(updateTestSchema), updateTestHandler);

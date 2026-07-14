@@ -7,6 +7,13 @@ export const getBooks = catchAsync(async (req, res) => {
     const books = await bookServices.getAll();
     res.status(200).json(books);
 });
+// @desc    Get book count
+// @route   GET /api/books/count
+// @access  Public
+export const getBookCount = catchAsync(async (req, res) => {
+    const count = await bookServices.count();
+    res.status(200).json({ count });
+});
 // @desc    Get all books (for admin)
 // @route   GET /api/admin/books
 // @access  Private (Admin)

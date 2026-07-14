@@ -341,7 +341,7 @@ export const questionTypes = [
     { "questionId": "q_2", "number": 2, "question": "The scoring system was originally designed to slow the game down." }
   ]
 }`,
-    answerExample: '"q_1": "False", "q_2": "True"',
+    answerExample: '"q_1": "TRUE", "q_2": "FALSE", "q_3": "NOT GIVEN"',
   },
   {
     type: "matching_headings",

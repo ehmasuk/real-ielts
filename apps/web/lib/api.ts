@@ -12,8 +12,18 @@ export const fetchPublicBooks = async () => {
   return res.data
 }
 
+export const fetchBookCount = async () => {
+  const res = await api.get("/books/count")
+  return res.data
+}
+
 export const fetchPublicTests = async (params?: { bookId?: string; skill?: string }) => {
   const res = await api.get("/tests", { params })
+  return res.data
+}
+
+export const fetchPublicTestsList = async (params?: { bookId?: string; skill?: string }) => {
+  const res = await api.get("/tests/list", { params })
   return res.data
 }
 
@@ -42,10 +52,42 @@ export const fetchPartResult = async (testId: string, partNum: number) => {
   return res.data
 }
 
+// ─── Full Test ───────────────────────────────────────────────────────────────
+
+export const fetchFullTest = async (testId: string) => {
+  const res = await api.get(`/tests/${testId}/full`)
+  return res.data
+}
+
+export const submitFullTest = async (
+  testId: string,
+  allAnswers: Record<string, Record<string, any>>,
+  timeTaken?: number,
+  mode?: "practice" | "mock"
+) => {
+  const res = await api.post(`/tests/${testId}/full/submit`, { allAnswers, timeTaken, mode })
+  return res.data
+}
+
+export const fetchFullTestResult = async (testId: string, skill: string) => {
+  const res = await api.get(`/tests/${testId}/full/result`, { params: { skill } })
+  return res.data
+}
+
+export const fetchUserFullTestResults = async () => {
+  const res = await api.get("/tests/full-results")
+  return res.data
+}
+
 // ─── Books ────────────────────────────────────────────────────────────────────
 
 export const fetchBooks = async () => {
   const res = await api.get("/admin/books")
+  return res.data
+}
+
+export const fetchTestCount = async () => {
+  const res = await api.get("/admin/tests/count")
   return res.data
 }
 
@@ -146,5 +188,22 @@ export const fetchDrillProgress = async (drillId: string) => {
 
 export const updateDrillProgress = async (drillId: string, data: { levelNumber: number; stars: number; accuracy: number }) => {
   const res = await api.put(`/drills/${drillId}`, data)
+  return res.data
+}
+
+// ─── Drill Schema ─────────────────────────────────────────────────────────────
+
+export const fetchAllDrillSchemas = async () => {
+  const res = await api.get("/drill-schema")
+  return res.data
+}
+
+export const fetchDrillSchema = async (drillId: string) => {
+  const res = await api.get(`/drill-schema/${drillId}`)
+  return res.data
+}
+
+export const updateDrillSchema = async (drillId: string, schema: Record<string, unknown>) => {
+  const res = await api.put(`/admin/drill-schema/${drillId}`, { schema })
   return res.data
 }

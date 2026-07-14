@@ -1,4 +1,4 @@
-const SPELLING_QUESTION_TYPES = ["spell_word", "spell_number", "spell_name", "spell_place"] as const
+const SPELLING_QUESTION_TYPES = ["spell_word", "spell_number", "spell_name", "spell_place", "dictate_sentence"] as const
 const AUDIO_PROVIDERS = ["browser_tts", "audio_file"] as const
 
 export interface DrillValidationIssue {
@@ -114,8 +114,14 @@ export function validateDrillSchema(jsonString: string): DrillValidationIssue[] 
             issues.push({ type: "error", message: `Question #${qIdx + 1} in level '${level.id}': 'type' must be one of: ${SPELLING_QUESTION_TYPES.join(", ")}`, path: `${qPath}.type` })
           }
 
-          if (!q.word || typeof q.word !== "string") {
-            issues.push({ type: "error", message: `Question #${qIdx + 1} in level '${level.id}': missing 'word' (string)`, path: `${qPath}.word` })
+          if (q.type === "dictate_sentence") {
+            if (!q.sentence || typeof q.sentence !== "string") {
+              issues.push({ type: "error", message: `Question #${qIdx + 1} in level '${level.id}': missing 'sentence' (string) for dictate_sentence type`, path: `${qPath}.sentence` })
+            }
+          } else {
+            if (!q.word || typeof q.word !== "string") {
+              issues.push({ type: "error", message: `Question #${qIdx + 1} in level '${level.id}': missing 'word' (string)`, path: `${qPath}.word` })
+            }
           }
         })
       }

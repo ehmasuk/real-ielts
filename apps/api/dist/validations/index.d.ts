@@ -63,6 +63,14 @@ export declare const submitAnswersSchema: z.ZodObject<{
     answers: z.ZodRecord<z.ZodString, z.ZodAny>;
     timeTaken: z.ZodOptional<z.ZodNumber>;
 }, z.core.$strip>;
+export declare const submitFullTestSchema: z.ZodObject<{
+    allAnswers: z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodAny>>;
+    timeTaken: z.ZodOptional<z.ZodNumber>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        practice: "practice";
+        mock: "mock";
+    }>>;
+}, z.core.$strip>;
 export declare const createBugReportSchema: z.ZodObject<{
     description: z.ZodString;
 }, z.core.$strip>;
@@ -90,5 +98,43 @@ export declare const updateDrillProgressSchema: z.ZodObject<{
     levelNumber: z.ZodNumber;
     stars: z.ZodNumber;
     accuracy: z.ZodNumber;
+}, z.core.$strip>;
+export declare const updateDrillSchemaBody: z.ZodObject<{
+    schema: z.ZodObject<{
+        id: z.ZodString;
+        title: z.ZodString;
+        description: z.ZodOptional<z.ZodString>;
+        version: z.ZodNumber;
+        audio: z.ZodOptional<z.ZodObject<{
+            provider: z.ZodString;
+            language: z.ZodOptional<z.ZodString>;
+            rate: z.ZodOptional<z.ZodNumber>;
+            pitch: z.ZodOptional<z.ZodNumber>;
+            volume: z.ZodOptional<z.ZodNumber>;
+        }, z.core.$strip>>;
+        levels: z.ZodArray<z.ZodObject<{
+            id: z.ZodNumber;
+            title: z.ZodString;
+            description: z.ZodOptional<z.ZodString>;
+            difficulty: z.ZodEnum<{
+                easy: "easy";
+                medium: "medium";
+                hard: "hard";
+            }>;
+            settings: z.ZodObject<{
+                questions: z.ZodNumber;
+                replayLimit: z.ZodNumber;
+                passingScore: z.ZodNumber;
+            }, z.core.$strip>;
+            questions: z.ZodArray<z.ZodObject<{
+                id: z.ZodNumber;
+                type: z.ZodString;
+                word: z.ZodOptional<z.ZodString>;
+                sentence: z.ZodOptional<z.ZodString>;
+                hint: z.ZodOptional<z.ZodString>;
+                explanation: z.ZodOptional<z.ZodString>;
+            }, z.core.$strip>>;
+        }, z.core.$strip>>;
+    }, z.core.$strip>;
 }, z.core.$strip>;
 //# sourceMappingURL=index.d.ts.map

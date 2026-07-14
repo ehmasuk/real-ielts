@@ -16,6 +16,10 @@ const bookServices = {
 
   getAllAdmin: (): Promise<IBook[]> => Book.find().sort({ number: -1 }),
 
+  count: (): Promise<number> => Book.countDocuments({ status: "published" }),
+
+  countAll: (): Promise<number> => Book.countDocuments(),
+
   getById: (id: string): Promise<IBook | null> => Book.findById(id),
 
   create: ({

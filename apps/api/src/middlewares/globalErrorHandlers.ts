@@ -9,8 +9,9 @@ const notFound = (_req: Request, _res: Response, next: NextFunction): void => {
 };
 
 const catchGlobalErrors: ErrorRequestHandler = (err: ErrorWithStatus, _req: Request, res: Response, _next: NextFunction): Response => {
-  // global error consoler, it must be removed in prod server
-  console.log(err);
+  if (process.env.NODE_ENV === "development") {
+    console.error(err);
+  }
 
   if (err instanceof ZodError) {
     const message = err.issues.map((e) => `${e.path.join(".")} : ${e.message}`).join(", ");

@@ -3,6 +3,8 @@ export const spellingChallengeDefaultSchema = `{
   "title": "Spelling Challenge",
   "description": "Listen to each word and type the correct spelling.",
   "version": 1,
+  "category": "Listening",
+  "skills": ["Listening", "Spelling"],
 
   "audio": {
     "provider": "browser_tts",

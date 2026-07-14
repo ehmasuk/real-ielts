@@ -48,7 +48,7 @@ export const TableCompletion = React.memo(function TableCompletion({
                   >
                     {cell?.map((item: any, ii: number) => {
                       if (item.type === "text")
-                        return <span key={ii}>{formatString(item.text)}</span>
+                        return <p key={ii}>{formatString(item.text)}</p>
                       if (item.type === "question") {
                         return (
                           <React.Fragment key={ii}>

@@ -18,6 +18,7 @@ export const ReadingLayout = React.memo(function ReadingLayout({
   handleSubmit,
   submitting,
   isAuthenticated,
+  hideSubmit = false,
 }: {
   sectionTitle: string
   instructions?: string
@@ -28,6 +29,7 @@ export const ReadingLayout = React.memo(function ReadingLayout({
   handleSubmit: () => void
   submitting: boolean
   isAuthenticated: boolean
+  hideSubmit?: boolean
 }) {
   const [activeQuestionId, setActiveQuestionId] = React.useState<string | null>(null)
 
@@ -169,6 +171,7 @@ export const ReadingLayout = React.memo(function ReadingLayout({
           onQuestionClick={scrollToQuestion}
           onSubmit={handleSubmit}
           submitting={submitting}
+          hideSubmit={hideSubmit}
         />
       )}
     </div>

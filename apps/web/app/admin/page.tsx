@@ -3,17 +3,17 @@
 import { BookOpen, FileText, Loader2 } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { StatCard } from "./components/stat-card"
-import { fetchBooks, fetchTests } from "@/lib/api"
+import { fetchBookCount, fetchTestCount } from "@/lib/api"
 
 export default function AdminDashboardPage() {
-  const { data: books, isLoading: booksLoading } = useQuery({
-    queryKey: ["books"],
-    queryFn: () => fetchBooks(),
+  const { data: bookData, isLoading: booksLoading } = useQuery({
+    queryKey: ["books-count"],
+    queryFn: fetchBookCount,
   })
 
-  const { data: tests, isLoading: testsLoading } = useQuery({
-    queryKey: ["tests"],
-    queryFn: () => fetchTests(),
+  const { data: testData, isLoading: testsLoading } = useQuery({
+    queryKey: ["tests-count"],
+    queryFn: fetchTestCount,
   })
 
   const isLoading = booksLoading || testsLoading
@@ -21,13 +21,13 @@ export default function AdminDashboardPage() {
   const stats = [
     {
       title: "Total Books",
-      value: Array.isArray(books) ? books.length : 0,
+      value: bookData?.count ?? 0,
       icon: BookOpen,
       accentColor: "indigo",
     },
     {
       title: "Total Tests",
-      value: Array.isArray(tests) ? tests.length : 0,
+      value: testData?.count ?? 0,
       icon: FileText,
       accentColor: "purple",
     },

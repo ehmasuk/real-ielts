@@ -3,9 +3,10 @@
 import * as React from "react"
 import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
-import { Search, BookOpen } from "lucide-react"
+import { Search, BookOpen, Play, Eye } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
-import { fetchPublicBooks, fetchPublicTests, fetchUserResults } from "@/lib/api"
+import { fetchPublicBooks, fetchPublicTestsList, fetchUserResults, fetchUserFullTestResults } from "@/lib/api"
+import { BookCardSkeleton } from "@/components/shared/skeletons"
 
 interface TestItem {
   _id: string
@@ -62,12 +63,17 @@ export default function ReadingPage() {
 
   const { data: tests = [], isLoading: testsLoading } = useQuery({
     queryKey: ["public", "tests", "reading"],
-    queryFn: () => fetchPublicTests({ skill: "reading" }),
+    queryFn: () => fetchPublicTestsList({ skill: "reading" }),
   })
 
   const { data: userResults = [] } = useQuery({
     queryKey: ["user-results"],
     queryFn: fetchUserResults,
+  })
+
+  const { data: fullTestResults = [] } = useQuery({
+    queryKey: ["user-full-test-results"],
+    queryFn: fetchUserFullTestResults,
   })
 
   const resultsMap = React.useMemo(() => {
@@ -77,6 +83,14 @@ export default function ReadingPage() {
     }
     return map
   }, [userResults])
+
+  const fullTestResultsMap = React.useMemo(() => {
+    const map: Record<string, { totalScore: number; totalMax: number }> = {}
+    for (const r of fullTestResults as Array<{ testId: string; skill: string; totalScore: number; totalMax: number }>) {
+      map[r.testId] = { totalScore: r.totalScore, totalMax: r.totalMax }
+    }
+    return map
+  }, [fullTestResults])
 
   const testsByBook = React.useMemo(() => {
     const map: Record<string, TestItem[]> = {}
@@ -132,11 +146,9 @@ export default function ReadingPage() {
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-24">
-          <div className="flex flex-col items-center gap-3">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-purple-500/30 border-t-purple-500" />
-            <p className="text-sm text-muted-foreground">Loading books...</p>
-          </div>
+        <div className="flex flex-col gap-8">
+          <BookCardSkeleton accentColor="bg-purple-500/10" />
+          <BookCardSkeleton accentColor="bg-purple-500/10" />
         </div>
       ) : filteredBooks.length > 0 ? (
         <div className="flex flex-col gap-8">
@@ -160,11 +172,59 @@ export default function ReadingPage() {
                     <p className="text-[10px] text-white/70 font-semibold tracking-widest uppercase">Cambridge series</p>
                   </div>
                 </div>
-                <div className="flex-1 p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="flex-1 p-6">
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 text-center">Full Test Mode (All Parts in Sequence)</h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                    {[1, 2, 3, 4].map((testNum) => {
+                      const test = bookTests.find((t) => t.testNumber === testNum)
+                      const fullResult = test ? fullTestResultsMap[test._id] : null
+                      return (
+                        <div key={testNum} className="p-4 border rounded-xl">
+                          <Link
+                            href={test ? (fullResult ? `/test/${test._id}/reading/full/result` : `/test/${test._id}/reading/full`) : "#"}
+                            className={`flex items-center justify-center gap-2 p-3 rounded-xl border transition-all duration-300 ${
+                              fullResult
+                                ? "border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 hover:border-emerald-500/30 text-foreground/90 shadow-sm"
+                                : test
+                                  ? "bg-purple-600 text-white border-border/20 hover:bg-purple-700"
+                                  : "bg-muted/30 border-transparent opacity-50 cursor-not-allowed"
+                            }`}
+                          >
+                            {fullResult ? (
+                              <>
+                                <Eye className="h-3.5 w-3.5 shrink-0" />
+                                <span className="text-xs font-semibold">View Result {testNum}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Play className="h-3.5 w-3.5 text-white fill-purple-500/20 shrink-0" />
+                                <span className="text-xs font-semibold text-white">Start Full Test {testNum}</span>
+                              </>
+                            )}
+                          </Link>
+                          {fullResult && (
+                            <div className="mt-2 flex items-center justify-center gap-2">
+                              <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-sm">
+                                {fullResult.totalScore}/{fullResult.totalMax}
+                              </span>
+                              <span className="rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] font-bold text-purple-600 dark:text-purple-400 border border-purple-500/20 shadow-sm">
+                                Band {rawScoreToBand(fullResult.totalMax > 0 && fullResult.totalMax !== 40 ? Math.round((fullResult.totalScore / fullResult.totalMax) * 40) : fullResult.totalScore)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                  <hr className="my-8" />
+
+                  <div>
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 text-center">Part-By-Part Practice Mode (Single part focused)</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   {[1, 2, 3, 4].map((testNum) => {
                     const test = bookTests.find((t) => t.testNumber === testNum)
                     return (
-                      <div key={testNum} className="flex flex-col justify-between space-y-3 bg-muted/10 dark:bg-muted/5 p-4 rounded-xl border border-border/20">
+                      <div key={testNum} className="flex flex-col justify-between space-y-3 bg-muted/10 dark:bg-muted/5 p-4 rounded-xl border">
                         <div className="flex items-center justify-between gap-1.5 text-xs font-bold text-foreground">
                           <div className="flex items-center gap-1.5">
                             <BookOpen className="h-3.5 w-3.5 text-purple-500 shrink-0" />
@@ -204,6 +264,7 @@ export default function ReadingPage() {
                                     <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
                                       {result.score}/{result.total}
                                     </span>
+                                    <Eye className="h-3 w-3 text-emerald-500 shrink-0" />
                                   </div>
                                 ) : (
                                   <span className="text-[10px] font-medium text-purple-500/60 transition-colors group-hover:text-purple-600 dark:group-hover:text-purple-400">
@@ -222,6 +283,8 @@ export default function ReadingPage() {
                       </div>
                     )
                   })}
+                  </div>
+                  </div>
                 </div>
               </div>
             )

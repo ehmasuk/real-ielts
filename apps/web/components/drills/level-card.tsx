@@ -1,4 +1,3 @@
-import React from 'react'
 import { CheckCircle2, Lock, Play, Target, RotateCcw, Award } from 'lucide-react'
 
 export type LevelStatus = 'completed' | 'current' | 'unlocked' | 'locked'

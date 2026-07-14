@@ -5,8 +5,9 @@ const notFound = (_req, _res, next) => {
     next(error);
 };
 const catchGlobalErrors = (err, _req, res, _next) => {
-    // global error consoler, it must be removed in prod server
-    console.log(err);
+    if (process.env.NODE_ENV === "development") {
+        console.error(err);
+    }
     if (err instanceof ZodError) {
         const message = err.issues.map((e) => `${e.path.join(".")} : ${e.message}`).join(", ");
         return res.status(400).json({ code: 400, message, requestId: res.getHeader("x-request-id") });

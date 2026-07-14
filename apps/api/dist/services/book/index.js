@@ -11,6 +11,8 @@ const generateSlug = (title) => {
 const bookServices = {
     getAll: () => Book.find({ status: "published" }).sort({ number: -1 }),
     getAllAdmin: () => Book.find().sort({ number: -1 }),
+    count: () => Book.countDocuments({ status: "published" }),
+    countAll: () => Book.countDocuments(),
     getById: (id) => Book.findById(id),
     create: ({ number, title, slug, status = "draft", }) => Book.create({
         number,

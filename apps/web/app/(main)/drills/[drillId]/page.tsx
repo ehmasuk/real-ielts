@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import { LevelSummary } from "@/components/drills/level-summary"
 import { LevelCard, LevelStatus } from "@/components/drills/level-card"
-import { getDrillManifest } from "@/lib/drills/schemas"
+import { useDrillSchema } from "@/hooks/useDrillSchema"
 import { useDrillProgress, FREE_LEVEL_LIMIT } from "@/hooks/useDrillProgress"
 import { useAuth } from "@/lib/use-auth"
+import { Skeleton } from "@workspace/ui/components/skeleton"
 
 interface Level {
   id: number
@@ -26,7 +27,7 @@ interface Level {
 export default function LevelSelectionPage({ params }: { params: Promise<{ drillId: string }> }) {
   const router = useRouter()
   const { drillId } = React.use(params)
-  const manifest = getDrillManifest(drillId)
+  const { manifest, isLoading: schemaLoading } = useDrillSchema(drillId)
   const { isAuthenticated } = useAuth()
 
   const totalLevels = React.useMemo(() => {
@@ -81,6 +82,17 @@ export default function LevelSelectionPage({ params }: { params: Promise<{ drill
     router.push(`/challenge/${drillId}/level/${level.id}`)
   }
 
+  if (schemaLoading) {
+    return (
+      <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-12 pb-24">
+        <div className="mt-20 text-center space-y-4">
+          <Skeleton className="h-10 w-48 mx-auto" />
+          <Skeleton className="h-4 w-64 mx-auto" />
+        </div>
+      </div>
+    )
+  }
+
   if (!manifest) {
     return (
       <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-12 pb-24">
@@ -119,6 +131,16 @@ export default function LevelSelectionPage({ params }: { params: Promise<{ drill
         <p className="text-base text-muted-foreground mt-3 max-w-2xl leading-relaxed font-light">
           {manifest.description}
         </p>
+        <div className="flex flex-wrap gap-2 mt-4">
+          <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-primary/10 text-xs font-semibold text-primary">
+            {manifest.category}
+          </span>
+          {manifest.skills.map((skill) => (
+            <span key={skill} className="inline-flex items-center px-2.5 py-1 rounded-md bg-secondary text-xs font-semibold text-secondary-foreground">
+              {skill}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* User Summary Card */}

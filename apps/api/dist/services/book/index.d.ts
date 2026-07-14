@@ -2,6 +2,8 @@ import { type IBook } from "../../models/book.model.js";
 declare const bookServices: {
     getAll: () => Promise<IBook[]>;
     getAllAdmin: () => Promise<IBook[]>;
+    count: () => Promise<number>;
+    countAll: () => Promise<number>;
     getById: (id: string) => Promise<IBook | null>;
     create: ({ number, title, slug, status, }: {
         number: number;

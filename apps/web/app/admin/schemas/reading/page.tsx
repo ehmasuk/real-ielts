@@ -243,11 +243,11 @@ const readingContentJson = `{
 
 const readingAnswerJson = `{
   "answers": {
-    "q_1": "False",
-    "q_2": "True",
-    "q_3": "Not Given",
-    "q_4": "False",
-    "q_5": "False",
+    "q_1": "FALSE",
+    "q_2": "TRUE",
+    "q_3": "NOT GIVEN",
+    "q_4": "FALSE",
+    "q_5": "FALSE",
     "q_6": "i",
     "q_7": "ii",
     "q_8": "iii",

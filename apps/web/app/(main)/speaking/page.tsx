@@ -5,7 +5,8 @@ import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
 import { Search, Mic, BookOpen } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
-import { fetchPublicBooks, fetchPublicTests } from "@/lib/api"
+import { fetchPublicBooks, fetchPublicTestsList } from "@/lib/api"
+import { BookCardSkeleton } from "@/components/shared/skeletons"
 
 interface TestItem {
   _id: string
@@ -40,7 +41,7 @@ export default function SpeakingPage() {
 
   const { data: tests = [], isLoading: testsLoading } = useQuery({
     queryKey: ["public", "tests", "speaking"],
-    queryFn: () => fetchPublicTests({ skill: "speaking" }),
+    queryFn: () => fetchPublicTestsList({ skill: "speaking" }),
   })
 
   const testsByBook = React.useMemo(() => {
@@ -97,11 +98,9 @@ export default function SpeakingPage() {
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-24">
-          <div className="flex flex-col items-center gap-3">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-500/30 border-t-violet-500" />
-            <p className="text-sm text-muted-foreground">Loading books...</p>
-          </div>
+        <div className="flex flex-col gap-8">
+          <BookCardSkeleton accentColor="bg-violet-500/10" />
+          <BookCardSkeleton accentColor="bg-violet-500/10" />
         </div>
       ) : filteredBooks.length > 0 ? (
         <div className="flex flex-col gap-8">
