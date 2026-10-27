@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-27T01:30:00Z",
+  "title": "Design System: Real IELTS",
+  "extensions": {
+    "colorMeta": {
+      "exam-ink": {
+        "role": "primary",
+        "displayName": "Exam Ink",
+        "canonical": "oklch(0.409 0.157 275.5)",
+        "tonalRamp": ["#312e81", "#3730a3", "#4338ca", "#4f46e5", "#6366f1", "#818cf8", "#a5b4fc", "#c7d2fe", "#e0e7ff", "#eef2ff"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Engraving Ink",
+        "canonical": "oklch(0.21 0.006 285.9)",
+        "tonalRamp": ["#09090b", "#18181b", "#27272a", "#3f3f46", "#52525b", "#71717a", "#a1a1aa", "#d4d4d8", "#e4e4e7", "#fafafa"]
+      },
+      "cool-paper": {
+        "role": "neutral",
+        "displayName": "Cool Paper",
+        "canonical": "#fafaf9",
+        "tonalRamp": ["#1c1917", "#292524", "#44403c", "#78716c", "#a8a29e", "#d6d3d1", "#e7e5e4", "#f5f5f4", "#fafaf9", "#ffffff"]
+      },
+      "correct": {
+        "role": "semantic",
+        "displayName": "Marking Green",
+        "canonical": "oklch(0.627 0.194 149.2)",
+        "tonalRamp": ["#14532d", "#166534", "#15803d", "#16a34a", "#22c55e", "#4ade80", "#86efac", "#bbf7d0", "#dcfce7", "#f0fdf4"]
+      },
+      "wrong": {
+        "role": "semantic",
+        "displayName": "Marking Red",
+        "canonical": "oklch(0.637 0.237 25.3)",
+        "tonalRamp": ["#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fecaca", "#fee2e2", "#fef2f2"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page headline only — Archivo 800, two lines, second line muted." },
+      "numeral": { "displayName": "Numeral", "purpose": "Every read number: timers, cells, scores, counts — Geist Mono tabular." },
+      "label": { "displayName": "Form Label", "purpose": "Printed micro-type: field keys, plate captions, footers — 10px caps, tracked." }
+    },
+    "shadows": [
+      { "name": "sheet-setdown", "value": "0 28px 56px -40px rgba(24,24,27,0.3)", "purpose": "One soft ambient set-down shadow under a signature bordered sheet (light only; dark uses borders)." },
+      { "name": "ink-press", "value": "0 20px 36px -22px rgba(67,56,202,0.55)", "purpose": "Soft downward press under the primary ink button." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "The single easing curve for every entrance and state change." },
+      { "name": "cell-fill-cadence", "value": "30ms per cell, 300ms per fill, scale 0.75→1", "purpose": "The answer grid's staggered fill — the page's one authored moment." },
+      { "name": "rule-draw", "value": "scaleX 0→1, origin-left, 700–800ms", "purpose": "Hairline rules draw in as sections and ruled entries enter view." },
+      { "name": "reduced-motion", "value": "framer MotionConfig reducedMotion=\"user\"; decorative loops gated off, transforms snap", "purpose": "Under prefers-reduced-motion the sheet renders complete: no loops, no pulses, states resolve instantly." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The start action — a solid ink stamp with form corners.",
+      "html": "<button class=\"ds-btn-primary\">Start practice <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14M12 5l7 7-7 7\"/></svg></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; background: #4338ca; color: #fff; font-family: Inter, sans-serif; font-size: 15px; font-weight: 600; height: 48px; padding: 0 28px; border: none; border-radius: 3px; box-shadow: 0 20px 36px -22px rgba(67,56,202,0.55); cursor: pointer; transition: background 0.2s cubic-bezier(0.22,1,0.36,1); } .ds-btn-primary:hover { background: #3730a3; } .ds-btn-primary:focus-visible { outline: 2px solid #4338ca; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Quiet outlined action on sheet white.",
+      "html": "<button class=\"ds-btn-secondary\">Browse the library</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; background: #fff; color: #3f3f46; font-family: Inter, sans-serif; font-size: 15px; font-weight: 500; height: 48px; padding: 0 28px; border: 1px solid #d4d4d8; border-radius: 3px; cursor: pointer; transition: background 0.2s cubic-bezier(0.22,1,0.36,1); } .ds-btn-secondary:hover { background: #f4f4f5; } .ds-btn-secondary:focus-visible { outline: 2px solid #4338ca; outline-offset: 2px; }"
+    },
+    {
+      "name": "Title Block Cell",
+      "kind": "custom",
+      "refersTo": "title-block-cell",
+      "description": "Printed form field: micro key over a set value, hairline-ruled.",
+      "html": "<div class=\"ds-title-cell\"><div class=\"ds-title-k\">PAPER</div><div class=\"ds-title-v\">Listening · Reading</div></div>",
+      "css": ".ds-title-cell { background: #fafaf9; border: 1px solid #e4e4e7; border-radius: 3px; padding: 14px 20px 16px; } .ds-title-k { font-family: Inter, sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0.22em; color: #a1a1aa; } .ds-title-v { margin-top: 4px; font-family: Inter, sans-serif; font-size: 13px; font-weight: 600; color: #18181b; }"
+    },
+    {
+      "name": "Answer Palette",
+      "kind": "custom",
+      "refersTo": "palette-cell-filled",
+      "description": "The signature: a bordered question palette of numbered cells with empty, filled, and active states.",
+      "html": "<div class=\"ds-palette\"><div class=\"ds-palette-head\"><span class=\"ds-palette-title\">QUESTION PALETTE — TEST 18 · LISTENING</span><span class=\"ds-timer-chip\">24:12</span></div><div class=\"ds-palette-grid\"><span class=\"ds-cell ds-cell-filled\">1</span><span class=\"ds-cell ds-cell-filled\">2</span><span class=\"ds-cell\">19</span><span class=\"ds-cell ds-cell-active\">18</span><span class=\"ds-cell\">20</span></div><div class=\"ds-palette-foot\"><span>17 ANSWERED</span><span>PART 1 OF 4</span></div></div>",
+      "css": ".ds-palette { background: #fff; border: 1px solid #d4d4d8; border-radius: 3px; box-shadow: 0 28px 56px -40px rgba(24,24,27,0.3); max-width: 340px; } .ds-palette-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid #e4e4e7; } .ds-palette-title { font-family: Inter, sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.18em; color: #71717a; } .ds-palette-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; padding: 16px; } .ds-cell { display: flex; align-items: center; justify-content: center; height: 32px; border: 1px solid #e4e4e7; border-radius: 3px; background: #fff; font-family: 'Geist Mono', monospace; font-variant-numeric: tabular-nums; font-size: 10px; font-weight: 600; color: #a1a1aa; } .ds-cell-filled { background: #4338ca; border-color: #4338ca; color: #fff; } .ds-cell-active { border: 2px solid #4338ca; color: #4338ca; animation: ds-pulse 1.8s ease infinite; } @keyframes ds-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(79,70,229,0.3); } 50% { box-shadow: 0 0 0 6px rgba(79,70,229,0); } } .ds-palette-foot { display: flex; justify-content: space-between; padding: 10px 16px; border-top: 1px solid #e4e4e7; font-family: Inter, sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; color: #71717a; }"
+    },
+    {
+      "name": "Timer Chip",
+      "kind": "chip",
+      "refersTo": "timer-chip",
+      "description": "Geist Mono countdown set like a stamp in a plate header.",
+      "html": "<span class=\"ds-timer-chip\">24:12</span>",
+      "css": ".ds-timer-chip { display: inline-block; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 3px; padding: 4px 8px; font-family: 'Geist Mono', monospace; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 700; color: #18181b; }"
+    },
+    {
+      "name": "Ruled Entry",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "A capability as a form row: ink square marker, caps field label, ruled description.",
+      "html": "<div class=\"ds-ruled-entry\"><div class=\"ds-entry-field\"><span class=\"ds-entry-mark\"></span><span class=\"ds-entry-label\">EXAM-FAITHFUL UI</span></div><p class=\"ds-entry-desc\">Pixel-perfect recreation of the CD-IELTS interface.</p></div>",
+      "css": ".ds-ruled-entry { display: grid; grid-template-columns: 220px 1fr; gap: 40px; padding: 32px 0; border-top: 1px solid #e4e4e7; } .ds-entry-field { display: flex; align-items: center; gap: 12px; } .ds-entry-mark { width: 12px; height: 12px; border-radius: 2px; background: #4338ca; flex-shrink: 0; } .ds-entry-label { font-family: Inter, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: #18181b; } .ds-entry-desc { margin: 0; max-width: 42rem; font-family: Inter, sans-serif; font-size: 15px; line-height: 1.625; color: #52525b; } @media (max-width: 767px) { .ds-ruled-entry { grid-template-columns: 1fr; gap: 12px; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Answer Sheet",
+    "overview": "Real IELTS's student-facing surfaces behave like the document a candidate fills under time pressure: a cool paper-white ground, engraving-ink text, fine hairline rules, and numbered cells arranged in quiet grids. One indigo ink does all the pointing and filling — the same role a ballpoint plays on a paper answer sheet. Nothing floats, nothing glows, nothing shouts; the page's authority comes from exam-document discipline, not from landing-page decoration. The world is deliberately flat: depth comes from hairlines, boxed fields, and rare soft ambient shadows under signature sheets. Dark mode is the same exam hall at night: zinc-950 ground, indigo-400 ink, unchanged discipline.",
+    "keyCharacteristics": [
+      "Ruled-sheet structure: full-width hairlines separate every section; content lives in bordered, boxed fields — never in floating rounded cards.",
+      "One ink (indigo-700 light / indigo-400 dark); emerald and red appear only as correct/wrong semantics.",
+      "Geist Mono tabular numerals wherever a number is read (timers, question numbers, scores, counts).",
+      "Archivo extrabold display voice with a muted second line; Inter body at a 65ch measure.",
+      "Drafting annotations: micro-caps numeric callouts pinned to the interface with hairline leaders, real numbers only."
+    ],
+    "rules": [
+      { "name": "The One Ink Rule", "body": "Indigo is the only color that fills. Emerald and red are marking, not decoration; no other hue appears, and the ink never becomes a gradient.", "section": "colors" },
+      { "name": "The Fine Rule Rule", "body": "Structure is drawn with 1px hairlines (#e4e4e7 light / #27272a dark), never with nested cards, side stripes, or shadow boxes. If two things relate, they share a rule; if they don't, a rule separates them.", "section": "colors" },
+      { "name": "The Real Numbers Rule", "body": "Every numeral shown in demo or mockup content is a real quantity from the product (40 questions, 21 books, band scale); demonstration data is labeled by its plate header, never presented as a claim.", "section": "colors" },
+      { "name": "The Carried Weight Rule", "body": "Headings carry their own weight — no kicker or eyebrow sits above any heading, and emphasis comes from size and weight, never from gradient or color text.", "section": "typography" },
+      { "name": "The Set-Down Rule", "body": "A shadow means a sheet was set down on the desk: one soft, low-opacity, downward-blurred shadow under a bordered sheet. Never a colored halo, never a hard offset block, never on text.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do structure with hairlines (#e4e4e7 / #27272a) and boxed fields; sections separate by a full-width rule.",
+      "Do set every read number in Geist Mono with `tabular-nums`.",
+      "Do keep active/selected states as ink-filled or 2px ink-bordered cells — solid, confident marks.",
+      "Do theme browser surfaces from the palette: text selection (indigo at 14% light / 25% dark), focus outlines (ring tint), tabular numerals in data.",
+      "Do animate like a document being filled: one authored moment per surface (the answer grid filling), entrances as drawn rules or single reveals, exponential ease-out `cubic-bezier(0.22, 1, 0.36, 1)`, and instant states under reduced motion."
+    ],
+    "donts": [
+      "Don't put a kicker or eyebrow above a heading; the heading carries its own weight.",
+      "Don't use gradient text, glass/blur decoration, icon tiles, or unicode glyphs as an icon system — icons are drawn (lucide), one stroke weight.",
+      "Don't use hard offset shadows, colored halos, or nested cards; a shadow is a set-down sheet, nothing else.",
+      "Don't number sections (01/02/03) — the four-step process is the only sequence, because the count is the content.",
+      "Don't tint the neutral grays or introduce a second accent hue; if a color isn't the ink or a marking state, it doesn't ship."
+    ]
+  }
+}
