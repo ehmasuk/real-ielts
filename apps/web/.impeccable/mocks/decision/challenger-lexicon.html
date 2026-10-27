@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Challenger — The Specimen Document</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1440px; height:900px; overflow:hidden; background:#fbfcfa; color:#17160f;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  .doc { height:100%; display:flex; }
+  .shoulder { width:64px; border-right:1px solid #17160f; display:flex; align-items:center; justify-content:center; }
+  .shoulder span { writing-mode:vertical-rl; transform:rotate(180deg); font-size:10px; letter-spacing:.34em; color:#8d8c82; }
+
+  .main { flex:1; display:flex; flex-direction:column; padding:0 0 0 0; }
+
+  /* head rule with guide words */
+  .headrule { border-bottom:2px solid #17160f; margin:34px 56px 0; padding-bottom:12px; display:flex; align-items:baseline; justify-content:space-between; }
+  .gw { font-size:11px; letter-spacing:.24em; font-weight:650; }
+  .gw .thin { color:#8d8c82; font-weight:500; }
+  .wordmark { font-family:Georgia, 'Times New Roman', serif; font-size:15px; letter-spacing:.28em; font-weight:700; }
+
+  .spread { flex:1; display:flex; padding:54px 56px 0; gap:64px; }
+
+  /* the entry */
+  .entry { width:46%; display:flex; flex-direction:column; }
+  .headword-row { display:flex; align-items:baseline; gap:14px; }
+  .headword { font-family:Georgia, 'Times New Roman', serif; font-size:88px; line-height:.98; font-weight:700; letter-spacing:-0.02em; }
+  .pos { font-family:Georgia, serif; font-style:italic; font-size:30px; color:#8d8c82; }
+  .pronbar { margin-top:22px; width:78%; }
+  .bar { height:11px; border-radius:5px; background:#e6e5dd; margin-bottom:9px; }
+  .defs { margin-top:26px; }
+  .def { display:flex; gap:14px; margin-bottom:20px; }
+  .def .n { font-family:Georgia, serif; font-size:14px; font-weight:700; min-width:18px; }
+  .def .bars { flex:1; }
+  .cta { margin-top:auto; margin-bottom:56px; display:flex; align-items:center; gap:12px; }
+  .cta .word { font-size:16px; font-weight:650; color:#2b2fbd; border-bottom:2px solid #2b2fbd; padding-bottom:2px; }
+  .cta .arrow { color:#2b2fbd; font-size:24px; line-height:1; }
+  .printmark { margin-top:14px; font-size:10px; letter-spacing:.22em; color:#8d8c82; }
+
+  /* the plate */
+  .plate { width:54%; display:flex; flex-direction:column; }
+  .plate-frame { border:2px solid #17160f; outline:1px solid #17160f; outline-offset:4px; flex:1;
+    display:flex; flex-direction:column; background:#fff; position:relative; }
+  .plate-head { display:flex; justify-content:space-between; align-items:center; padding:12px 18px; border-bottom:1px solid #e6e5dd; }
+  .plate-no { font-size:10px; letter-spacing:.26em; font-weight:650; color:#2b2fbd; }
+  .plate-head .rule { font-size:10px; letter-spacing:.2em; color:#8d8c82; }
+
+  /* colour lives only here: the exam UI inside the plate */
+  .examui { flex:1; margin:16px; border:1px solid #c9d2e4; background:#dfe4ee; border-radius:6px; display:flex; flex-direction:column; overflow:hidden; }
+  .examui-chrome { height:34px; background:#c9d2e4; display:flex; align-items:center; padding:0 12px; }
+  .examui-title { font-size:9px; font-weight:600; color:#33415c; }
+  .examui-timer { margin-left:auto; font-family:ui-monospace,Consolas,monospace; font-size:10px; font-weight:700; background:#1e1b4b; color:#fff; padding:3px 8px; border-radius:3px; }
+  .examui-body { flex:1; display:flex; background:#fff; }
+  .examui-left { width:58%; border-right:1px solid #e6ebf4; padding:14px 16px; }
+  .xl { height:9px; background:#e9ecf2; border-radius:4px; margin-bottom:7px; }
+  .xl.h { height:12px; width:44%; background:#c9d2e4; }
+  .examui-right { flex:1; padding:14px 14px; }
+  .qrow { display:flex; align-items:center; gap:8px; margin-bottom:9px; }
+  .qno { width:14px; height:14px; border-radius:50%; background:#2f43b8; color:#fff; font-size:8px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .qbar { height:8px; border-radius:4px; background:#e9ecf2; flex:1; }
+
+  /* drafting callouts */
+  .callout { position:absolute; width:26px; height:26px; border-radius:50%; background:#2b2fbd; color:#fff;
+    font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px #fbfcfa; }
+  .caption { display:flex; justify-content:space-between; padding:12px 4px 0; }
+  .cap-l { font-size:10px; letter-spacing:.24em; font-weight:650; }
+  .cap-r { font-family:Georgia, serif; font-style:italic; font-size:13px; color:#8d8c82; }
+
+  /* next entry */
+  .nextentry { border-top:2px solid #17160f; margin:0 56px; padding:20px 0 26px; display:flex; gap:60px; align-items:baseline; }
+  .nextentry .hw { font-family:Georgia, serif; font-size:30px; font-weight:700; }
+  .nextentry .n { font-family:Georgia, serif; font-style:italic; font-size:16px; color:#8d8c82; }
+  .nextentry .bars { width:420px; }
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="shoulder"><span>CD-IELTS · PRACTICE EDITION · CAMBRIDGE 7–21</span></div>
+  <div class="main">
+    <div class="headrule">
+      <span class="gw">LISTENING</span>
+      <span class="wordmark">REAL IELTS</span>
+      <span class="gw thin">READING</span>
+    </div>
+    <div class="spread">
+      <div class="entry">
+        <div class="headword-row"><span class="headword">Real IELTS</span><span class="pos">n.</span></div>
+        <div class="pronbar">
+          <div class="bar" style="width:62%"></div>
+          <div class="bar" style="width:45%"></div>
+        </div>
+        <div class="defs">
+          <div class="def"><span class="n">1.</span><div class="bars"><div class="bar" style="width:100%"></div><div class="bar" style="width:88%"></div><div class="bar" style="width:40%"></div></div></div>
+          <div class="def"><span class="n">2.</span><div class="bars"><div class="bar" style="width:97%"></div><div class="bar" style="width:72%"></div></div></div>
+        </div>
+        <div class="cta">
+          <span class="word">Begin practice</span><span class="arrow">→</span>
+        </div>
+        <div class="printmark">TAKEN UNDER TIMED CONDITIONS · SCORED INSTANTLY</div>
+      </div>
+      <div class="plate">
+        <div class="plate-frame">
+          <div class="plate-head"><span class="plate-no">PLATE I</span><span class="rule">THE CD-IELTS INTERFACE, REPRODUCED</span></div>
+          <div class="examui">
+            <div class="examui-chrome"><span class="examui-title">IELTS Listening — Part 1 of 4</span><span class="examui-timer">29:41</span></div>
+            <div class="examui-body">
+              <div class="examui-left">
+                <div class="xl h"></div>
+                <div class="xl" style="width:100%"></div><div class="xl" style="width:94%"></div><div class="xl" style="width:100%"></div><div class="xl" style="width:85%"></div><div class="xl" style="width:52%"></div>
+              </div>
+              <div class="examui-right">
+                <div class="qrow"><div class="qno">1</div><div class="qbar"></div></div>
+                <div class="qrow"><div class="qno">2</div><div class="qbar" style="width:70%"></div></div>
+                <div class="qrow"><div class="qno">3</div><div class="qbar"></div></div>
+                <div class="qrow"><div class="qno">4</div><div class="qbar" style="width:60%"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="callout" style="top:44px; right:44px;">1</div>
+          <div class="callout" style="top:150px; right:30px;">2</div>
+          <div class="callout" style="bottom:40px; right:60px;">3</div>
+          <div class="caption"><span class="cap-l">FIG. 1 — SPLIT-PANE EXAM VIEW</span><span class="cap-r">colour appears nowhere else on the page</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="nextentry">
+      <span class="hw">listening</span><span class="n">, n.</span>
+      <div class="bars">
+        <div class="bar" style="width:100%"></div>
+        <div class="bar" style="width:66%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

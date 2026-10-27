@@ -1,0 +1,115 @@
+{
+  "title": "Choose the homepage's visual world",
+  "question": "The roll assigned The Answer Sheet. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "kind": "assigned",
+      "label": "The Answer Sheet",
+      "kicker": "THE ROLL",
+      "lineage": "OMR answer sheets and exam form design",
+      "thesis": "The exam's quiet grid discipline — numbered cells, fine rules, one ink — carried onto the page; the page behaves like the document you fill under time pressure.",
+      "palette": ["#fafaf9", "#1b1b1d", "#4338ca", "#e2e2df"],
+      "materials": ["fine ruled forms", "numbered cells", "one-ink stamping"],
+      "viewport": "A ruled form sheet: boxed title block, ink headline, a live 40-cell answer grid filling beside a timer.",
+      "risk": "Form-filling reads bureaucratic if the ink is timid; needs a confident stamp.",
+      "raised": [
+        {
+          "from": "architecture-inhabitable-space-daylight-section",
+          "raise": "Drafting annotation: the interface carries precise numeric callouts pinned like measurements — real numbers only (30 min, 40 questions, band scale)."
+        }
+      ],
+      "html": ".impeccable/mocks/decision/assigned.html"
+    },
+    {
+      "id": "model-pick",
+      "kind": "pick",
+      "label": "The Interface Itself",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "The CD-IELTS test interface itself",
+      "thesis": "The homepage is the exam screen: the real CD-IELTS interface, reproduced at full fidelity, is the hero; copy serves it, and the begin action sits in its chrome.",
+      "palette": ["#f4f5f7", "#dfe4ee", "#1e1b4b", "#2f43b8"],
+      "materials": ["exam chrome", "flat panes", "tabular numerals"],
+      "viewport": "The exam interface at full width, one terse line above it, the begin action set into its chrome.",
+      "risk": "Also the direction most runs in this category land on — the product's own UI as hero."
+    },
+    {
+      "id": "challenger-lexicon",
+      "kind": "challenger",
+      "catalogId": "rw-lexicon-shoulder-and-plate",
+      "label": "The Specimen Document",
+      "verdict": "wins",
+      "lineage": "Nineteenth-century lexicon pages",
+      "thesis": "The homepage as a precise examination document: ink text at a strict measure, guide words naming the span in view, and the page's only colour quarantined inside the bordered exam-interface plate.",
+      "palette": ["#fbfcfa", "#17160f", "#2b2fbd", "#e6e5dd"],
+      "materials": ["engraved rules", "letterpress ink", "bordered plates"],
+      "viewport": "A document spread: guide words on a head rule, a serif headword entry at measure, the only colour inside Plate I — the exam UI.",
+      "risk": "Vintage if the serif dress is costume; must read as a modern document, not a period one.",
+      "case": "Fuses cleanly: the exam UI becomes the page's only colour plate — proof made focal; guide words structure the practice journey. Beats the assigned on identification and on clarity.",
+      "html": ".impeccable/mocks/decision/challenger-lexicon.html",
+      "hero": "https://impeccable.style/worlds/cards/rw-lexicon-shoulder-and-plate-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/rw-lexicon-shoulder-and-plate.webp"
+    },
+    {
+      "id": "challenger-board",
+      "kind": "challenger",
+      "catalogId": "signals-instruments-split-flap-concourse",
+      "label": "The Test-Day Board",
+      "verdict": "competitive",
+      "lineage": "Rail concourse split-flap boards",
+      "thesis": "The homepage as the test-centre departure board: every sitting a ruled row, states that restyle without breaking the grid, changes cascading letter by letter.",
+      "palette": ["#0b0b0d", "#f2f2f2", "#ffb000", "#b00020"],
+      "materials": ["matte flaps", "brushed steel", "amber lamps"],
+      "viewport": "A full-bleed departure board of today's sittings, the headline set in flap cells, an amber take-seat action.",
+      "risk": "Retro-device novelty, and a dark ground fights the light-first brief.",
+      "case": "Holds identification — everyone knows the board's rhythm — but frames departure rather than exam fidelity, and 'subtle' is hard at full flap commitment.",
+      "html": ".impeccable/mocks/decision/challenger-board.html",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-split-flap-concourse-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/signals-instruments-split-flap-concourse.webp"
+    },
+    {
+      "id": "challenger-daylight",
+      "kind": "challenger",
+      "catalogId": "architecture-inhabitable-space-daylight-section",
+      "label": "The Section of a Test Day",
+      "verdict": "declined",
+      "lineage": "Architectural daylight sections",
+      "palette": ["#f5f2ea", "#2b2b28", "#d8a24a", "#5a7d9a"],
+      "materials": ["limewash white", "section poche", "travelling beam"],
+      "viewport": "A tall section drawing of test day, rooms read through a travelling beam, architect's lettering.",
+      "risk": "Poetic but fails to prove exam fidelity.",
+      "case": "Fuses poorly: sun paths do not carry the offer or the action.",
+      "kept": "Drafting discipline — precise numeric callouts pinned to the interface (raised into the assigned direction).",
+      "hero": "https://impeccable.style/worlds/cards/architecture-inhabitable-space-daylight-section-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/architecture-inhabitable-space-daylight-section.webp"
+    }
+  ],
+  "reroll": {
+    "registers": ["safer", "bolder"],
+    "note": "Re-roll pool held back: paper-automata menagerie, numbered insert-card series, ASCII live-scene render."
+  },
+  "buildPath": { "value": "code" },
+  "canon": true,
+  "canonCard": {
+    "kind": "canon",
+    "label": "The category standard",
+    "thesis": "What this category ships, executed impeccably.",
+    "palette": ["#ffffff", "#111827", "#2563eb"],
+    "materials": ["clean grid", "product screenshot"],
+    "viewport": "Centred headline, CTA pair, three feature cards — the arrangement a visitor expects.",
+    "risk": "Indistinguishable from the competition by design.",
+    "wireframe": {
+      "cols": 12,
+      "rows": 10,
+      "regions": [
+        { "label": "nav", "x": 0, "y": 0, "w": 12, "h": 1 },
+        { "label": "centred headline", "x": 2, "y": 2, "w": 8, "h": 2, "accent": true },
+        { "label": "subcopy", "x": 3, "y": 4, "w": 6, "h": 1 },
+        { "label": "CTA pair", "x": 4, "y": 5.5, "w": 4, "h": 1 },
+        { "label": "screenshot", "x": 2, "y": 6.8, "w": 8, "h": 2.2 },
+        { "label": "three cards", "x": 1, "y": 9.2, "w": 10, "h": 0.8 }
+      ]
+    }
+  },
+  "steer": true
+}

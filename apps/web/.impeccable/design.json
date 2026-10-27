@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-27",
+  "title": "Design System: Real IELTS",
+  "extensions": {
+    "colorMeta": {
+      "red-ink": { "role": "primary", "displayName": "Red Ink", "tonalRamp": ["#450a0a", "#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5"] },
+      "red-ink-deep": { "role": "primary", "displayName": "Red Ink — Hover", "tonalRamp": ["#450a0a", "#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5"] },
+      "red-ink-dark": { "role": "primary", "displayName": "Red Ink (Dark Mode)", "tonalRamp": ["#450a0a", "#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5"] },
+      "red-ink-dark-deep": { "role": "primary", "displayName": "Red Ink (Dark Hover)", "tonalRamp": ["#450a0a", "#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5"] },
+      "emerald-mark": { "role": "secondary", "displayName": "Emerald Mark", "tonalRamp": ["#064e3b", "#065f46", "#047857", "#059669", "#10b981", "#34d399", "#6ee7b7", "#a7f3d0"] },
+      "emerald-mark-dark": { "role": "secondary", "displayName": "Emerald Mark (Dark Mode)", "tonalRamp": ["#064e3b", "#065f46", "#047857", "#059669", "#10b981", "#34d399", "#6ee7b7", "#a7f3d0"] },
+      "paper-light": { "role": "neutral", "displayName": "Paper (Light)", "tonalRamp": ["#0c0c0e", "#18181b", "#27272a", "#3f3f46", "#71717a", "#a1a1aa", "#e4e4e7", "#fbfaf8"] },
+      "paper-dark": { "role": "neutral", "displayName": "Paper (Dark)", "tonalRamp": ["#0c0c0e", "#18181b", "#27272a", "#3f3f46", "#71717a", "#a1a1aa", "#e4e4e7", "#fbfaf8"] },
+      "graphite": { "role": "neutral", "displayName": "Graphite", "tonalRamp": ["#0c0c0e", "#18181b", "#27272a", "#3f3f46", "#71717a", "#a1a1aa", "#e4e4e7", "#fbfaf8"] },
+      "graphite-inverse": { "role": "neutral", "displayName": "Graphite Inverse", "tonalRamp": ["#0c0c0e", "#18181b", "#27272a", "#3f3f46", "#71717a", "#a1a1aa", "#e4e4e7", "#fbfaf8"] },
+      "pencil-muted": { "role": "neutral", "displayName": "Pencil", "tonalRamp": ["#0c0c0e", "#18181b", "#27272a", "#3f3f46", "#71717a", "#a1a1aa", "#e4e4e7", "#fbfaf8"] },
+      "hairline": { "role": "neutral", "displayName": "Hairline", "tonalRamp": ["#0c0c0e", "#18181b", "#27272a", "#3f3f46", "#71717a", "#a1a1aa", "#e4e4e7", "#fbfaf8"] },
+      "hairline-dark": { "role": "neutral", "displayName": "Hairline (Dark)", "tonalRamp": ["#0c0c0e", "#18181b", "#27272a", "#3f3f46", "#71717a", "#a1a1aa", "#e4e4e7", "#fbfaf8"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The page's largest object; one per page; may carry a two-tone second line (graphite / pencil)." },
+      "headline": { "displayName": "Headline", "purpose": "Section headings; the mono annotation shares the heading's baseline row, right-aligned — never above." },
+      "title": { "displayName": "Title", "purpose": "Entry names (skill rows) and plan verbs." },
+      "body": { "displayName": "Body", "purpose": "Prose: lede at 15px within ~65ch; entry copy 13–14px." },
+      "label": { "displayName": "Label", "purpose": "Sheet headers, entry tags, stats, timers, durations — always mono, uppercase, tabular-nums." }
+    },
+    "shadows": [
+      { "name": "sheet-lift", "value": "0 24px 48px -40px rgba(24, 24, 27, 0.35)", "purpose": "Raised blocks (proof card) lying slightly above the paper. Suppressed entirely in dark mode." },
+      { "name": "button-press", "value": "0 18px 32px -20px rgba(185, 28, 28, 0.55)", "purpose": "Under the primary CTA only — the one shadow tied to a control." }
+    ],
+    "motion": [
+      { "name": "ease-pen", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Every authored transition — draws, entries, underlines, control states." },
+      { "name": "duration-entry", "value": "0.55s", "purpose": "Staggered load entries (hero, plan row); 0.08s stagger between children." },
+      { "name": "duration-draw", "value": "0.9s", "purpose": "The margin rule draw on load — the page's one authored moment." },
+      { "name": "duration-underline", "value": "0.25s", "purpose": "Pen-link underline drawn in on hover / focus." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one loud element on the sheet — red fill, 48px tall, arrow that nudges on hover. Primary CTA only.",
+      "html": "<button class=\"ds-btn-primary\">Start practice<svg class=\"ds-btn-primary-arrow\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 48px; padding: 0 28px; background: #dc2626; color: #ffffff; border: none; border-radius: 3px; font-family: Inter, system-ui, sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 18px 32px -20px rgba(185, 28, 28, 0.55); transition: background 0.2s cubic-bezier(0.22, 1, 0.36, 1); } .ds-btn-primary svg { transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1); } .ds-btn-primary:hover { background: #b91c1c; } .ds-btn-primary:hover svg { transform: translateX(2px); } .ds-btn-primary:active { background: #b91c1c; } .ds-btn-primary:focus-visible { outline: 2px solid #b91c1c; outline-offset: 2px; } .dark .ds-btn-primary { background: #ef4444; color: #09090b; } .dark .ds-btn-primary:hover { background: #f87171; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Hairline-bordered counterpart to the primary; transparent fill that picks up a faint wash on hover.",
+      "html": "<button class=\"ds-btn-secondary\">Browse the library</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 28px; background: transparent; color: #3f3f46; border: 1px solid #d4d4d8; border-radius: 3px; font-family: Inter, system-ui, sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s cubic-bezier(0.22, 1, 0.36, 1); } .ds-btn-secondary:hover { background: #f4f4f5; } .ds-btn-secondary:active { background: #e4e4e7; } .ds-btn-secondary:focus-visible { outline: 2px solid #dc2626; outline-offset: 2px; } .dark .ds-btn-secondary { color: #d4d4d8; border-color: #3f3f46; } .dark .ds-btn-secondary:hover { background: rgba(39, 39, 42, 0.6); }"
+    },
+    {
+      "name": "Stat Chip",
+      "kind": "chip",
+      "refersTo": "stat-chip",
+      "description": "Mono caps truth-chip for counts and totals (library contents, durations). Transparent fill, hairline border, tabular numerals.",
+      "html": "<span class=\"ds-stat-chip\">84 LISTENING TESTS</span>",
+      "css": ".ds-stat-chip { display: inline-flex; align-items: center; padding: 4px 10px; background: transparent; color: #71717a; border: 1px solid #e4e4e7; border-radius: 3px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; font-variant-numeric: tabular-nums; white-space: nowrap; } .dark .ds-stat-chip { color: #a1a1aa; border-color: #27272a; }"
+    },
+    {
+      "name": "Pen Link",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The signature link: red text whose 1.5px underline is drawn in like a pen stroke on hover or focus.",
+      "html": "<a class=\"ds-pen-link\" href=\"#\">Practice Reading</a>",
+      "css": ".ds-pen-link { display: inline-flex; align-items: center; gap: 6px; color: #dc2626; text-decoration: none; font-family: Inter, system-ui, sans-serif; font-size: 14px; font-weight: 600; padding-bottom: 2px; background-image: linear-gradient(currentColor, currentColor); background-size: 0% 1.5px; background-position: 0 100%; background-repeat: no-repeat; transition: background-size 0.25s cubic-bezier(0.22, 1, 0.36, 1); } .ds-pen-link:hover, .ds-pen-link:focus-visible { background-size: 100% 1.5px; } .ds-pen-link:focus-visible { outline: 2px solid #dc2626; outline-offset: 2px; } .dark .ds-pen-link { color: #f87171; } @media (prefers-reduced-motion: reduce) { .ds-pen-link { transition: none; } }"
+    },
+    {
+      "name": "Skill Entry",
+      "kind": "card",
+      "refersTo": null,
+      "description": "The ruled row pattern that lists what can be practised: hairline top border, icon + Archivo title + prose left, mono stats and a pen link right.",
+      "html": "<div class=\"ds-skill-entry\"><div><div class=\"ds-skill-entry-head\"><svg class=\"ds-skill-entry-icon\" viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 14h3a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H3v7Z\"/><path d=\"M21 14h-3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h3v7Z\"/><path d=\"M3 14v-3a9 9 0 0 1 18 0v3\"/></svg><h3 class=\"ds-skill-entry-title\">Listening</h3></div><p class=\"ds-skill-entry-copy\">Four parts of real exam audio with interactive script review — click the transcript to seek.</p></div><div class=\"ds-skill-entry-meta\"><span class=\"ds-skill-entry-stats\">84 TESTS · 21 BOOKS</span><a class=\"ds-skill-entry-link\" href=\"#\">Practice Listening<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a></div></div>",
+      "css": ".ds-skill-entry { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px 48px; border-top: 1px solid #e4e4e7; padding: 36px 0; font-family: Inter, system-ui, sans-serif; } .ds-skill-entry:last-of-type { border-bottom: 1px solid #e4e4e7; } .ds-skill-entry-head { display: flex; align-items: center; gap: 12px; } .ds-skill-entry-icon { color: #a1a1aa; flex-shrink: 0; } .ds-skill-entry-title { margin: 0; font-family: Archivo, system-ui, sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; color: #18181b; } .ds-skill-entry-copy { margin: 10px 0 0; max-width: 42rem; font-size: 14px; line-height: 1.625; color: #52525b; } .ds-skill-entry-meta { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; } .ds-skill-entry-stats { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; font-variant-numeric: tabular-nums; color: #71717a; white-space: nowrap; } .ds-skill-entry-link { display: inline-flex; align-items: center; gap: 6px; color: #dc2626; text-decoration: none; font-size: 14px; font-weight: 600; padding-bottom: 2px; background-image: linear-gradient(currentColor, currentColor); background-size: 0% 1.5px; background-position: 0 100%; background-repeat: no-repeat; transition: background-size 0.25s cubic-bezier(0.22, 1, 0.36, 1); } .ds-skill-entry-link:hover, .ds-skill-entry-link:focus-visible { background-size: 100% 1.5px; } .ds-skill-entry-link:focus-visible { outline: 2px solid #dc2626; outline-offset: 2px; } .dark .ds-skill-entry { border-color: #27272a; } .dark .ds-skill-entry-title { color: #f4f4f5; } .dark .ds-skill-entry-copy { color: #a1a1aa; } .dark .ds-skill-entry-icon { color: #52525b; } .dark .ds-skill-entry-stats { color: #a1a1aa; } .dark .ds-skill-entry-link { color: #f87171; }"
+    },
+    {
+      "name": "Proof Card",
+      "kind": "card",
+      "refersTo": null,
+      "description": "The signature block: a bordered exam screen on paper — chrome strip (mono test label + timer), two hairline-divided panes, caption strip. Depth comes from the sheet-lift shadow only.",
+      "html": "<div class=\"ds-proof-card\"><div class=\"ds-proof-chrome\"><span class=\"ds-proof-test\">TEST 18 — LISTENING · PART 1</span><span class=\"ds-proof-timer\">24:11</span></div><div class=\"ds-proof-body\"><div class=\"ds-proof-pane\"><p class=\"ds-proof-pane-label\">IN THE EXAM</p><div class=\"ds-proof-palette\"><span class=\"ds-cell ds-cell-filled\">17</span><span class=\"ds-cell ds-cell-active\">18</span><span class=\"ds-cell\">19</span><span class=\"ds-cell\">20</span><span class=\"ds-cell\">21</span></div><div class=\"ds-proof-q\">Q18. Where is the library?</div></div><div class=\"ds-proof-pane\"><p class=\"ds-proof-pane-label\">AFTER YOU SUBMIT</p><div class=\"ds-proof-score\"><span class=\"ds-proof-band\">32/40</span><span class=\"ds-proof-result\">BAND 8.0</span></div><div class=\"ds-scorebar\"><span class=\"ds-scorebar-label\">PART 1</span><span class=\"ds-scorebar-track\"><span class=\"ds-scorebar-fill\" style=\"width: 80%\"></span></span><span class=\"ds-scorebar-value\">8/10</span></div></div></div><div class=\"ds-proof-caption\">SIT IT · SCORE IT · REVIEW EVERY ERROR</div></div>",
+      "css": ".ds-proof-card { background: #ffffff; border: 1px solid #e4e4e7; font-family: Inter, system-ui, sans-serif; box-shadow: 0 24px 48px -40px rgba(24, 24, 27, 0.35); } .ds-proof-chrome { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #e4e4e7; } .ds-proof-test { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.18em; color: #71717a; } .ds-proof-timer { padding: 4px 8px; border: 1px solid #e4e4e7; border-radius: 3px; background: #f4f4f5; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; color: #18181b; } .ds-proof-body { display: grid; } @media (min-width: 640px) { .ds-proof-body { grid-template-columns: 1fr 1fr; } .ds-proof-pane + .ds-proof-pane { border-left: 1px solid #e4e4e7; } } .ds-proof-pane { display: flex; flex-direction: column; gap: 16px; padding: 20px; } .ds-proof-pane-label { margin: 0; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.18em; color: #71717a; } .ds-proof-palette { display: flex; flex-wrap: wrap; gap: 6px; } .ds-proof-q { padding: 12px; border: 1px solid #e4e4e7; border-radius: 3px; font-size: 12px; font-weight: 600; color: #18181b; } .ds-proof-score { display: flex; align-items: baseline; gap: 12px; } .ds-proof-band { font-family: Archivo, system-ui, sans-serif; font-size: 36px; font-weight: 800; letter-spacing: -0.02em; color: #18181b; } .ds-proof-result { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; color: #dc2626; } .ds-scorebar { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border: 1px solid #e4e4e7; border-radius: 3px; } .ds-scorebar-label { width: 48px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; font-weight: 600; color: #71717a; } .ds-scorebar-track { flex: 1; height: 6px; border-radius: 999px; background: #e4e4e7; overflow: hidden; } .ds-scorebar-fill { display: block; height: 100%; border-radius: 999px; background: #059669; } .ds-scorebar-value { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; font-weight: 700; font-variant-numeric: tabular-nums; color: #047857; } .ds-proof-caption { padding: 10px 16px; border-top: 1px solid #e4e4e7; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; color: #71717a; } .ds-cell { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 1px solid #e4e4e7; border-radius: 3px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 9px; font-weight: 600; font-variant-numeric: tabular-nums; color: #a1a1aa; background: #ffffff; } .ds-cell-filled { background: #18181b; border-color: #18181b; color: #fafafa; } .ds-cell-active { border-width: 2px; border-color: #dc2626; color: #dc2626; } .dark .ds-proof-card { background: #18181b; border-color: #27272a; box-shadow: none; } .dark .ds-proof-chrome, .dark .ds-proof-caption { border-color: #27272a; } .dark .ds-proof-test, .dark .ds-proof-pane-label, .dark .ds-proof-caption { color: #a1a1aa; } .dark .ds-proof-timer { background: #27272a; border-color: #27272a; color: #f4f4f5; } .dark .ds-proof-pane + .ds-proof-pane { border-left-color: #27272a; } .dark .ds-proof-q { border-color: #27272a; color: #f4f4f5; } .dark .ds-cell { border-color: #27272a; background: #18181b; color: #52525b; } .dark .ds-cell-filled { background: #f4f4f5; border-color: #f4f4f5; color: #09090b; } .dark .ds-cell-active { border-color: #f87171; color: #f87171; } .dark .ds-proof-band { color: #f4f4f5; } .dark .ds-proof-result { color: #f87171; } .dark .ds-scorebar { border-color: #27272a; } .dark .ds-scorebar-track { background: #27272a; } .dark .ds-scorebar-fill { background: #34d399; } .dark .ds-scorebar-value { color: #34d399; }"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "The app's top chrome in this world: sticky bar on the exact sheet paper (hairline bottom border, no blur), icon-only red brand mark, truly centered mono-caps section links — pen-underline drawn on hover/focus, red with an always-drawn underline on the active section — and 36px hairline-bordered controls so every right-side control shares one height. Route-aware inner frame: 72rem on the homepage, 80rem on other routes.",
+      "html": "<header class=\"ds-nav\"><div class=\"ds-nav-inner\"><a class=\"ds-nav-brand\" href=\"#\" aria-label=\"Real IELTS — home\"><svg class=\"ds-nav-mark\" viewBox=\"0 0 512 512\" width=\"32\" height=\"32\" aria-hidden=\"true\"><path d=\"M139.7 23.52c-9.1 30.54-16.5 61.64-12.7 91.58c4.2 32.7 21 64.9 65.7 95.7c-53.6 74.8-86.1 204.4-59.3 277.7c10.9-54 14.2-97.8 53.5-144.6c77.5-25.6 123.9-37.6 140.3-125.7c6.2-14.7 12.6-19.3 31.9-24.7c10.6-2.9 22.2-7.5 22.1-19.2c-.2-49.3-28.3-68.4-57.6-67.9c-29.4.5-60 20.6-65.4 49.8c-6 1.8-11.9 4.5-17.7 8c-62.9-43.7-82.1-85.86-100.8-140.68M32.03 107c10.8 27.2 26.44 54.6 49.2 76.1c24.27 22.9 56.47 39.3 100.87 42.2c-34.5-24.2-54.8-50.3-65.2-77.2c-29.4-10.9-56.47-25-84.87-41.1m300.07 26.3a12.24 12.24 0 0 1 12.2 12.2a12.24 12.24 0 0 1-12.2 12.2a12.24 12.24 0 0 1-12.2-12.2a12.24 12.24 0 0 1 12.2-12.2m60 56.1c-3.5 5.1-7.1 10.2-16.1 13.2c33.9 25.3 79.1 76.5 104 105c-11.2-33.2-55.8-88.6-87.9-118.2\"/></svg></a><nav class=\"ds-nav-links\" aria-label=\"Practice tests\"><a class=\"ds-nav-link ds-nav-link-active\" href=\"#\" aria-current=\"page\">Listening</a><a class=\"ds-nav-link\" href=\"#\">Reading</a></nav><div class=\"ds-nav-actions\"><button class=\"ds-nav-icon\" type=\"button\" aria-label=\"Toggle theme\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z\"/></svg></button><button class=\"ds-nav-action\" type=\"button\">Sign in</button></div></div></header>",
+      "css": ".ds-nav { position: sticky; top: 0; z-index: 50; background: #fbfaf8; border-bottom: 1px solid #e4e4e7; font-family: Inter, system-ui, sans-serif; } .ds-nav-inner { position: relative; display: flex; align-items: center; justify-content: space-between; height: 56px; max-width: 72rem; margin: 0 auto; padding: 0 16px; } .ds-nav-brand { display: inline-flex; align-items: center; flex-shrink: 0; } .ds-nav-mark { width: 32px; height: 32px; fill: #dc2626; } .ds-nav-links { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); display: none; align-items: center; gap: 28px; } .ds-nav-link { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #52525b; text-decoration: none; padding: 4px 0; background-image: linear-gradient(currentColor, currentColor); background-size: 0% 1.5px; background-position: 0 100%; background-repeat: no-repeat; transition: background-size 0.25s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s cubic-bezier(0.22, 1, 0.36, 1); } .ds-nav-link:hover, .ds-nav-link:focus-visible { background-size: 100% 1.5px; color: #18181b; } .ds-nav-link.ds-nav-link-active, .ds-nav-link.ds-nav-link-active:hover, .ds-nav-link.ds-nav-link-active:focus-visible { background-size: 100% 1.5px; color: #dc2626; } .ds-nav-actions { display: none; align-items: center; gap: 8px; } .ds-nav-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: transparent; border: 1px solid #d4d4d8; border-radius: 3px; color: #52525b; cursor: pointer; transition: background 0.2s cubic-bezier(0.22, 1, 0.36, 1); } .ds-nav-icon:hover { background: #f4f4f5; color: #18181b; } .ds-nav-icon:focus-visible { outline: 2px solid #dc2626; outline-offset: 2px; } .ds-nav-action { display: inline-flex; align-items: center; height: 36px; padding: 0 16px; background: transparent; border: 1px solid #d4d4d8; border-radius: 3px; font-size: 13px; font-weight: 600; color: #27272a; cursor: pointer; transition: background 0.2s cubic-bezier(0.22, 1, 0.36, 1); } .ds-nav-action:hover { background: #f4f4f5; } .ds-nav-action:focus-visible { outline: 2px solid #dc2626; outline-offset: 2px; } .dark .ds-nav { background: #0c0c0e; border-color: #27272a; } .dark .ds-nav-mark { fill: #ef4444; } .dark .ds-nav-link { color: #a1a1aa; } .dark .ds-nav-link:hover, .dark .ds-nav-link:focus-visible { color: #f4f4f5; } .dark .ds-nav-link.ds-nav-link-active, .dark .ds-nav-link.ds-nav-link-active:hover, .dark .ds-nav-link.ds-nav-link-active:focus-visible { color: #f87171; } .dark .ds-nav-icon { border-color: #3f3f46; color: #a1a1aa; } .dark .ds-nav-icon:hover { background: #18181b; color: #f4f4f5; } .dark .ds-nav-action { border-color: #3f3f46; color: #e4e4e7; } .dark .ds-nav-action:hover { background: #18181b; } @media (min-width: 640px) { .ds-nav-inner { padding: 0 24px; } } @media (min-width: 1024px) { .ds-nav-inner { padding: 0 32px; } } @media (min-width: 768px) { .ds-nav-links, .ds-nav-actions { display: flex; } } @media (prefers-reduced-motion: reduce) { .ds-nav-link { transition: none; } }"
+    },
+    {
+      "name": "Notebook Header Line",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "The sheet's printed header: tracked caps product line left, live mono date right, hairline rule beneath.",
+      "html": "<header class=\"ds-notebook-header\"><span class=\"ds-notebook-header-brand\">REAL IELTS — CD-IELTS PRACTICE</span><span class=\"ds-notebook-header-date\">TUE 27 OCT 2026</span></header>",
+      "css": ".ds-notebook-header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; padding-bottom: 12px; border-bottom: 1px solid #e4e4e7; font-family: Inter, system-ui, sans-serif; } .ds-notebook-header-brand { font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #71717a; } .ds-notebook-header-date { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: #71717a; } .dark .ds-notebook-header { border-color: #27272a; } .dark .ds-notebook-header-brand, .dark .ds-notebook-header-date { color: #a1a1aa; }"
+    },
+    {
+      "name": "Palette Cell",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Question-palette cell from the interface mockups: filled = graphite fill with paper numeral, active = 2px red outline, empty = hairline border. Numerals always mono.",
+      "html": "<div class=\"ds-palette-demo\"><span class=\"ds-cell\">1</span><span class=\"ds-cell ds-cell-filled\">2</span><span class=\"ds-cell ds-cell-active\">3</span><span class=\"ds-cell\">4</span></div>",
+      "css": ".ds-palette-demo { display: flex; gap: 6px; } .ds-cell { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 1px solid #e4e4e7; border-radius: 3px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 9px; font-weight: 600; font-variant-numeric: tabular-nums; color: #a1a1aa; background: #ffffff; transition: border-color 0.2s cubic-bezier(0.22, 1, 0.36, 1); } .ds-cell:hover { border-color: #a1a1aa; } .ds-cell-filled { background: #18181b; border-color: #18181b; color: #fafafa; } .ds-cell-active { border-width: 2px; border-color: #dc2626; color: #dc2626; } .dark .ds-cell { border-color: #27272a; background: #18181b; color: #52525b; } .dark .ds-cell-filled { background: #f4f4f5; border-color: #f4f4f5; color: #09090b; } .dark .ds-cell-active { border-color: #f87171; color: #f87171; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Vocabulary Notebook",
+    "overview": "The visual world is a candidate's kept notebook page: warm paper ruled at a steady pitch, graphite text, and exactly one red ink that owns everything live. The homepage (and any surface built in this world) reads as one continuous sheet — not stacked marketing cards — where the ruling itself is the layout grid and every block is an entry: a dated header line, a headline entry, a plan table, skill entries, a proof entry, and a closing double rule. It refuses the landing-page template (hero band, icon-card rows, CTA banners) by keeping the whole offer on the sheet.\n\nDepth is nearly flat: paper does not float. Raised blocks get one soft, large-radius shadow that reads as a sheet lying slightly above the page, and state lives in ink (filled cells, red outlines, pen underlines), not in elevation. Motion is pen-stroke: rules and underlines draw in, one element at a time, always from an already-legible state.",
+    "keyCharacteristics": [
+      "One continuous ruled sheet; hairline borders and 32px ruling are the structure, not cards.",
+      "One red ink for every live element; emerald reserved strictly for correct/answered results.",
+      "Data always mono and tabular; display always Archivo extrabold, tight-tracked.",
+      "3px radius everywhere; nothing is pill-shaped.",
+      "Scope: this world ships on the homepage and the shared top navbar (icon-only red mark, mono-caps links, paper bar ground); the footer and other routes (listening/reading libraries, exam surfaces, admin) still carry the previous system until extended sitewide."
+    ],
+    "rules": [
+      { "name": "The One Red Ink Rule", "body": "Red owns every live element — actions, links, active states, the margin rule — and nothing else gets a saturated color. Emerald appears only where the product reports correctness; red doubles as the wrong-mark in results contexts, which is coherent: the same pen marks errors and fills buttons.", "section": "colors" },
+      { "name": "The Ink Stays Put Rule", "body": "Exactly one red element is in motion at a time. The rest of the sheet is still.", "section": "colors" },
+      { "name": "The Data Is Mono Rule", "body": "Numerals, times, counts, and dates are always Geist Mono with tabular-nums; prose never borrows mono except for genuine measurement.", "section": "typography" },
+      { "name": "The State Is Ink Rule", "body": "Selected, filled, answered, and active states are expressed by ink (fill, outline, underline), not by elevation or hue changes on chrome.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do set all data (times, counts, scores, dates) in Geist Mono with tabular-nums.",
+      "Do keep one red ink: CTA fill, links, active states, margin rule — and let hover deepen, not recolor.",
+      "Do build structure from hairline borders and the ruling; prefer ruled rows over boxed card grids.",
+      "Do animate like a pen: stroke-drawn underlines, one staggered load moment, instant-settled under reduced motion."
+    ],
+    "donts": [
+      "Don't reintroduce indigo/violet or any second accent on a surface of this world.",
+      "Don't use gradients, glass/blur decoration, icon tiles, or tape/scrapbook props.",
+      "Don't put a kicker/eyebrow label above a heading; annotations share the heading's baseline row.",
+      "Don't use progress rings, sparkline charts, or pill-shaped elements; scores are numbers, bars are thin data rows.",
+      "Don't animate two red elements at once; the ink stays put except for the one live moment."
+    ]
+  }
+}

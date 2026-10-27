@@ -44,5 +44,4 @@ The backend and frontend scaffolding for full test mode is already in place. The
 ## Other Potential Features
 
 - **Writing / Speaking sections** — header links hidden, pages not built yet
-- **Drills page enhancements** — currently basic, could add timed drills, streak tracking
 - **Admin analytics** — full test attempt tracking, average scores per test, completion rates

@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Assigned — The Answer Sheet</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1440px; height:900px; overflow:hidden; background:#fafaf9; color:#1b1b1d;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  .sheet { height:100%; display:flex; flex-direction:column; }
+
+  /* sheet edge ticks */
+  .edge { height:26px; border-bottom:1px solid #e2e2df; position:relative; }
+  .edge .ticks { position:absolute; inset:0;
+    background:repeating-linear-gradient(to right, #d9d9d5 0 1px, transparent 1px 48px);
+    background-position:0 18px; background-size:100% 8px; background-repeat:no-repeat; }
+  .edge .labels { position:absolute; top:5px; left:48px; right:48px; display:flex; justify-content:space-between;
+    font-size:10px; letter-spacing:.22em; color:#8a8a86; }
+
+  /* title block */
+  .titleblock { display:flex; border-bottom:1px solid #1b1b1d; }
+  .tb-cell { flex:1; padding:18px 48px 14px; border-right:1px solid #e2e2df; }
+  .tb-cell:last-child { border-right:none; }
+  .tb-k { font-size:10px; letter-spacing:.24em; color:#8a8a86; margin-bottom:6px; }
+  .tb-v { font-size:14px; font-weight:600; letter-spacing:.04em; }
+
+  /* hero */
+  .hero { flex:1; display:flex; align-items:stretch; }
+  .copy { width:54%; padding:96px 64px 64px 48px; display:flex; flex-direction:column; }
+  .kicker { font-size:11px; letter-spacing:.3em; color:#4f46e5; font-weight:700; margin-bottom:26px; }
+  h1 { font-size:74px; line-height:1.02; letter-spacing:-0.025em; font-weight:750; }
+  h1 .soft { color:#a3a3a0; }
+  .lede { margin-top:30px; width:440px; }
+  .bar { height:11px; border-radius:6px; background:#e7e7e4; margin-bottom:9px; }
+  .cta { margin-top:44px; display:flex; gap:14px; align-items:center; }
+  .btn-primary { background:#4338ca; color:#fff; font-size:15px; font-weight:600; padding:16px 30px;
+    border-radius:2px; letter-spacing:.02em; box-shadow:0 1px 0 rgba(0,0,0,.15); }
+  .btn-secondary { border:1px solid #d6d6d2; color:#3f3f46; font-size:15px; font-weight:500; padding:15px 26px; border-radius:2px; background:#fff; }
+
+  /* answer grid */
+  .sheet-right { width:46%; padding:96px 48px 64px 0; display:flex; flex-direction:column; gap:14px; }
+  .grid-card { background:#fff; border:1px solid #e2e2df; box-shadow:0 18px 40px -28px rgba(27,27,29,.25); }
+  .grid-head { display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #ececea; }
+  .grid-title { font-size:10px; letter-spacing:.22em; color:#8a8a86; }
+  .timer { font-family:ui-monospace, 'SF Mono', Consolas, monospace; font-size:13px; font-weight:700; color:#1b1b1d;
+    background:#f2f2f0; padding:4px 10px; border-radius:2px; border:1px solid #e2e2df; }
+  .palette { display:grid; grid-template-columns:repeat(10, 1fr); gap:7px; padding:18px; }
+  .cell { aspect-ratio:1; border:1px solid #e2e2df; border-radius:3px; display:flex; align-items:center; justify-content:center;
+    font-size:10px; font-weight:600; color:#9a9a96; background:#fff; }
+  .cell.filled { background:#4338ca; border-color:#4338ca; color:#fff; opacity:0; animation:fill .5s ease forwards; }
+  .cell.now { border:2px solid #4338ca; color:#4338ca; animation:pulse 1.6s ease infinite; }
+  @keyframes fill { from { opacity:0; transform:scale(.7);} to { opacity:1; transform:scale(1);} }
+  @keyframes pulse { 0%,100% { box-shadow:0 0 0 0 rgba(67,56,202,.25);} 50% { box-shadow:0 0 0 5px rgba(67,56,200,.12);} }
+  .grid-foot { display:flex; justify-content:space-between; padding:12px 18px; border-top:1px solid #ececea; font-size:10px; letter-spacing:.18em; color:#8a8a86; }
+
+  /* next section peek */
+  .peek { border-top:1px solid #1b1b1d; padding:22px 48px; display:flex; gap:48px; }
+  .peek .entry { flex:1; }
+  .peek .no { font-size:11px; letter-spacing:.26em; color:#a3a3a0; margin-bottom:8px; }
+  .peek .t { font-size:17px; font-weight:650; letter-spacing:-0.01em; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="edge"><div class="ticks"></div>
+    <div class="labels"><span>REAL IELTS</span><span>CD-IELTS · COMPUTER-DELIVERED</span><span>FORM R-21</span></div>
+  </div>
+  <div class="titleblock">
+    <div class="tb-cell"><div class="tb-k">PAPER</div><div class="tb-v">Listening · Reading</div></div>
+    <div class="tb-cell"><div class="tb-k">CONDITION</div><div class="tb-v">Timed · Exam-faithful UI</div></div>
+    <div class="tb-cell"><div class="tb-k">MATERIAL</div><div class="tb-v">Cambridge 7–21</div></div>
+    <div class="tb-cell"><div class="tb-k">MARKING</div><div class="tb-v">Instant band score</div></div>
+  </div>
+  <div class="hero">
+    <div class="copy">
+      <div class="kicker">FORM R-21 · CANDIDATE No. ______</div>
+      <h1>Sit the real exam.<br><span class="soft">Before the real exam.</span></h1>
+      <div class="lede">
+        <div class="bar" style="width:100%"></div>
+        <div class="bar" style="width:92%"></div>
+        <div class="bar" style="width:97%"></div>
+        <div class="bar" style="width:64%"></div>
+      </div>
+      <div class="cta">
+        <div class="btn-primary">Start practice →</div>
+        <div class="btn-secondary">Browse the library</div>
+      </div>
+    </div>
+    <div class="sheet-right">
+      <div class="grid-card">
+        <div class="grid-head">
+          <span class="grid-title">QUESTION PALETTE — TEST 18 · LISTENING · PART 1</span>
+          <span class="timer">24:12</span>
+        </div>
+        <div class="palette">
+          <div class="cell filled" style="animation-delay:.05s">1</div>
+          <div class="cell filled" style="animation-delay:.15s">2</div>
+          <div class="cell filled" style="animation-delay:.25s">3</div>
+          <div class="cell filled" style="animation-delay:.35s">4</div>
+          <div class="cell filled" style="animation-delay:.45s">5</div>
+          <div class="cell filled" style="animation-delay:.55s">6</div>
+          <div class="cell filled" style="animation-delay:.65s">7</div>
+          <div class="cell filled" style="animation-delay:.75s">8</div>
+          <div class="cell filled" style="animation-delay:.85s">9</div>
+          <div class="cell filled" style="animation-delay:.95s">10</div>
+          <div class="cell filled" style="animation-delay:1.05s">11</div>
+          <div class="cell filled" style="animation-delay:1.15s">12</div>
+          <div class="cell filled" style="animation-delay:1.25s">13</div>
+          <div class="cell filled" style="animation-delay:1.35s">14</div>
+          <div class="cell filled" style="animation-delay:1.45s">15</div>
+          <div class="cell filled" style="animation-delay:1.55s">16</div>
+          <div class="cell filled" style="animation-delay:1.65s">17</div>
+          <div class="cell now">18</div>
+          <div class="cell">19</div><div class="cell">20</div>
+          <div class="cell">21</div><div class="cell">22</div><div class="cell">23</div><div class="cell">24</div><div class="cell">25</div><div class="cell">26</div><div class="cell">27</div><div class="cell">28</div><div class="cell">29</div><div class="cell">30</div>
+          <div class="cell">31</div><div class="cell">32</div><div class="cell">33</div><div class="cell">34</div><div class="cell">35</div><div class="cell">36</div><div class="cell">37</div><div class="cell">38</div><div class="cell">39</div><div class="cell">40</div>
+        </div>
+        <div class="grid-foot"><span>17 ANSWERED</span><span>PART 1 OF 4</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="peek">
+    <div class="entry"><div class="no">§ 01 — EXAM-FAITHFUL</div><div class="t">Pixel-perfect CD-IELTS interface</div></div>
+    <div class="entry"><div class="no">§ 02 — SCORING</div><div class="t">Instant band, per-part breakdown</div></div>
+    <div class="entry"><div class="no">§ 03 — REVIEW</div><div class="t">Interactive scripts &amp; explanations</div></div>
+  </div>
+</div>
+</body>
+</html>

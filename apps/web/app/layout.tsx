@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Script from "next/script"
-import { Geist_Mono, Inter } from "next/font/google"
+import { Geist_Mono, Inter, Archivo } from "next/font/google"
 
 import { ThemeProvider } from "@/providers/theme-provider"
 import { QueryProvider } from "@/providers/query-provider"
@@ -10,6 +10,8 @@ import "@workspace/ui/globals.css"
 import { cn } from "@workspace/ui/lib/utils"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
+
+const archivo = Archivo({ subsets: ["latin"], variable: "--font-display" })
 
 export const metadata: Metadata = {
   title: {
@@ -99,7 +101,8 @@ export default function RootLayout({
         "antialiased",
         fontMono.variable,
         "font-sans",
-        inter.variable
+        inter.variable,
+        archivo.variable
       )}
     >
       <head>

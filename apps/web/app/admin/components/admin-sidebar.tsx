@@ -15,8 +15,6 @@ import {
   ChevronLeft,
   Bug,
   Users,
-  SpellCheck,
-  Type,
 } from "lucide-react"
 import { Logo } from "@/components/Logo"
 import { cn } from "@workspace/ui/lib/utils"
@@ -57,13 +55,6 @@ const navGroups: NavGroup[] = [
       { href: "/admin/tests", label: "All Tests", icon: FileText },
     ],
   },
-  {
-    title: "Drills",
-    items: [
-      { href: "/admin/drills/spelling_challenge", label: "Spelling Challenge", icon: SpellCheck },
-      { href: "/admin/drills/sentence_dictation", label: "Sentence Dictation", icon: SpellCheck },
-    ],
-  },
     {
       title: "Operations",
       items: [
@@ -79,8 +70,6 @@ const navGroups: NavGroup[] = [
       { href: "/admin/schemas/reading", label: "Reading Schema", icon: BookOpen },
       { href: "/admin/schemas/writing", label: "Writing Schema", icon: PenLine },
       { href: "/admin/schemas/speaking", label: "Speaking Schema", icon: MessageSquare },
-      { href: "/admin/schemas/spelling", label: "Spelling Schema", icon: SpellCheck },
-      { href: "/admin/schemas/sentence-dictation", label: "Sentence Dictation Schema", icon: Type },
     ],
   },
 ]

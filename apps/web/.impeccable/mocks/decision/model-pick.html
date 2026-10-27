@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Pick — The Interface Itself</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1440px; height:900px; overflow:hidden; background:#f4f5f7; color:#16181d;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  .page { height:100%; display:flex; flex-direction:column; padding:44px 72px 0; }
+  .top { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:26px; }
+  h1 { font-size:58px; line-height:1.04; letter-spacing:-0.03em; font-weight:760; }
+  .sub { width:360px; }
+  .bar { height:10px; border-radius:5px; background:#e2e4e8; margin-bottom:8px; }
+  .stage { flex:1; position:relative; }
+
+  /* the exam interface, full fidelity */
+  .exam { position:absolute; inset:0 0 56px 0; background:#dfe4ee; border-radius:10px;
+    box-shadow:0 30px 60px -30px rgba(22,24,29,.35); display:flex; flex-direction:column; overflow:hidden; }
+  .exam-chrome { height:52px; background:#c9d2e4; display:flex; align-items:center; padding:0 20px; gap:16px;
+    border-bottom:1px solid #b6c0d6; }
+  .exam-title { font-size:12px; font-weight:600; color:#33415c; letter-spacing:.02em; }
+  .exam-timer { margin-left:auto; font-family:ui-monospace,'SF Mono',Consolas,monospace; font-size:14px; font-weight:700;
+    background:#1e1b4b; color:#fff; padding:7px 14px; border-radius:5px; letter-spacing:.08em; }
+  .exam-body { flex:1; display:flex; }
+  .pane { background:#fff; margin:14px; border:1px solid #c4cde0; }
+  .pane.passage { width:60%; padding:22px 26px; }
+  .pline { height:12px; background:#e6e9f0; border-radius:6px; margin-bottom:10px; }
+  .pline.h { height:16px; width:40%; background:#c9d2e4; }
+  .pane.questions { flex:1; padding:22px 24px; }
+  .qline { height:12px; width:70%; background:#e6e9f0; border-radius:6px; margin-bottom:16px; }
+  .opt { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .radio { width:15px; height:15px; border-radius:50%; border:1.6px solid #9aa7c2; }
+  .opt .obar { height:10px; border-radius:5px; background:#e6e9f0; flex:1; }
+  .opt.sel .radio { border-color:#2f43b8; background:radial-gradient(circle, #2f43b8 46%, #fff 50%); }
+  .exam-foot { height:58px; background:#dfe4ee; border-top:1px solid #b6c0d6; display:flex; align-items:center; padding:0 20px; gap:8px; }
+  .chip { width:30px; height:30px; background:#fff; border:1px solid #c4cde0; border-radius:5px;
+    display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:#5a6a8a; }
+  .chip.done { background:#2f43b8; border-color:#2f43b8; color:#fff; }
+  .exam-foot .spacer { flex:1; }
+  .btn-next { background:#2f43b8; color:#fff; font-size:13px; font-weight:600; padding:10px 22px; border-radius:5px; }
+
+  /* begin action, half overlapping the exam's bottom edge */
+  .begin { position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:16px; }
+  .btn-begin { background:#16181d; color:#fff; font-size:16px; font-weight:650; padding:19px 34px; border-radius:8px;
+    box-shadow:0 16px 30px -12px rgba(22,24,29,.4); letter-spacing:.01em; }
+  .begin .bars { width:300px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top">
+    <h1>The exam screen.<br>Exactly.</h1>
+    <div class="sub">
+      <div class="bar" style="width:100%"></div>
+      <div class="bar" style="width:84%"></div>
+      <div class="bar" style="width:55%"></div>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="exam">
+      <div class="exam-chrome">
+        <span class="exam-title">IELTS Listening — Part 1 of 4</span>
+        <span class="exam-timer">29:41</span>
+      </div>
+      <div class="exam-body">
+        <div class="pane passage">
+          <div class="pline h" style="margin-bottom:20px"></div>
+          <div class="pline" style="width:100%"></div><div class="pline" style="width:96%"></div>
+          <div class="pline" style="width:100%"></div><div class="pline" style="width:88%"></div>
+          <div class="pline" style="width:100%"></div><div class="pline" style="width:93%"></div>
+          <div class="pline" style="width:70%"></div>
+          <div class="pline h" style="margin-top:26px; width:52%"></div>
+          <div class="pline" style="width:100%"></div><div class="pline" style="width:97%"></div>
+          <div class="pline" style="width:61%"></div>
+        </div>
+        <div class="pane questions">
+          <div class="qline"></div>
+          <div class="opt"><div class="radio"></div><div class="obar"></div></div>
+          <div class="opt sel"><div class="radio"></div><div class="obar"></div></div>
+          <div class="opt"><div class="radio"></div><div class="obar" style="width:84%"></div></div>
+          <div class="qline" style="margin-top:22px; width:76%"></div>
+          <div class="opt"><div class="radio"></div><div class="obar"></div></div>
+          <div class="opt"><div class="radio"></div><div class="obar" style="width:72%"></div></div>
+        </div>
+      </div>
+      <div class="exam-foot">
+        <div class="chip done">1</div><div class="chip done">2</div><div class="chip done">3</div>
+        <div class="chip">4</div><div class="chip">5</div><div class="chip">6</div><div class="chip">7</div><div class="chip">8</div><div class="chip">9</div><div class="chip">10</div>
+        <div class="spacer"></div>
+        <div class="btn-next">Next →</div>
+      </div>
+    </div>
+    <div class="begin">
+      <div class="btn-begin">Begin Listening Practice →</div>
+      <div class="bars">
+        <div class="bar" style="width:100%"></div>
+        <div class="bar" style="width:60%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

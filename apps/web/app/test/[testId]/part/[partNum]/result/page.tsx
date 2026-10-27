@@ -191,7 +191,7 @@ export default function ResultPage() {
     <>
       <Header />
       <AudioProvider src={skill === "listening" ? data?.section?.audio_url : undefined}>
-      <div className="mx-auto w-full max-w-5xl px-4 py-12 pb-32 sm:px-6">
+      <div className="mx-auto w-full max-w-6xl px-4 py-12 pb-32 sm:px-6">
         
         {/* Hero Score Card */}
         <div className="mb-12 overflow-hidden rounded-3xl border border-border/40 bg-card/40 shadow-sm relative">

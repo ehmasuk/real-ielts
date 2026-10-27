@@ -48,48 +48,4 @@ export const updateMediaSchema = z.object({
     title: z.string().min(1).optional(),
     used: z.boolean().optional(),
 });
-export const updateDrillProgressSchema = z.object({
-    levelNumber: z.number().int().positive("levelNumber must be a positive integer"),
-    stars: z.number().int().min(0).max(3, "stars must be between 0 and 3"),
-    accuracy: z.number().min(0).max(100, "accuracy must be between 0 and 100"),
-});
-const questionSchema = z.object({
-    id: z.number().int().positive(),
-    type: z.string().min(1),
-    word: z.string().min(1).optional(),
-    sentence: z.string().min(1).optional(),
-    hint: z.string().optional(),
-    explanation: z.string().optional(),
-});
-const levelSettingsSchema = z.object({
-    questions: z.number().int().positive(),
-    replayLimit: z.number().int().min(-1),
-    passingScore: z.number().min(0).max(100),
-});
-const levelSchema = z.object({
-    id: z.number().int().positive(),
-    title: z.string().min(1),
-    description: z.string().optional(),
-    difficulty: z.enum(["easy", "medium", "hard"]),
-    settings: levelSettingsSchema,
-    questions: z.array(questionSchema).min(1),
-});
-export const updateDrillSchemaBody = z.object({
-    schema: z.object({
-        id: z.string().min(1),
-        title: z.string().min(1),
-        description: z.string().optional(),
-        version: z.number().int().positive(),
-        audio: z
-            .object({
-            provider: z.string().min(1),
-            language: z.string().optional(),
-            rate: z.number().optional(),
-            pitch: z.number().optional(),
-            volume: z.number().optional(),
-        })
-            .optional(),
-        levels: z.array(levelSchema).min(1),
-    }),
-});
 //# sourceMappingURL=index.js.map

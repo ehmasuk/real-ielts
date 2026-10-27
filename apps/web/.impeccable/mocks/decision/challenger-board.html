@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Challenger — The Test-Day Board</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1440px; height:900px; overflow:hidden; background:#f2f2f0; color:#111214;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  .page { height:100%; display:flex; flex-direction:column; }
+  .slim { height:64px; display:flex; align-items:center; padding:0 48px; border-bottom:1px solid #e2e2df; }
+  .slim .mark { font-size:12px; letter-spacing:.3em; font-weight:700; }
+  .slim .right { margin-left:auto; display:flex; gap:12px; align-items:center; font-size:11px; letter-spacing:.14em; color:#7a7a76; }
+
+  .boardzone { flex:1; background:#2a2d31; display:flex; flex-direction:column; padding:26px 40px 0; }
+  .board { flex:1; background:#0b0b0d; border:1px solid #3a3d42; border-radius:10px; box-shadow:0 0 0 8px #3a3d42, 0 0 0 9px #565a60;
+    display:flex; flex-direction:column; overflow:hidden; }
+
+  .headline-row { display:flex; gap:6px; padding:26px 32px 18px; }
+  .cell { background:#151517; border:1px solid #2c2c30; border-radius:3px; color:#f2f2f2; height:52px; width:40px;
+    display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700;
+    font-family:'Arial Narrow', 'Helvetica Neue', sans-serif; letter-spacing:.02em; }
+  .cell.sp { background:#0b0b0d; border-color:#1a1a1d; }
+  .cell.amber { color:#ffb000; }
+
+  .rows { flex:1; padding:0 32px 20px; }
+  .rhead { display:grid; grid-template-columns:120px 1.6fr 1fr 150px; gap:8px; padding:8px 6px 10px;
+    font-size:10px; letter-spacing:.24em; color:#6f6f6a; border-bottom:1px solid #2c2c30; }
+  .row { display:grid; grid-template-columns:120px 1.6fr 1fr 150px; gap:8px; align-items:center; padding:9px 6px;
+    border-bottom:1px solid #1a1a1d; }
+  .rcell { background:#151517; border:1px solid #2c2c30; border-radius:3px; height:38px; display:flex; align-items:center;
+    padding:0 12px; font-size:13px; font-weight:650; color:#f2f2f2; letter-spacing:.1em;
+    font-family:'Arial Narrow', 'Helvetica Neue', sans-serif; }
+  .rcell.time { font-family:ui-monospace,Consolas,monospace; letter-spacing:.06em; }
+  .rcell.status { justify-content:center; }
+  .ok { color:#f2f2f2; }
+  .amber { color:#ffb000; }
+  .red { color:#b00020; }
+
+  .cta-row { display:flex; align-items:center; gap:18px; padding:0 0 34px; }
+  .btn-take { background:#ffb000; color:#0b0b0d; font-size:16px; font-weight:750; letter-spacing:.06em;
+    padding:18px 32px; border-radius:6px; font-family:'Arial Narrow','Helvetica Neue',sans-serif; }
+  .cta-note { font-size:11px; letter-spacing:.18em; color:#6f6f6a; }
+
+  .peek { background:#f2f2f0; border-top:1px solid #e2e2df; padding:26px 48px; display:flex; gap:56px; }
+  .peek .t { font-size:16px; font-weight:650; }
+  .peek .n { font-size:10px; letter-spacing:.26em; color:#8a8a86; margin-bottom:8px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="slim"><span class="mark">REAL IELTS</span>
+    <span class="right"><span>LISTENING</span><span>READING</span><span>SIGN IN</span></span>
+  </div>
+  <div class="boardzone">
+    <div class="board">
+      <div class="headline-row">
+        <div class="cell">T</div><div class="cell">O</div><div class="cell">D</div><div class="cell">A</div><div class="cell">Y</div><div class="cell sp"></div>
+        <div class="cell">Y</div><div class="cell">O</div><div class="cell">U</div><div class="cell sp"></div>
+        <div class="cell">S</div><div class="cell">I</div><div class="cell">T</div><div class="cell sp"></div>
+        <div class="cell amber">T</div><div class="cell amber">H</div><div class="cell amber">E</div><div class="cell sp"></div>
+        <div class="cell">E</div><div class="cell">X</div><div class="cell">A</div><div class="cell">M</div>
+      </div>
+      <div class="rows">
+        <div class="rhead"><span>TIME</span><span>PAPER</span><span>CONDITION</span><span>STATUS</span></div>
+        <div class="row"><div class="rcell time">00:00</div><div class="rcell">LISTENING · PART 1</div><div class="rcell">TIMED · EXAM UI</div><div class="rcell status ok">READY</div></div>
+        <div class="row"><div class="rcell time">00:00</div><div class="rcell">LISTENING · PART 2</div><div class="rcell">TIMED · EXAM UI</div><div class="rcell status ok">READY</div></div>
+        <div class="row"><div class="rcell time">00:00</div><div class="rcell">READING · PART 1</div><div class="rcell">TIMED · SPLIT PANE</div><div class="rcell status ok">READY</div></div>
+        <div class="row"><div class="rcell time">00:00</div><div class="rcell">FULL TEST · ALL PARTS</div><div class="rcell">AUTOSUBMIT</div><div class="rcell status amber">2H 44M</div></div>
+        <div class="row"><div class="rcell time">—:—</div><div class="rcell">BAND SCORE · RESULTS</div><div class="rcell">PER-PART BREAKDOWN</div><div class="rcell status amber">ON FINISH</div></div>
+      </div>
+    </div>
+    <div class="cta-row">
+      <div class="btn-take">TAKE YOUR SEAT →</div>
+      <div class="cta-note">NO SIGN-UP REQUIRED TO PRACTICE · CAMBRIDGE 16–21</div>
+    </div>
+  </div>
+  <div class="peek">
+    <div><div class="n">§ 01</div><div class="t">Exam-faithful interface</div></div>
+    <div><div class="n">§ 02</div><div class="t">Instant band scoring</div></div>
+    <div><div class="n">§ 03</div><div class="t">Interactive script review</div></div>
+  </div>
+</div>
+</body>
+</html>
