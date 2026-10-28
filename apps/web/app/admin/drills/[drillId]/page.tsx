@@ -43,7 +43,7 @@ export default function DrillSchemaEditorPage({ params }: { params: Promise<{ dr
   React.useEffect(() => {
     fetchDrillSchema(drillId)
       .then((res) => {
-        setSchemaJson(JSON.stringify(res.data.schema, null, 2))
+        setSchemaJson(JSON.stringify(res.schema, null, 2))
       })
       .catch(() => {
         // keep default schema on failure

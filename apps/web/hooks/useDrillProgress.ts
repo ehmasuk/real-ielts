@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useMemo } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getCookie, setCookie } from "cookies-next/client"
 import { fetchDrillProgress, updateDrillProgress } from "@/lib/api"
@@ -44,12 +44,15 @@ export function useDrillProgress(drillId: string, totalLevels: number): UseDrill
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth()
   const queryClient = useQueryClient()
 
-  const [localProgress, setLocalProgress] = useState<DrillProgressData>({ currentLevel: 1, completedLevels: [], stars: {}, bestAccuracy: 0 })
+  const [localProgress, setLocalProgress] = useState<DrillProgressData>(() => readProgress(drillId))
   const [isClientLoaded, setIsClientLoaded] = useState(false)
 
   useEffect(() => {
-    setLocalProgress(readProgress(drillId))
     setIsClientLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    setLocalProgress(readProgress(drillId))
   }, [drillId])
 
   const { data: serverProgress, isLoading: isLoadingServer } = useQuery({
@@ -66,14 +69,18 @@ export function useDrillProgress(drillId: string, totalLevels: number): UseDrill
     },
   })
 
-  const progress = isAuthenticated
-    ? {
-        currentLevel: serverProgress?.data?.currentLevel ?? 1,
-        completedLevels: serverProgress?.data?.completedLevels ?? [],
-        stars: serverProgress?.data?.stars ?? {},
-        bestAccuracy: serverProgress?.data?.bestAccuracy ?? 0,
-      }
-    : localProgress
+  const progress = useMemo(
+    () =>
+      isAuthenticated
+        ? {
+            currentLevel: serverProgress?.currentLevel ?? 1,
+            completedLevels: serverProgress?.completedLevels ?? [],
+            stars: serverProgress?.stars ?? {},
+            bestAccuracy: serverProgress?.bestAccuracy ?? 0,
+          }
+        : localProgress,
+    [isAuthenticated, serverProgress, localProgress]
+  )
 
   const saveLevelResult = useCallback(
     async (levelNumber: number, stars: number, accuracy: number) => {

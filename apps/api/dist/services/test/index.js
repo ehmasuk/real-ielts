@@ -2,6 +2,88 @@ import mongoose from "mongoose";
 import { Test } from "../../models/test.model.js";
 import { UserTestResult } from "../../models/user-test-result.model.js";
 import { UserFullTestResult } from "../../models/user-full-test-result.model.js";
+/**
+ * Normalizes an answer for comparison: lowercases, trims, collapses whitespace.
+ */
+function normalizeString(str) {
+    return String(str ?? "").trim().toLowerCase().replace(/\s+/g, " ");
+}
+/**
+ * Scores a single test section against the answer key.
+ *
+ * Pure scoring logic shared by both the per-part submit flow and the
+ * full-test submit flow. Returns per-question results plus the section
+ * score/total.
+ */
+function scoreSection({ section, userAnswers, answerMap, }) {
+    const { meta, mcqGroupMap } = getQuestionMetadata(section);
+    const questionIds = Object.keys(meta);
+    let totalScore = 0;
+    let totalMax = 0;
+    const processedMcqGroups = new Set();
+    const results = questionIds.map((qId) => {
+        const qMeta = meta[qId] || { type: "unknown", maxScore: 1 };
+        let score = 0;
+        let correct = false;
+        let userAnswer = userAnswers[qId] ?? null;
+        let correctAnswer = answerMap[qId];
+        if (qMeta.type === "mcq_multiple") {
+            const groupId = Object.keys(mcqGroupMap).find((gid) => mcqGroupMap[gid]?.includes(qId)) ?? "";
+            if (groupId && !processedMcqGroups.has(groupId)) {
+                processedMcqGroups.add(groupId);
+            }
+            const userSelection = Array.isArray(userAnswers[groupId])
+                ? userAnswers[groupId]
+                : [];
+            const expectedCount = mcqGroupMap[groupId]?.length || 1;
+            if (userSelection.length > expectedCount) {
+                correct = false;
+                score = 0;
+                userAnswer = userSelection;
+            }
+            else {
+                const userSet = new Set(userSelection.filter(Boolean).map(normalizeString));
+                const normalizedCorrect = normalizeString(correctAnswer);
+                const match = userSet.has(normalizedCorrect);
+                score = match ? 1 : 0;
+                correct = match;
+                userAnswer = userSelection.length > 0 ? userSelection : null;
+            }
+        }
+        else if (typeof correctAnswer === "string" && correctAnswer.includes(" & ")) {
+            // Multi-blank question: "plants & animals" — each blank scored independently
+            const correctParts = correctAnswer.split(" & ").map(normalizeString);
+            const userParts = typeof userAnswer === "string"
+                ? userAnswer.split(" & ").map(normalizeString)
+                : [];
+            const allMatch = correctParts.every((cp, i) => cp === (userParts[i] ?? ""));
+            score = allMatch ? 1 : 0;
+            correct = allMatch;
+        }
+        else if (Array.isArray(correctAnswer)) {
+            const uAns = normalizeString(userAnswer);
+            const match = correctAnswer.some((ans) => normalizeString(ans) === uAns);
+            score = match ? 1 : 0;
+            correct = match;
+        }
+        else {
+            const match = normalizeString(userAnswer) === normalizeString(correctAnswer);
+            score = match ? 1 : 0;
+            correct = match;
+        }
+        totalScore += score;
+        totalMax += qMeta.maxScore;
+        return {
+            questionId: qId,
+            correct,
+            score,
+            maxScore: qMeta.maxScore,
+            userAnswer,
+            correctAnswer,
+        };
+    });
+    return { results, score: totalScore, total: totalMax };
+}
 const testServices = {
     getAll: (filters) => {
         const filter = { status: "published" };
@@ -38,7 +120,9 @@ const testServices = {
             .sort({ testNumber: 1 })
             .lean();
     },
-    getById: (id) => Test.findOne({ _id: id, status: "published" }).select("-answerJson").lean(),
+    getById: (id) => Test.findOne({ _id: id, status: "published" })
+        .select("-answerJson")
+        .lean(),
     getPart: async (testId, partIndex) => {
         const results = await Test.aggregate([
             { $match: { _id: new mongoose.Types.ObjectId(testId), status: "published" } },
@@ -82,75 +166,13 @@ const testServices = {
         if (!answerMap || Object.keys(answerMap).length === 0)
             return { score: 0, total: 0, results: [] };
         const section = test.section;
-        const { meta, mcqGroupMap } = getQuestionMetadata(section);
-        const questionIds = Object.keys(meta);
-        let totalScore = 0;
-        let totalMax = 0;
-        const processedMcqGroups = new Set();
-        const normalizeString = (str) => String(str ?? "").trim().toLowerCase().replace(/\s+/g, " ");
-        const results = questionIds.map((qId) => {
-            const qMeta = meta[qId] || { type: "unknown", maxScore: 1 };
-            let score = 0;
-            let correct = false;
-            let userAnswer = userAnswers[qId] ?? null;
-            let correctAnswer = answerMap[qId];
-            if (qMeta.type === "mcq_multiple") {
-                const groupId = Object.keys(mcqGroupMap).find(gid => mcqGroupMap[gid]?.includes(qId)) ?? "";
-                if (groupId && !processedMcqGroups.has(groupId)) {
-                    processedMcqGroups.add(groupId);
-                }
-                const userSelection = Array.isArray(userAnswers[groupId]) ? userAnswers[groupId] : [];
-                const expectedCount = mcqGroupMap[groupId]?.length || 1;
-                if (userSelection.length > expectedCount) {
-                    correct = false;
-                    score = 0;
-                    userAnswer = userSelection;
-                }
-                else {
-                    const userSet = new Set(userSelection.filter(Boolean).map(normalizeString));
-                    const normalizedCorrect = normalizeString(correctAnswer);
-                    const match = userSet.has(normalizedCorrect);
-                    score = match ? 1 : 0;
-                    correct = match;
-                    userAnswer = userSelection.length > 0 ? userSelection : null;
-                }
-            }
-            else if (typeof correctAnswer === "string" && correctAnswer.includes(" & ")) {
-                // Multi-blank question: "plants & animals" — each blank scored independently
-                const correctParts = correctAnswer.split(" & ").map(normalizeString);
-                const userParts = typeof userAnswer === "string"
-                    ? userAnswer.split(" & ").map(normalizeString)
-                    : [];
-                const allMatch = correctParts.every((cp, i) => cp === (userParts[i] ?? ""));
-                score = allMatch ? 1 : 0;
-                correct = allMatch;
-            }
-            else if (Array.isArray(correctAnswer)) {
-                const uAns = normalizeString(userAnswer);
-                const match = correctAnswer.some(ans => normalizeString(ans) === uAns);
-                score = match ? 1 : 0;
-                correct = match;
-            }
-            else {
-                const match = normalizeString(userAnswer) === normalizeString(correctAnswer);
-                score = match ? 1 : 0;
-                correct = match;
-            }
-            totalScore += score;
-            totalMax += qMeta.maxScore;
-            return {
-                questionId: qId,
-                correct,
-                score,
-                maxScore: qMeta.maxScore,
-                userAnswer,
-                correctAnswer,
-            };
-        });
-        const score = totalScore;
-        const total = totalMax;
-        await UserTestResult.findOneAndUpdate({ userId: new mongoose.Types.ObjectId(userId), testId: new mongoose.Types.ObjectId(testId), partNum: partIndex + 1 }, { answers: userAnswers, results, score, total, timeTaken, submittedAt: new Date() }, { upsert: true, returnDocument: "after" });
-        return { results, score, total };
+        const sectionResult = scoreSection({ section, userAnswers, answerMap });
+        await UserTestResult.findOneAndUpdate({
+            userId: new mongoose.Types.ObjectId(userId),
+            testId: new mongoose.Types.ObjectId(testId),
+            partNum: partIndex + 1,
+        }, { answers: userAnswers, results: sectionResult.results, score: sectionResult.score, total: sectionResult.total, timeTaken, submittedAt: new Date() }, { upsert: true, returnDocument: "after" });
+        return { results: sectionResult.results, score: sectionResult.score, total: sectionResult.total };
     },
     getUserResults: async (userId) => {
         const results = await UserTestResult.find({ userId: new mongoose.Types.ObjectId(userId) }, { testId: 1, partNum: 1, score: 1, total: 1, _id: 0 }).lean();
@@ -225,13 +247,14 @@ const testServices = {
             totalSections: test.totalSections,
         };
     },
-    submitFullTest: async (userId, testId, skill, allAnswers, timeTaken, mode = "practice") => {
+    submitFullTest: async (userId, testId, allAnswers, timeTaken, mode = "practice") => {
         const test = await Test.findOne({
             _id: new mongoose.Types.ObjectId(testId),
             status: "published",
         }).lean();
         if (!test)
             return null;
+        const skill = test.skill;
         const rawAnswerJson = test.answerJson;
         const answerMap = rawAnswerJson?.answers ? rawAnswerJson.answers : rawAnswerJson;
         if (!answerMap)
@@ -240,81 +263,18 @@ const testServices = {
         const partResults = [];
         let combinedScore = 0;
         let combinedTotal = 0;
-        const normalizeString = (str) => String(str ?? "").trim().toLowerCase().replace(/\s+/g, " ");
         for (let partIndex = 0; partIndex < sections.length; partIndex++) {
             const section = sections[partIndex];
             const userAnswers = allAnswers[String(partIndex + 1)] ?? {};
-            const { meta, mcqGroupMap } = getQuestionMetadata(section);
-            const questionIds = Object.keys(meta);
-            let totalScore = 0;
-            let totalMax = 0;
-            const processedMcqGroups = new Set();
-            const results = questionIds.map((qId) => {
-                const qMeta = meta[qId] || { type: "unknown", maxScore: 1 };
-                let score = 0;
-                let correct = false;
-                let userAnswer = userAnswers[qId] ?? null;
-                let correctAnswer = answerMap[qId];
-                if (qMeta.type === "mcq_multiple") {
-                    const groupId = Object.keys(mcqGroupMap).find(gid => mcqGroupMap[gid]?.includes(qId)) ?? "";
-                    if (groupId && !processedMcqGroups.has(groupId)) {
-                        processedMcqGroups.add(groupId);
-                    }
-                    const userSelection = Array.isArray(userAnswers[groupId]) ? userAnswers[groupId] : [];
-                    const expectedCount = mcqGroupMap[groupId]?.length || 1;
-                    if (userSelection.length > expectedCount) {
-                        correct = false;
-                        score = 0;
-                        userAnswer = userSelection;
-                    }
-                    else {
-                        const userSet = new Set(userSelection.filter(Boolean).map(normalizeString));
-                        const normalizedCorrect = normalizeString(correctAnswer);
-                        const match = userSet.has(normalizedCorrect);
-                        score = match ? 1 : 0;
-                        correct = match;
-                        userAnswer = userSelection.length > 0 ? userSelection : null;
-                    }
-                }
-                else if (typeof correctAnswer === "string" && correctAnswer.includes(" & ")) {
-                    const correctParts = correctAnswer.split(" & ").map(normalizeString);
-                    const userParts = typeof userAnswer === "string"
-                        ? userAnswer.split(" & ").map(normalizeString)
-                        : [];
-                    const allMatch = correctParts.every((cp, i) => cp === (userParts[i] ?? ""));
-                    score = allMatch ? 1 : 0;
-                    correct = allMatch;
-                }
-                else if (Array.isArray(correctAnswer)) {
-                    const uAns = normalizeString(userAnswer);
-                    const match = correctAnswer.some(ans => normalizeString(ans) === uAns);
-                    score = match ? 1 : 0;
-                    correct = match;
-                }
-                else {
-                    const match = normalizeString(userAnswer) === normalizeString(correctAnswer);
-                    score = match ? 1 : 0;
-                    correct = match;
-                }
-                totalScore += score;
-                totalMax += qMeta.maxScore;
-                return {
-                    questionId: qId,
-                    correct,
-                    score,
-                    maxScore: qMeta.maxScore,
-                    userAnswer,
-                    correctAnswer,
-                };
-            });
+            const sectionResult = scoreSection({ section, userAnswers, answerMap });
             partResults.push({
                 partNum: partIndex + 1,
-                score: totalScore,
-                total: totalMax,
-                results,
+                score: sectionResult.score,
+                total: sectionResult.total,
+                results: sectionResult.results,
             });
-            combinedScore += totalScore;
-            combinedTotal += totalMax;
+            combinedScore += sectionResult.score;
+            combinedTotal += sectionResult.total;
         }
         await UserFullTestResult.findOneAndUpdate({
             userId: new mongoose.Types.ObjectId(userId),
@@ -351,6 +311,7 @@ const testServices = {
             title: s.title,
             audio_url: s.audio_url,
             script: s.script,
+            passage: s.passage,
         }));
         return {
             parts: result.parts,
@@ -375,6 +336,7 @@ const testServices = {
         }));
     },
 };
+export default testServices;
 function qid(item) {
     return item.questionId ?? (item.number != null ? `q_${item.number}` : undefined);
 }
@@ -426,5 +388,4 @@ function getQuestionMetadata(section) {
     }
     return { meta, mcqGroupMap };
 }
-export default testServices;
 //# sourceMappingURL=index.js.map

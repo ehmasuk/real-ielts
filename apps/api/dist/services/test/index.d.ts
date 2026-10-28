@@ -94,7 +94,7 @@ declare const testServices: {
         sections: any;
         totalSections: any;
     } | null>;
-    submitFullTest: (userId: string, testId: string, skill: string, allAnswers: Record<string, Record<string, any>>, timeTaken?: number, mode?: "practice" | "mock") => Promise<{
+    submitFullTest: (userId: string, testId: string, allAnswers: Record<string, Record<string, any>>, timeTaken?: number, mode?: "practice" | "mock") => Promise<{
         parts: {
             partNum: number;
             score: number;

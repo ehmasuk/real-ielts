@@ -85,6 +85,9 @@ export function useFullTest({ testId, skill, mode = "practice" }: UseFullTestOpt
         testNumber: d?.testNumber,
         title: d?.title,
         skill,
+        timeTaken: elapsedRef.current,
+        mode,
+        sections: d?.contentJson?.sections ?? d?.sections ?? [],
       }
       sessionStorage.setItem(`full-test-result-${testId}`, JSON.stringify(payload))
       localStorage.setItem(`full-test-result-${testId}`, JSON.stringify(payload))

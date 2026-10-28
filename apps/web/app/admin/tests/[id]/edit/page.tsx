@@ -61,7 +61,8 @@ export default function TestEditorPage({ params }: PageProps) {
     queryFn: () => fetchTestById(id),
   })
 
-  const bookId = rawTest?.bookId?._id || rawTest?.bookId
+  const bookIdValue = rawTest?.bookId
+  const bookId = typeof bookIdValue === "string" ? bookIdValue : bookIdValue?._id
   const { data: allTests } = useQuery({
     queryKey: ["tests"],
     queryFn: () => fetchTests(),
@@ -69,7 +70,8 @@ export default function TestEditorPage({ params }: PageProps) {
 
   const navigation = React.useMemo(() => {
     if (!allTests || !rawTest) return { prev: null, next: null }
-    const currentBookNumber = rawTest.bookId?.number
+    const currentBookNumber =
+      typeof rawTest.bookId === "string" ? undefined : rawTest.bookId.number
     const currentSkill = rawTest.skill
     if (!currentBookNumber || !currentSkill) return { prev: null, next: null }
 

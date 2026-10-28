@@ -31,6 +31,7 @@ export interface TestSelectionModalProps {
   }>
   resultsMap: Record<string, { score: number; total: number }>
   fullResultsMap: Record<string, { totalScore: number; totalMax: number }>
+  skill?: string
 }
 
 type TestMode = "full" | "part"
@@ -42,6 +43,7 @@ export function TestSelectionModal({
   tests,
   resultsMap,
   fullResultsMap,
+  skill: explicitSkill,
 }: TestSelectionModalProps) {
   const [mode, setMode] = React.useState<TestMode>("full")
   const [selectedTestId, setSelectedTestId] = React.useState<string | null>(
@@ -56,7 +58,12 @@ export function TestSelectionModal({
   }, [tests, selectedTestId])
 
   const activeTest = tests.find((t) => t._id === selectedTestId) || tests[0]
-  const sectionCount = activeTest?.contentJson?.sections?.length || 4
+  const skill = explicitSkill || activeTest?.skill || "listening"
+  const isReading = skill === "reading"
+  const defaultSectionCount = isReading ? 3 : 4
+  const sectionCount = activeTest?.contentJson?.sections?.length || defaultSectionCount
+
+  const skillBadge = isReading ? "Reading Practice" : "Listening Practice"
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -71,7 +78,7 @@ export function TestSelectionModal({
         <DialogHeader className="p-5 pb-4 border-b border-zinc-200 dark:border-zinc-800 pr-10">
           <div className="flex items-center gap-2 mb-1">
             <span className="font-mono text-[9px] font-semibold tracking-[0.2em] text-red-600 dark:text-red-400 uppercase">
-              Listening Practice
+              {skillBadge}
             </span>
           </div>
           <DialogTitle
@@ -130,6 +137,7 @@ export function TestSelectionModal({
                 const fullRes = fullResultsMap[test._id]
                 const isDone = !!fullRes
                 const band = fullRes ? bandFrom(fullRes.totalScore, fullRes.totalMax) : null
+                const testSkill = test.skill || skill
 
                 return (
                   <div
@@ -156,7 +164,7 @@ export function TestSelectionModal({
                             className="h-8 rounded-[3px] bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-[11px] font-semibold tracking-wide uppercase px-3"
                           >
                             <Link
-                              href={`/test/${test._id}/listening/full/result`}
+                              href={`/test/${test._id}/${testSkill}/full/result`}
                               onClick={onClose}
                             >
                               <Eye className="h-3 w-3 mr-1" />
@@ -171,7 +179,7 @@ export function TestSelectionModal({
                             title="Retake full test"
                           >
                             <Link
-                              href={`/test/${test._id}/listening/full`}
+                              href={`/test/${test._id}/${testSkill}/full`}
                               onClick={onClose}
                             >
                               <RotateCcw className="h-3 w-3" />
@@ -185,7 +193,7 @@ export function TestSelectionModal({
                           className="h-8 rounded-[3px] bg-red-600 hover:bg-red-700 text-white font-mono text-[11px] font-semibold tracking-wider uppercase px-3"
                         >
                           <Link
-                            href={`/test/${test._id}/listening/full`}
+                            href={`/test/${test._id}/${testSkill}/full`}
                             onClick={onClose}
                           >
                             <Play className="h-3 w-3 fill-white mr-1" />
@@ -231,6 +239,7 @@ export function TestSelectionModal({
                   {Array.from({ length: sectionCount }, (_, i) => i + 1).map((partNum) => {
                     const res = resultsMap[`${activeTest._id}-${partNum}`]
                     const isDone = !!res
+                    const testSkill = activeTest.skill || skill
 
                     return (
                       <div
@@ -272,7 +281,7 @@ export function TestSelectionModal({
                                 title="Practice again"
                               >
                                 <Link
-                                  href={`/test/${activeTest._id}/listening/${partNum}`}
+                                  href={`/test/${activeTest._id}/${testSkill}/${partNum}`}
                                   onClick={onClose}
                                 >
                                   <RotateCcw className="h-3 w-3" />
@@ -283,14 +292,14 @@ export function TestSelectionModal({
                             <Button
                               asChild
                               size="xs"
-                              className="h-8 rounded-[3px] bg-zinc-900 hover:bg-red-600 dark:bg-zinc-100 dark:hover:bg-red-600 text-white dark:text-zinc-950 dark:hover:text-white font-mono text-[11px] font-semibold tracking-wider uppercase px-3 transition-colors"
+                              className="h-8 rounded-[3px] bg-red-600 hover:bg-red-700 text-white font-mono text-[11px] font-semibold tracking-wider uppercase px-3"
                             >
                               <Link
-                                href={`/test/${activeTest._id}/listening/${partNum}`}
+                                href={`/test/${activeTest._id}/${testSkill}/${partNum}`}
                                 onClick={onClose}
                               >
-                                <Play className="h-3 w-3 fill-current mr-1" />
-                                Practice
+                                <span>Practice</span>
+                                <ArrowRight className="h-3 w-3 ml-1" />
                               </Link>
                             </Button>
                           )}
@@ -302,19 +311,6 @@ export function TestSelectionModal({
               )}
             </div>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="p-3 px-5 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 flex justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            size="xs"
-            onClick={onClose}
-            className="rounded-[3px] font-mono text-[11px] tracking-wider uppercase px-4 h-8"
-          >
-            Close
-          </Button>
         </div>
       </DialogContent>
     </Dialog>

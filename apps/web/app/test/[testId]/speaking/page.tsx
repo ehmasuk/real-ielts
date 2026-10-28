@@ -69,6 +69,8 @@ export default function SpeakingTestPage() {
   const part2 = sections.find((s) => s.id === "part_2")
   const part3 = sections.find((s) => s.id === "part_3")
 
+  const bookTitle = typeof test.bookId === "string" ? undefined : test.bookId?.title
+
   return (
     <div className="mx-auto max-w-3xl w-full px-6 py-12 pb-32">
       {/* Back navigation */}
@@ -88,8 +90,8 @@ export default function SpeakingTestPage() {
             <span>Speaking Test</span>
           </div>
           <h1 className="text-4xl font-semibold tracking-tight text-foreground">
-            {test?.bookId?.title ? `${test.bookId.title} ` : ""}
-            <span className="text-muted-foreground font-light">Test {test?.testNumber ?? ""}</span>
+            {bookTitle ? `${bookTitle} ` : ""}
+            <span className="text-muted-foreground font-light">Test {test.testNumber ?? ""}</span>
           </h1>
         </div>
       </header>

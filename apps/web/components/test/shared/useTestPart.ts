@@ -10,6 +10,7 @@ export function useTestPart(testId: string, partNum: number) {
   const searchParams = useSearchParams()
   const retrying = searchParams.get("retry") === "1"
 
+  const [elapsed, setElapsed] = useState(0)
   const elapsedRef = useRef(0)
   const answersRef = useRef<Record<string, any>>({})
   const submittingRef = useRef(false)
@@ -36,6 +37,7 @@ export function useTestPart(testId: string, partNum: number) {
   useEffect(() => {
     const interval = setInterval(() => {
       elapsedRef.current += 1
+      setElapsed((prev) => prev + 1)
     }, 1000)
     return () => clearInterval(interval)
   }, [])
@@ -84,6 +86,7 @@ export function useTestPart(testId: string, partNum: number) {
           sectionTitle: d?.section?.title,
           section: d?.section,
           skill: d?.skill,
+          timeTaken: elapsedRef.current,
         })
       )
       localStorage.setItem(
@@ -95,6 +98,7 @@ export function useTestPart(testId: string, partNum: number) {
           sectionTitle: d?.section?.title,
           section: d?.section,
           skill: d?.skill,
+          timeTaken: elapsedRef.current,
         })
       )
       router.push(`/test/${testId}/part/${partNum}/result`)
@@ -116,7 +120,7 @@ export function useTestPart(testId: string, partNum: number) {
     redirecting,
     answers,
     submitting,
-    elapsed: elapsedRef.current,
+    elapsed,
     formatTime,
     handleAnswerChange,
     handleSubmit,

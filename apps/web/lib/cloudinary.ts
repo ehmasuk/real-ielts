@@ -6,8 +6,7 @@
  * your backend and keeps your API secret secure.
  */
 
-// Note: Using the exact spelling from your .env file
-const CLOUD_NAME = process.env.NEXT_PUBLIC_COUDINARY_CLOUD_NAME || ""
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || ""
 const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || ""
 
 if (!CLOUD_NAME) {

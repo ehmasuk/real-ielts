@@ -6,6 +6,7 @@ import { motion, useReducedMotion, MotionConfig } from "framer-motion"
 import { ArrowRight, BookOpen, Headphones, Play } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import { cn } from "@workspace/ui/lib/utils"
+import { useToday } from "@/lib/use-today"
 
 /* ─── The Vocabulary Notebook ──────────────────────────────────────
    One ruled sheet: graphite text, one red ink, pen-stroke motion.
@@ -36,23 +37,6 @@ const paperCss = `
 .pen-link:hover, .pen-link:focus-visible { background-size: 100% 1.5px; }
 @media (prefers-reduced-motion: reduce) { .pen-link { transition: none; } }
 `
-
-function useToday() {
-  const [date, setDate] = React.useState("")
-  React.useEffect(() => {
-    const d = new Date()
-      .toLocaleDateString("en-GB", {
-        weekday: "short",
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      })
-      .toUpperCase()
-      .replace(",", " ·")
-    setDate(d)
-  }, [])
-  return date
-}
 
 function useCountdown(from: number) {
   const reduced = useReducedMotion()

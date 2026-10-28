@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-import { Test } from "../models/test.model.js";
+import newError from "../utils/newError.js";
 import testServices from "../services/test/index.js";
 import catchAsync from "../utils/catchAsync.js";
 // ─── Admin Endpoints ────────────────────────────────────────────────────────
@@ -22,15 +21,11 @@ export const getTestCount = catchAsync(async (req, res) => {
 // @access  Private (Admin)
 export const getAdminTestByIdHandler = catchAsync(async (req, res) => {
     const id = req.params.id;
-    if (!id) {
-        res.status(400);
-        throw new Error("Missing test id");
-    }
+    if (!id)
+        throw newError({ message: "Missing test id", statusCode: 400 });
     const test = await testServices.getByIdAdmin(id);
-    if (!test) {
-        res.status(404);
-        throw new Error("Test not found");
-    }
+    if (!test)
+        throw newError({ message: "Test not found", statusCode: 404 });
     res.status(200).json(test);
 });
 // @desc    Create a new test
@@ -46,16 +41,12 @@ export const createTestHandler = catchAsync(async (req, res) => {
 // @access  Private (Admin)
 export const updateTestHandler = catchAsync(async (req, res) => {
     const id = req.params.id;
-    if (!id) {
-        res.status(400);
-        throw new Error("Missing test id");
-    }
+    if (!id)
+        throw newError({ message: "Missing test id", statusCode: 400 });
     const { bookId, testNumber, skill, status, contentJson, answerJson } = req.body;
     const test = await testServices.update(id, { bookId, testNumber, skill, status, contentJson, answerJson });
-    if (!test) {
-        res.status(404);
-        throw new Error("Test not found");
-    }
+    if (!test)
+        throw newError({ message: "Test not found", statusCode: 404 });
     res.status(200).json(test);
 });
 // @desc    Delete a test
@@ -63,15 +54,11 @@ export const updateTestHandler = catchAsync(async (req, res) => {
 // @access  Private (Admin)
 export const deleteTestHandler = catchAsync(async (req, res) => {
     const id = req.params.id;
-    if (!id) {
-        res.status(400);
-        throw new Error("Missing test id");
-    }
+    if (!id)
+        throw newError({ message: "Missing test id", statusCode: 400 });
     const test = await testServices.remove(id);
-    if (!test) {
-        res.status(404);
-        throw new Error("Test not found");
-    }
+    if (!test)
+        throw newError({ message: "Test not found", statusCode: 404 });
     res.status(200).json({ message: "Test removed successfully" });
 });
 // @desc    Publish a test
@@ -79,15 +66,11 @@ export const deleteTestHandler = catchAsync(async (req, res) => {
 // @access  Private (Admin)
 export const publishTestHandler = catchAsync(async (req, res) => {
     const id = req.params.id;
-    if (!id) {
-        res.status(400);
-        throw new Error("Missing test id");
-    }
+    if (!id)
+        throw newError({ message: "Missing test id", statusCode: 400 });
     const test = await testServices.setStatus(id, "published");
-    if (!test) {
-        res.status(404);
-        throw new Error("Test not found");
-    }
+    if (!test)
+        throw newError({ message: "Test not found", statusCode: 404 });
     res.status(200).json(test);
 });
 // @desc    Archive a test
@@ -95,15 +78,11 @@ export const publishTestHandler = catchAsync(async (req, res) => {
 // @access  Private (Admin)
 export const archiveTestHandler = catchAsync(async (req, res) => {
     const id = req.params.id;
-    if (!id) {
-        res.status(400);
-        throw new Error("Missing test id");
-    }
+    if (!id)
+        throw newError({ message: "Missing test id", statusCode: 400 });
     const test = await testServices.setStatus(id, "archived");
-    if (!test) {
-        res.status(404);
-        throw new Error("Test not found");
-    }
+    if (!test)
+        throw newError({ message: "Test not found", statusCode: 404 });
     res.status(200).json(test);
 });
 // ─── Public Endpoints ────────────────────────────────────────────────────────
@@ -136,15 +115,11 @@ export const getTestsList = catchAsync(async (req, res) => {
 // @access  Public
 export const getTestByIdHandler = catchAsync(async (req, res) => {
     const id = req.params.id;
-    if (!id) {
-        res.status(400);
-        throw new Error("Missing test id");
-    }
+    if (!id)
+        throw newError({ message: "Missing test id", statusCode: 400 });
     const test = await testServices.getById(id);
-    if (!test) {
-        res.status(404);
-        throw new Error("Test not found");
-    }
+    if (!test)
+        throw newError({ message: "Test not found", statusCode: 404 });
     res.status(200).json(test);
 });
 // @desc    Get a single part/section of a published test
@@ -153,53 +128,40 @@ export const getTestByIdHandler = catchAsync(async (req, res) => {
 export const getTestPartHandler = catchAsync(async (req, res) => {
     const id = req.params.id;
     const partNum = req.params.partNum;
-    if (!id || !partNum) {
-        res.status(400);
-        throw new Error("Missing test id or part number");
-    }
+    if (!id || !partNum)
+        throw newError({ message: "Missing test id or part number", statusCode: 400 });
     const partIndex = parseInt(partNum, 10) - 1;
     const result = await testServices.getPart(id, partIndex);
-    if (!result) {
-        res.status(404);
-        throw new Error("Test or part not found");
-    }
+    if (!result)
+        throw newError({ message: "Test or part not found", statusCode: 404 });
     res.status(200).json(result);
 });
 // @desc    Submit answers for a single part and get results
 // @route   POST /api/tests/:id/part/:partNum/submit
 // @access  Authenticated
 export const submitTestPartHandler = catchAsync(async (req, res) => {
-    if (!req.user?.id) {
-        res.status(401);
-        throw new Error("Please login first");
-    }
+    if (!req.user?.id)
+        throw newError({ message: "Please login first", statusCode: 401 });
     const id = req.params.id;
     const partNum = req.params.partNum;
-    if (!id || !partNum) {
-        res.status(400);
-        throw new Error("Missing test id or part number");
-    }
+    if (!id || !partNum)
+        throw newError({ message: "Missing test id or part number", statusCode: 400 });
     const partIndex = parseInt(partNum, 10) - 1;
     const { answers, timeTaken } = req.body;
     if (!answers || typeof answers !== "object") {
-        res.status(400);
-        throw new Error("Missing or invalid 'answers' object in request body");
+        throw newError({ message: "Missing or invalid 'answers' object in request body", statusCode: 400 });
     }
     const result = await testServices.submitPart(req.user.id, id, partIndex, answers, timeTaken);
-    if (!result) {
-        res.status(404);
-        throw new Error("Test or part not found");
-    }
+    if (!result)
+        throw newError({ message: "Test or part not found", statusCode: 404 });
     res.status(200).json(result);
 });
 // @desc    Get all results for the current user
 // @route   GET /api/tests/user-results
 // @access  Authenticated
 export const getUserResultsHandler = catchAsync(async (req, res) => {
-    if (!req.user?.id) {
-        res.status(401);
-        throw new Error("Please login first");
-    }
+    if (!req.user?.id)
+        throw newError({ message: "Please login first", statusCode: 401 });
     const results = await testServices.getUserResults(req.user.id);
     res.status(200).json(results);
 });
@@ -207,16 +169,12 @@ export const getUserResultsHandler = catchAsync(async (req, res) => {
 // @route   GET /api/tests/:id/part/:partNum/result
 // @access  Authenticated
 export const getPartResultHandler = catchAsync(async (req, res) => {
-    if (!req.user?.id) {
-        res.status(401);
-        throw new Error("Please login first");
-    }
+    if (!req.user?.id)
+        throw newError({ message: "Please login first", statusCode: 401 });
     const id = req.params.id;
     const partNum = req.params.partNum;
-    if (!id || !partNum) {
-        res.status(400);
-        throw new Error("Missing test id or part number");
-    }
+    if (!id || !partNum)
+        throw newError({ message: "Missing test id or part number", statusCode: 400 });
     const partIndex = parseInt(partNum, 10) - 1;
     const result = await testServices.getPartResult(req.user.id, id, partIndex);
     if (!result) {
@@ -231,65 +189,43 @@ export const getPartResultHandler = catchAsync(async (req, res) => {
 // @access  Public
 export const getFullTestHandler = catchAsync(async (req, res) => {
     const id = req.params.id;
-    if (!id) {
-        res.status(400);
-        throw new Error("Missing test id");
-    }
+    if (!id)
+        throw newError({ message: "Missing test id", statusCode: 400 });
     const result = await testServices.getFullTest(id);
-    if (!result) {
-        res.status(404);
-        throw new Error("Test not found");
-    }
+    if (!result)
+        throw newError({ message: "Test not found", statusCode: 404 });
     res.status(200).json(result);
 });
 // @desc    Submit all parts of a full test and get combined results
 // @route   POST /api/tests/:id/full/submit
 // @access  Authenticated
 export const submitFullTestHandler = catchAsync(async (req, res) => {
-    if (!req.user?.id) {
-        res.status(401);
-        throw new Error("Please login first");
-    }
+    if (!req.user?.id)
+        throw newError({ message: "Please login first", statusCode: 401 });
     const id = req.params.id;
-    if (!id) {
-        res.status(400);
-        throw new Error("Missing test id");
-    }
+    if (!id)
+        throw newError({ message: "Missing test id", statusCode: 400 });
     const { allAnswers, timeTaken, mode } = req.body;
     if (!allAnswers || typeof allAnswers !== "object") {
-        res.status(400);
-        throw new Error("Missing or invalid 'allAnswers' object in request body");
+        throw newError({ message: "Missing or invalid 'allAnswers' object in request body", statusCode: 400 });
     }
-    // Determine skill from test (lightweight query)
-    const testDoc = await Test.findOne({ _id: new mongoose.Types.ObjectId(id) }, { skill: 1 }).lean();
-    if (!testDoc) {
-        res.status(404);
-        throw new Error("Test not found");
-    }
-    const result = await testServices.submitFullTest(req.user.id, id, testDoc.skill, allAnswers, timeTaken, mode);
-    if (!result) {
-        res.status(404);
-        throw new Error("Failed to submit full test");
-    }
+    const result = await testServices.submitFullTest(req.user.id, id, allAnswers, timeTaken, mode);
+    if (!result)
+        throw newError({ message: "Failed to submit full test", statusCode: 404 });
     res.status(200).json(result);
 });
 // @desc    Get saved full test result
 // @route   GET /api/tests/:id/full/result
 // @access  Authenticated
 export const getFullTestResultHandler = catchAsync(async (req, res) => {
-    if (!req.user?.id) {
-        res.status(401);
-        throw new Error("Please login first");
-    }
+    if (!req.user?.id)
+        throw newError({ message: "Please login first", statusCode: 401 });
     const id = req.params.id;
-    if (!id) {
-        res.status(400);
-        throw new Error("Missing test id");
-    }
+    if (!id)
+        throw newError({ message: "Missing test id", statusCode: 400 });
     const skill = req.query.skill;
     if (!skill || !["listening", "reading"].includes(skill)) {
-        res.status(400);
-        throw new Error("Missing or invalid 'skill' query parameter");
+        throw newError({ message: "Missing or invalid 'skill' query parameter", statusCode: 400 });
     }
     const result = await testServices.getFullTestResult(req.user.id, id, skill);
     if (!result) {
@@ -302,10 +238,8 @@ export const getFullTestResultHandler = catchAsync(async (req, res) => {
 // @route   GET /api/tests/full-results
 // @access  Authenticated
 export const getUserFullTestResultsHandler = catchAsync(async (req, res) => {
-    if (!req.user?.id) {
-        res.status(401);
-        throw new Error("Please login first");
-    }
+    if (!req.user?.id)
+        throw newError({ message: "Please login first", statusCode: 401 });
     const results = await testServices.getUserFullTestResults(req.user.id);
     res.status(200).json(results);
 });

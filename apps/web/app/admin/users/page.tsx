@@ -24,27 +24,7 @@ import {
 } from "@workspace/ui/components/select"
 import { cn } from "@workspace/ui/lib/utils"
 import { fetchUsers } from "@/lib/api"
-
-interface User {
-  _id: string
-  googleId: string
-  email: string
-  name: string
-  picture: string
-  role: "student" | "admin"
-  status: "active" | "disabled" | "banned"
-  lastLoginAt: string
-  createdAt: string
-  testsAttempted: number
-}
-
-interface UsersResponse {
-  users: User[]
-  total: number
-  page: number
-  limit: number
-  totalPages: number
-}
+import type { User, UsersResponse } from "@/lib/types"
 
 const ROLE_COLORS: Record<string, string> = {
   admin: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20",

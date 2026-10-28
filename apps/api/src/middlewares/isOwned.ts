@@ -24,8 +24,8 @@ const isOwned =
         const info = await model.findById(itemId);
         if (!info) throw newError({ message: "Resource not found", statusCode: 404 });
 
-        if (!(info[ownerField] == userId)) {
-          throw newError({ message: "Forbidden", statusCode: 409 });
+        if (info[ownerField] !== userId) {
+          throw newError({ message: "Forbidden", statusCode: 403 });
         }
       }
 

@@ -3,6 +3,114 @@ import { Test, type ITest } from "../../models/test.model.js";
 import { UserTestResult } from "../../models/user-test-result.model.js";
 import { UserFullTestResult } from "../../models/user-full-test-result.model.js";
 
+/**
+ * Normalizes an answer for comparison: lowercases, trims, collapses whitespace.
+ */
+function normalizeString(str: any): string {
+  return String(str ?? "").trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+/**
+ * Scores a single test section against the answer key.
+ *
+ * Pure scoring logic shared by both the per-part submit flow and the
+ * full-test submit flow. Returns per-question results plus the section
+ * score/total.
+ */
+function scoreSection({
+  section,
+  userAnswers,
+  answerMap,
+}: {
+  section: any;
+  userAnswers: Record<string, any>;
+  answerMap: Record<string, any>;
+}): {
+  results: Array<{
+    questionId: string;
+    correct: boolean;
+    score: number;
+    maxScore: number;
+    userAnswer: any;
+    correctAnswer: any;
+  }>;
+  score: number;
+  total: number;
+} {
+  const { meta, mcqGroupMap } = getQuestionMetadata(section);
+  const questionIds = Object.keys(meta);
+
+  let totalScore = 0;
+  let totalMax = 0;
+  const processedMcqGroups = new Set<string>();
+
+  const results = questionIds.map((qId) => {
+    const qMeta = meta[qId] || { type: "unknown", maxScore: 1 };
+    let score = 0;
+    let correct = false;
+    let userAnswer = userAnswers[qId] ?? null;
+    let correctAnswer = answerMap[qId];
+
+    if (qMeta.type === "mcq_multiple") {
+      const groupId =
+        Object.keys(mcqGroupMap).find((gid) => mcqGroupMap[gid]?.includes(qId)) ?? "";
+      if (groupId && !processedMcqGroups.has(groupId)) {
+        processedMcqGroups.add(groupId);
+      }
+      const userSelection: string[] = Array.isArray(userAnswers[groupId])
+        ? userAnswers[groupId]
+        : [];
+      const expectedCount = mcqGroupMap[groupId]?.length || 1;
+
+      if (userSelection.length > expectedCount) {
+        correct = false;
+        score = 0;
+        userAnswer = userSelection;
+      } else {
+        const userSet = new Set(userSelection.filter(Boolean).map(normalizeString));
+        const normalizedCorrect = normalizeString(correctAnswer);
+        const match = userSet.has(normalizedCorrect);
+        score = match ? 1 : 0;
+        correct = match;
+        userAnswer = userSelection.length > 0 ? userSelection : null;
+      }
+    } else if (typeof correctAnswer === "string" && correctAnswer.includes(" & ")) {
+      // Multi-blank question: "plants & animals" — each blank scored independently
+      const correctParts = correctAnswer.split(" & ").map(normalizeString);
+      const userParts =
+        typeof userAnswer === "string"
+          ? userAnswer.split(" & ").map(normalizeString)
+          : [];
+      const allMatch = correctParts.every((cp, i) => cp === (userParts[i] ?? ""));
+      score = allMatch ? 1 : 0;
+      correct = allMatch;
+    } else if (Array.isArray(correctAnswer)) {
+      const uAns = normalizeString(userAnswer);
+      const match = correctAnswer.some((ans) => normalizeString(ans) === uAns);
+      score = match ? 1 : 0;
+      correct = match;
+    } else {
+      const match = normalizeString(userAnswer) === normalizeString(correctAnswer);
+      score = match ? 1 : 0;
+      correct = match;
+    }
+
+    totalScore += score;
+    totalMax += qMeta.maxScore;
+
+    return {
+      questionId: qId,
+      correct,
+      score,
+      maxScore: qMeta.maxScore,
+      userAnswer,
+      correctAnswer,
+    };
+  });
+
+  return { results, score: totalScore, total: totalMax };
+}
+
 const testServices = {
   getAll: (filters?: { bookId?: string; skill?: string }): Promise<ITest[]> => {
     const filter: Record<string, any> = { status: "published" };
@@ -38,7 +146,9 @@ const testServices = {
   },
 
   getById: (id: string): Promise<ITest | null> =>
-    Test.findOne({ _id: id, status: "published" }).select("-answerJson").lean() as unknown as Promise<ITest | null>,
+    Test.findOne({ _id: id, status: "published" })
+      .select("-answerJson")
+      .lean() as unknown as Promise<ITest | null>,
 
   getPart: async (testId: string, partIndex: number) => {
     const results = await Test.aggregate([
@@ -88,86 +198,19 @@ const testServices = {
     if (!answerMap || Object.keys(answerMap).length === 0) return { score: 0, total: 0, results: [] };
 
     const section = test.section;
-    const { meta, mcqGroupMap } = getQuestionMetadata(section);
-    const questionIds = Object.keys(meta);
-
-    let totalScore = 0;
-    let totalMax = 0;
-    const processedMcqGroups = new Set<string>();
-
-    const normalizeString = (str: any) => String(str ?? "").trim().toLowerCase().replace(/\s+/g, " ");
-
-    const results = questionIds.map((qId) => {
-      const qMeta = meta[qId] || { type: "unknown", maxScore: 1 };
-      let score = 0;
-      let correct = false;
-      let userAnswer = userAnswers[qId] ?? null;
-      let correctAnswer = answerMap[qId];
-
-      if (qMeta.type === "mcq_multiple") {
-        const groupId = Object.keys(mcqGroupMap).find(gid => mcqGroupMap[gid]?.includes(qId)) ?? "";
-        if (groupId && !processedMcqGroups.has(groupId)) {
-          processedMcqGroups.add(groupId);
-        }
-        const userSelection: string[] = Array.isArray(userAnswers[groupId]) ? userAnswers[groupId] : [];
-        const expectedCount = mcqGroupMap[groupId]?.length || 1;
-
-        if (userSelection.length > expectedCount) {
-          correct = false;
-          score = 0;
-          userAnswer = userSelection;
-        } else {
-          const userSet = new Set(userSelection.filter(Boolean).map(normalizeString));
-          const normalizedCorrect = normalizeString(correctAnswer);
-          const match = userSet.has(normalizedCorrect);
-          score = match ? 1 : 0;
-          correct = match;
-          userAnswer = userSelection.length > 0 ? userSelection : null;
-        }
-      } else if (typeof correctAnswer === "string" && correctAnswer.includes(" & ")) {
-        // Multi-blank question: "plants & animals" — each blank scored independently
-        const correctParts = correctAnswer.split(" & ").map(normalizeString);
-        const userParts = typeof userAnswer === "string"
-          ? userAnswer.split(" & ").map(normalizeString)
-          : [];
-        const allMatch = correctParts.every((cp, i) => cp === (userParts[i] ?? ""));
-        score = allMatch ? 1 : 0;
-        correct = allMatch;
-      } else if (Array.isArray(correctAnswer)) {
-        const uAns = normalizeString(userAnswer);
-        const match = correctAnswer.some(ans => normalizeString(ans) === uAns);
-        score = match ? 1 : 0;
-        correct = match;
-      } else {
-        const match = normalizeString(userAnswer) === normalizeString(correctAnswer);
-        score = match ? 1 : 0;
-        correct = match;
-      }
-
-      totalScore += score;
-      totalMax += qMeta.maxScore;
-
-      return {
-        questionId: qId,
-        correct,
-        score,
-        maxScore: qMeta.maxScore,
-        userAnswer,
-        correctAnswer,
-      };
-    });
-
-
-    const score = totalScore;
-    const total = totalMax;
+    const sectionResult = scoreSection({ section, userAnswers, answerMap });
 
     await UserTestResult.findOneAndUpdate(
-      { userId: new mongoose.Types.ObjectId(userId), testId: new mongoose.Types.ObjectId(testId), partNum: partIndex + 1 },
-      { answers: userAnswers, results, score, total, timeTaken, submittedAt: new Date() },
+      {
+        userId: new mongoose.Types.ObjectId(userId),
+        testId: new mongoose.Types.ObjectId(testId),
+        partNum: partIndex + 1,
+      },
+      { answers: userAnswers, results: sectionResult.results, score: sectionResult.score, total: sectionResult.total, timeTaken, submittedAt: new Date() },
       { upsert: true, returnDocument: "after" }
     );
 
-    return { results, score, total };
+    return { results: sectionResult.results, score: sectionResult.score, total: sectionResult.total };
   },
 
   getUserResults: async (userId: string) => {
@@ -291,7 +334,6 @@ const testServices = {
   submitFullTest: async (
     userId: string,
     testId: string,
-    skill: string,
     allAnswers: Record<string, Record<string, any>>,
     timeTaken?: number,
     mode: "practice" | "mock" = "practice"
@@ -302,108 +344,44 @@ const testServices = {
     }).lean();
     if (!test) return null;
 
+    const skill = test.skill;
+
     const rawAnswerJson = test.answerJson as Record<string, any> | undefined;
     const answerMap = rawAnswerJson?.answers ? rawAnswerJson.answers : rawAnswerJson;
     if (!answerMap) return null;
 
     const sections = test.contentJson?.sections ?? [];
     const partResults: Array<{
-      partNum: number
-      score: number
-      total: number
+      partNum: number;
+      score: number;
+      total: number;
       results: Array<{
-        questionId: string
-        correct: boolean
-        score: number
-        maxScore: number
-        userAnswer: any
-        correctAnswer: any
-      }>
+        questionId: string;
+        correct: boolean;
+        score: number;
+        maxScore: number;
+        userAnswer: any;
+        correctAnswer: any;
+      }>;
     }> = [];
 
     let combinedScore = 0;
     let combinedTotal = 0;
 
-    const normalizeString = (str: any) => String(str ?? "").trim().toLowerCase().replace(/\s+/g, " ");
-
     for (let partIndex = 0; partIndex < sections.length; partIndex++) {
       const section = sections[partIndex];
       const userAnswers = allAnswers[String(partIndex + 1)] ?? {};
-      const { meta, mcqGroupMap } = getQuestionMetadata(section);
-      const questionIds = Object.keys(meta);
-
-      let totalScore = 0;
-      let totalMax = 0;
-      const processedMcqGroups = new Set<string>();
-
-      const results = questionIds.map((qId) => {
-        const qMeta = meta[qId] || { type: "unknown", maxScore: 1 };
-        let score = 0;
-        let correct = false;
-        let userAnswer = userAnswers[qId] ?? null;
-        let correctAnswer = answerMap[qId];
-
-        if (qMeta.type === "mcq_multiple") {
-          const groupId = Object.keys(mcqGroupMap).find(gid => mcqGroupMap[gid]?.includes(qId)) ?? "";
-          if (groupId && !processedMcqGroups.has(groupId)) {
-            processedMcqGroups.add(groupId);
-          }
-          const userSelection: string[] = Array.isArray(userAnswers[groupId]) ? userAnswers[groupId] : [];
-          const expectedCount = mcqGroupMap[groupId]?.length || 1;
-
-          if (userSelection.length > expectedCount) {
-            correct = false;
-            score = 0;
-            userAnswer = userSelection;
-          } else {
-            const userSet = new Set(userSelection.filter(Boolean).map(normalizeString));
-            const normalizedCorrect = normalizeString(correctAnswer);
-            const match = userSet.has(normalizedCorrect);
-            score = match ? 1 : 0;
-            correct = match;
-            userAnswer = userSelection.length > 0 ? userSelection : null;
-          }
-        } else if (typeof correctAnswer === "string" && correctAnswer.includes(" & ")) {
-          const correctParts = correctAnswer.split(" & ").map(normalizeString);
-          const userParts = typeof userAnswer === "string"
-            ? userAnswer.split(" & ").map(normalizeString)
-            : [];
-          const allMatch = correctParts.every((cp, i) => cp === (userParts[i] ?? ""));
-          score = allMatch ? 1 : 0;
-          correct = allMatch;
-        } else if (Array.isArray(correctAnswer)) {
-          const uAns = normalizeString(userAnswer);
-          const match = correctAnswer.some(ans => normalizeString(ans) === uAns);
-          score = match ? 1 : 0;
-          correct = match;
-        } else {
-          const match = normalizeString(userAnswer) === normalizeString(correctAnswer);
-          score = match ? 1 : 0;
-          correct = match;
-        }
-
-        totalScore += score;
-        totalMax += qMeta.maxScore;
-
-        return {
-          questionId: qId,
-          correct,
-          score,
-          maxScore: qMeta.maxScore,
-          userAnswer,
-          correctAnswer,
-        };
-      });
+      const sectionResult = scoreSection({ section, userAnswers, answerMap });
 
       partResults.push({
         partNum: partIndex + 1,
-        score: totalScore,
-        total: totalMax,
-        results,
+        score: sectionResult.score,
+        total: sectionResult.total,
+        results: sectionResult.results,
       });
 
-      combinedScore += totalScore;
-      combinedTotal += totalMax;
+      combinedScore += sectionResult.score;
+      combinedTotal += sectionResult.total;
     }
 
     await (UserFullTestResult as any).findOneAndUpdate(
@@ -448,6 +426,7 @@ const testServices = {
       title: s.title,
       audio_url: s.audio_url,
       script: s.script,
+      passage: s.passage,
     }));
 
     return {
@@ -479,15 +458,17 @@ const testServices = {
   },
 };
 
+export default testServices;
+
 function qid(item: any): string | undefined {
   return item.questionId ?? (item.number != null ? `q_${item.number}` : undefined);
 }
 
 function getQuestionMetadata(section: any): {
-  meta: Record<string, { type: string, maxScore: number }>;
+  meta: Record<string, { type: string; maxScore: number }>;
   mcqGroupMap: Record<string, string[]>;
 } {
-  const meta: Record<string, { type: string, maxScore: number }> = {};
+  const meta: Record<string, { type: string; maxScore: number }> = {};
   const mcqGroupMap: Record<string, string[]> = {};
 
   const extractQuestionsFromLayout = (obj: any, groupType: string) => {
@@ -532,5 +513,3 @@ function getQuestionMetadata(section: any): {
 
   return { meta, mcqGroupMap };
 }
-
-export default testServices;

@@ -59,8 +59,7 @@ export function getDefaultSchemaJson(drillId: string): string {
 export async function fetchDrillManifest(drillId: string): Promise<DrillManifest | undefined> {
   try {
     const res = await fetchDrillSchema(drillId)
-    const data = res.data
-    const schema = data.schema as Record<string, unknown>
+    const schema = res.schema as Record<string, unknown>
     const fallback = drillManifests.find((d) => d.id === drillId)
     return buildDrillManifest(schema, fallback)
   } catch {
@@ -70,8 +69,7 @@ export async function fetchDrillManifest(drillId: string): Promise<DrillManifest
 
 export async function fetchAllDrillManifests(): Promise<DrillManifest[]> {
   try {
-    const res = await fetchAllDrillSchemas()
-    const data = res.data as { drillId: string; schema: Record<string, unknown>; version: number }[]
+    const data = await fetchAllDrillSchemas()
     return data.map((item) => {
       const fallback = drillManifests.find((d) => d.id === item.drillId)
       return buildDrillManifest(item.schema, fallback)
