@@ -65,11 +65,11 @@ const COVER_PALETTES = [
   },
 ]
 
-function getPalette(num?: number) {
+function getPalette(num?: number): (typeof COVER_PALETTES)[number] {
   if (num !== undefined && num > 0) {
-    return COVER_PALETTES[num % COVER_PALETTES.length]
+    return COVER_PALETTES[num % COVER_PALETTES.length]!
   }
-  return COVER_PALETTES[0]
+  return COVER_PALETTES[0]!
 }
 
 export function IllustratedBookCover({

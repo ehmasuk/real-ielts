@@ -51,7 +51,7 @@ export function TestSelectionModal({
   // Sync selectedTestId when tests change
   React.useEffect(() => {
     if (tests.length > 0 && (!selectedTestId || !tests.some((t) => t._id === selectedTestId))) {
-      setSelectedTestId(tests[0]._id)
+      setSelectedTestId(tests[0]!._id)
     }
   }, [tests, selectedTestId])
 
