@@ -1,12 +1,19 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
-import { Search, Headphones, BookOpen, Play, Eye } from "lucide-react"
-import { Button } from "@workspace/ui/components/button"
-import { fetchPublicBooks, fetchPublicTestsList, fetchUserResults, fetchUserFullTestResults } from "@/lib/api"
-import { BookCardSkeleton } from "@/components/shared/skeletons"
+import { Search, BookOpen } from "lucide-react"
+import { motion, useReducedMotion } from "framer-motion"
+import { Skeleton } from "@workspace/ui/components/skeleton"
+import {
+  fetchPublicBooks,
+  fetchPublicTestsList,
+  fetchUserResults,
+  fetchUserFullTestResults,
+} from "@/lib/api"
+import { IllustratedBookCover } from "@/components/listening/illustrated-book-cover"
+import { TestSelectionModal } from "@/components/listening/test-selection-modal"
+import { bandFrom } from "@/components/library/helpers"
 
 interface TestItem {
   _id: string
@@ -14,296 +21,326 @@ interface TestItem {
   testNumber: number
   skill: string
   status: string
-  contentJson: { sections?: { id: string }[] }
+  contentJson?: { sections?: { id: string }[] }
 }
 
 interface BookItem {
   _id: string
-  number: number
+  number?: number
   title: string
   slug: string
 }
 
-const gradients = [
-  "from-indigo-600 to-indigo-900",
-  "from-blue-600 to-blue-900",
-  "from-sky-600 to-sky-900",
-  "from-teal-600 to-teal-900",
-]
+/* ─── The Vocabulary Notebook Theme Styles (matching homepage) ─── */
+const EASE = [0.22, 1, 0.36, 1] as const
 
-function rawScoreToBand(score: number): string {
-  if (score > 40 || score < 0) throw new Error("Invalid IELTS raw score");
-  
-  if (score >= 39) return "9.0";
-  if (score >= 37) return "8.5";
-  if (score >= 35) return "8.0";
-  if (score >= 33) return "7.5";
-  if (score >= 30) return "7.0";
-  if (score >= 27) return "6.5";
-  if (score >= 23) return "6.0";
-  if (score >= 19) return "5.5";
-  if (score >= 15) return "5.0";
-  if (score >= 13) return "4.5";
-  if (score >= 10) return "4.0";
-  if (score >= 8)  return "3.5";
-  if (score >= 6)  return "3.0";
-  if (score >= 4)  return "2.5";
-  if (score >= 2)  return "2.0";
-  if (score >= 1)  return "1.0";
-  return "0.0";
+const paperCss = `
+.paper {
+  background-color: #fbfaf8;
+  background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 31px, rgba(24,24,27,0.06) 31px, rgba(24,24,27,0.06) 32px);
+}
+.dark .paper {
+  background-color: #0c0c0e;
+  background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 31px, rgba(250,250,249,0.07) 31px, rgba(250,250,249,0.07) 32px);
+}
+.paper ::selection { background-color: rgba(220,38,38,0.16); }
+.dark .paper ::selection { background-color: rgba(248,113,113,0.30); }
+.paper a:focus-visible, .paper button:focus-visible { outline: 2px solid #dc2626; outline-offset: 2px; }
+`
+
+function useToday() {
+  const [date, setDate] = React.useState("")
+  React.useEffect(() => {
+    const d = new Date()
+      .toLocaleDateString("en-GB", {
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })
+      .toUpperCase()
+      .replace(",", " ·")
+    setDate(d)
+  }, [])
+  return date
+}
+
+function MarginRule() {
+  return (
+    <motion.div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-y-0 left-2 w-px origin-top bg-red-500/45 sm:left-[max(0.5rem,calc((100vw_-_72rem)/2_+_0.5rem))] dark:bg-red-400/50"
+      initial={{ scaleY: 0 }}
+      animate={{ scaleY: 1 }}
+      transition={{ duration: 0.9, ease: EASE }}
+    />
+  )
 }
 
 export default function ListeningPage() {
   const [searchTerm, setSearchTerm] = React.useState("")
+  const [selectedBookId, setSelectedBookId] = React.useState<string | null>(null)
+  const today = useToday()
 
+  // 1. Fetch Books
   const { data: books = [], isLoading: booksLoading } = useQuery({
     queryKey: ["public", "books"],
     queryFn: fetchPublicBooks,
   })
 
+  // 2. Fetch Listening Tests
   const { data: tests = [], isLoading: testsLoading } = useQuery({
     queryKey: ["public", "tests", "listening"],
     queryFn: () => fetchPublicTestsList({ skill: "listening" }),
   })
 
+  // 3. Fetch User Results (Part-by-Part)
   const { data: userResults = [] } = useQuery({
     queryKey: ["user-results"],
     queryFn: fetchUserResults,
   })
 
+  // 4. Fetch User Full Test Results
   const { data: fullTestResults = [] } = useQuery({
     queryKey: ["user-full-test-results"],
     queryFn: fetchUserFullTestResults,
   })
 
+  // Results Map (Part)
   const resultsMap = React.useMemo(() => {
     const map: Record<string, { score: number; total: number }> = {}
-    for (const r of userResults as Array<{ testId: string; partNum: number; score: number; total: number }>) {
+    for (const r of userResults as Array<{
+      testId: string
+      partNum: number
+      score: number
+      total: number
+    }>) {
       map[`${r.testId}-${r.partNum}`] = { score: r.score, total: r.total }
     }
     return map
   }, [userResults])
 
-  const fullTestResultsMap = React.useMemo(() => {
+  // Full Results Map
+  const fullResultsMap = React.useMemo(() => {
     const map: Record<string, { totalScore: number; totalMax: number }> = {}
-    for (const r of fullTestResults as Array<{ testId: string; skill: string; totalScore: number; totalMax: number }>) {
+    for (const r of fullTestResults as Array<{
+      testId: string
+      skill: string
+      totalScore: number
+      totalMax: number
+    }>) {
       map[r.testId] = { totalScore: r.totalScore, totalMax: r.totalMax }
     }
     return map
   }, [fullTestResults])
 
+  // Group tests by book ID
   const testsByBook = React.useMemo(() => {
     const map: Record<string, TestItem[]> = {}
     for (const test of tests as TestItem[]) {
-      const bookId = typeof test.bookId === "string" ? test.bookId : (test.bookId as any)?._id
-      if (!map[bookId]) map[bookId] = []
-      map[bookId].push(test)
+      const bId =
+        typeof test.bookId === "string"
+          ? test.bookId
+          : (test.bookId as { _id: string })?._id
+      if (bId) {
+        if (!map[bId]) map[bId] = []
+        map[bId].push(test)
+      }
     }
     return map
   }, [tests])
 
+  // Helper to calculate book progress dynamically
+  const getBookProgress = React.useCallback(
+    (bookId: string) => {
+      const bookTests = testsByBook[bookId] || []
+      const testsCount = bookTests.length || 4
+
+      let completedTests = 0
+      let partsDone = 0
+      let maxScore = 0
+      let bestBand: string | null = null
+
+      for (const t of bookTests) {
+        const fullRes = fullResultsMap[t._id]
+        if (fullRes) {
+          completedTests++
+          const currentBand = bandFrom(fullRes.totalScore, fullRes.totalMax)
+          if (fullRes.totalScore > maxScore) {
+            maxScore = fullRes.totalScore
+            bestBand = currentBand
+          }
+        }
+
+        const sectionCount = t.contentJson?.sections?.length || 4
+        for (let p = 1; p <= sectionCount; p++) {
+          if (resultsMap[`${t._id}-${p}`]) {
+            partsDone++
+          }
+        }
+      }
+
+      return {
+        testsCount,
+        completedTests,
+        partsDone,
+        partsTotal: testsCount * 4,
+        bestBand,
+      }
+    },
+    [testsByBook, fullResultsMap, resultsMap]
+  )
+
+  // Filter books solely by search input (completely dynamic)
   const filteredBooks = React.useMemo(() => {
-    return (books as BookItem[]).filter((book) =>
-      book.title.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    const list = [...(books as BookItem[])]
+    const q = searchTerm.trim().toLowerCase()
+    if (!q) return list
+
+    return list.filter((b) => {
+      const titleMatch = b.title.toLowerCase().includes(q)
+      const numMatch = b.number !== undefined && String(b.number).includes(q)
+      return titleMatch || numMatch
+    })
   }, [books, searchTerm])
+
+  // Find currently opened book for modal
+  const selectedBook = React.useMemo(() => {
+    if (!selectedBookId) return null
+    return (books as BookItem[]).find((b) => b._id === selectedBookId) || null
+  }, [books, selectedBookId])
+
+  const selectedBookTests = React.useMemo(() => {
+    if (!selectedBook) return []
+    return testsByBook[selectedBook._id] || []
+  }, [selectedBook, testsByBook])
 
   const isLoading = booksLoading || testsLoading
 
   return (
-    <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-12 pb-24">
-      {/* Header Info */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-        <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-3">
-            <Headphones className="h-3.5 w-3.5 animate-pulse" />
-            <span>Listening Prep Room</span>
+    <>
+      <style>{paperCss}</style>
+      <div className="paper relative flex min-h-screen w-full flex-col overflow-hidden text-zinc-900 dark:text-zinc-100">
+        <MarginRule />
+
+        {/* Notebook Header Line */}
+        <div className="mx-auto w-full max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-zinc-200 pb-3 dark:border-zinc-800">
+            <span className="font-mono text-[10px] font-semibold tracking-[0.22em] text-zinc-500 dark:text-zinc-400">
+              REAL IELTS — LISTENING LIBRARY
+            </span>
+            <span className="text-right font-mono text-[10px] font-medium tracking-[0.14em] tabular-nums text-zinc-500 dark:text-zinc-400">
+              {today || "\u00A0"}
+            </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-            Official Cambridge Listening Library
-          </h1>
-          <p className="text-sm text-muted-foreground mt-2 max-w-2xl leading-relaxed">
-            Select any test part to practice Listening. Each full test contains 4 universal sections with distinct question types, audio tracks, and real scoring conditions.
-          </p>
         </div>
-        <div className="text-xs font-medium text-muted-foreground bg-card/60 border border-border/40 rounded-xl px-4 py-2 self-start md:self-auto shadow-sm">
-          Available books: <strong className="text-foreground">{filteredBooks.length}</strong>
-        </div>
-      </div>
 
-      {/* Search */}
-      <div className="mb-10">
-        <div className="relative">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/60" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search Cambridge Books (e.g. Cambridge 20)..."
-            className="w-full bg-card/50 border border-border/30 rounded-xl py-2 pl-9 pr-4 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all placeholder:text-muted-foreground/60 text-foreground"
-          />
-        </div>
-      </div>
-
-      {isLoading ? (
-        <div className="flex flex-col gap-8">
-          <BookCardSkeleton accentColor="bg-indigo-500/10" partsPerTest={4} />
-          <BookCardSkeleton accentColor="bg-indigo-500/10" partsPerTest={4} />
-        </div>
-      ) : filteredBooks.length > 0 ? (
-        <div className="flex flex-col gap-8">
-          {filteredBooks.map((book) => {
-            const bookTests = testsByBook[book._id] || []
-            const color = gradients[book.number % gradients.length] ?? gradients[0]
-            return (
-              <div
-                key={book._id}
-                className="group flex flex-col md:flex-row rounded-2xl border border-border/40 bg-card/30 hover:bg-card/70 hover:border-indigo-500/30 transition-all duration-300 shadow-sm hover:shadow-md overflow-hidden"
+        {/* Page Head & Search */}
+        <div className="mx-auto w-full max-w-6xl px-4 pt-10 pb-8 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-800 pb-8">
+            <div className="max-w-xl">
+              <h1
+                className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50"
+                style={{ fontFamily: "var(--font-display)" }}
               >
-                <div className={`w-full md:w-56 shrink-0 p-6 text-white bg-linear-to-br ${color} flex flex-col justify-between relative min-h-[160px] md:min-h-0`}>
-                  <div className="absolute right-0 bottom-0 top-0 left-1/3 bg-white/5 skew-x-12 transform origin-top-right transition-transform group-hover:scale-110" />
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-semibold text-white/90 backdrop-blur-md">
-                      Academic
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-3xl font-bold tracking-tight mb-1">Book {book.number}</h3>
-                    <p className="text-[10px] text-white/70 font-semibold tracking-widest uppercase">Cambridge series</p>
-                  </div>
-                </div>
-                <div className="flex-1 p-6">
-                  <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 text-center">Full Test Mode  (All Parts in Sequence)</h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                    {[1, 2, 3, 4].map((testNum) => {
-                      const test = bookTests.find((t) => t.testNumber === testNum)
-                      const fullResult = test ? fullTestResultsMap[test._id] : null
-                      return (
-                        <div key={testNum} className="p-4 border rounded-xl">
-                          <Link
-                            href={test ? (fullResult ? `/test/${test._id}/listening/full/result` : `/test/${test._id}/listening/full`) : "#"}
-                            className={`flex items-center justify-center gap-2 p-3 rounded-xl border transition-all duration-300 ${
-                              fullResult
-                                ? "border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 hover:border-emerald-500/30 text-foreground/90 shadow-sm"
-                                : test
-                                  ? "bg-indigo-600 text-white border-border/20 hover:bg-indigo-700"
-                                  : "bg-muted/30 border-transparent opacity-50 cursor-not-allowed"
-                            }`}
-                          >
-                            {fullResult ? (
-                              <>
-                                <Eye className="h-3.5 w-3.5 shrink-0" />
-                                <span className="text-xs font-semibold">View Result {testNum}</span>
-                              </>
-                            ) : (
-                              <>
-                                <Play className="h-3.5 w-3.5 text-white fill-indigo-500/20 shrink-0" />
-                                <span className="text-xs font-semibold text-white">Start Full Test {testNum}</span>
-                              </>
-                            )}
-                          </Link>
-                          {fullResult && (
-                            <div className="mt-2 flex items-center justify-center gap-2">
-                              <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-sm">
-                                {fullResult.totalScore}/{fullResult.totalMax}
-                              </span>
-                              <span className="rounded bg-indigo-500/10 px-1.5 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shadow-sm">
-                                Band {rawScoreToBand(fullResult.totalMax > 0 && fullResult.totalMax !== 40 ? Math.round((fullResult.totalScore / fullResult.totalMax) * 40) : fullResult.totalScore)}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                  <hr className="my-8" />
+                Listening Practice
+              </h1>
+              <p className="mt-2 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Select a book to start a full exam simulation or practice individual parts under real CD-IELTS conditions.
+              </p>
+            </div>
 
-                  <div>
-                  <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 text-center">Part-By-Part Practice Mode (Single part focused)</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {[1, 2, 3, 4].map((testNum) => {
-                    const test = bookTests.find((t) => t.testNumber === testNum)
-                    const sectionCount = (test as any)?.contentJson?.sections?.length ?? 4
-                    return (
-                      <div key={testNum} className="flex flex-col justify-between space-y-3 bg-muted/10 dark:bg-muted/5 p-4 rounded-xl border">
-                        <div className="flex items-center justify-between gap-1.5 text-xs font-bold text-foreground">
-                          <div className="flex items-center gap-1.5">
-                            <Play className="h-3.5 w-3.5 text-indigo-500 fill-indigo-500/20 shrink-0" />
-                            <span>Practice Test {testNum}</span>
-                          </div>
-                          {(() => {
-                            if (!test) return null
-                            const partsDone = Array.from({ length: sectionCount }, (_, i) => i + 1).every((pn) => resultsMap[`${test._id}-${pn}`])
-                            if (!partsDone) return null
-                            const totalScore = Array.from({ length: sectionCount }, (_, i) => i + 1).reduce((sum, pn) => sum + (resultsMap[`${test._id}-${pn}`]?.score ?? 0), 0)
-                            const maxScore = Array.from({ length: sectionCount }, (_, i) => i + 1).reduce((sum, pn) => sum + (resultsMap[`${test._id}-${pn}`]?.total ?? 0), 0)
-                            const scaledScore = maxScore > 0 && maxScore !== 40 ? Math.round((totalScore / maxScore) * 40) : totalScore
-                            return (
-                              <span className="rounded bg-indigo-500/10 px-1.5 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shadow-sm" title={`Raw: ${totalScore}/${maxScore}`}>
-                                Band {rawScoreToBand(scaledScore)}
-                              </span>
-                            )
-                          })()}
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          {Array.from({ length: sectionCount }, (_, i) => i + 1).map((partNum) => {
-                            const result = test ? resultsMap[`${test._id}-${partNum}`] : null
-                            return (
-                              <Link
-                                key={partNum}
-                                href={test ? (result ? `/test/${test._id}/part/${partNum}/result` : `/test/${test._id}/listening/${partNum}`) : "#"}
-                                className={`group flex items-center justify-between rounded-xl border px-3 py-2.5 text-[11px] font-semibold transition-all duration-300 cursor-pointer ${
-                                  result
-                                    ? "border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 hover:border-emerald-500/30 text-foreground/90 shadow-sm"
-                                    : test
-                                      ? "border-border/50 bg-background/80 hover:bg-indigo-500/5 hover:border-indigo-500/30 text-foreground/80 hover:text-indigo-600 dark:hover:text-indigo-400 shadow-sm"
-                                      : "border-transparent bg-muted/30 text-muted-foreground/40 pointer-events-none"
-                                }`}
-                              >
-                                <span>Part {partNum}</span>
-                                {result ? (
-                                  <div className="flex items-center gap-1.5">
-                                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
-                                      {result.score}/{result.total}
-                                    </span>
-                                    <Eye className="h-3 w-3 text-emerald-500 shrink-0" />
-                                  </div>
-                                ) : (
-                                  <span className={`text-[10px] font-medium transition-colors ${test ? "text-indigo-500/60 group-hover:text-indigo-600 dark:group-hover:text-indigo-400" : "opacity-0"}`}>
-                                    {test ? "Practice" : ""}
-                                  </span>
-                                )}
-                              </Link>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    )
-                  })}
-                  </div>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
+            {/* Simple Search Input */}
+            <div className="relative w-full sm:w-80 shrink-0">
+              <Search
+                aria-hidden="true"
+                className="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400 dark:text-zinc-500"
+              />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search by title or number..."
+                aria-label="Search books"
+                className="h-10 w-full rounded-[3px] border border-zinc-300 dark:border-zinc-700 bg-transparent pr-3 pl-9 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 caret-red-600 focus:border-red-600 focus:outline-none dark:caret-red-400 dark:focus:border-red-400 transition-colors"
+              />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10px] text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 uppercase"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
         </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center border border-dashed border-border/60 rounded-3xl p-16 text-center max-w-md mx-auto mt-8 bg-card/20">
-          <BookOpen className="h-10 w-10 text-muted-foreground/60 mb-4" />
-          <h3 className="font-bold text-lg text-foreground">No books found</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            We couldn&apos;t find any books matching &ldquo;{searchTerm}&rdquo;. Try another search term.
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setSearchTerm("")}
-            className="mt-5 rounded-lg text-xs"
-          >
-            Clear Search
-          </Button>
-        </div>
-      )}
-    </div>
+
+        {/* Books Grid */}
+        <main className="mx-auto w-full max-w-6xl px-4 pb-24 sm:px-6 lg:px-8">
+          {isLoading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  className="aspect-[1/1.38] w-full rounded-[3px] bg-zinc-200/60 dark:bg-zinc-800/60"
+                />
+              ))}
+            </div>
+          ) : filteredBooks.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+              {filteredBooks.map((book) => {
+                const progress = getBookProgress(book._id)
+                return (
+                  <IllustratedBookCover
+                    key={book._id}
+                    book={book}
+                    testsCount={progress.testsCount}
+                    completedTests={progress.completedTests}
+                    partsDone={progress.partsDone}
+                    partsTotal={progress.partsTotal}
+                    bestBand={progress.bestBand}
+                    onClick={() => setSelectedBookId(book._id)}
+                  />
+                )
+              })}
+            </div>
+          ) : (
+            <div className="py-20 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-[3px]">
+              <BookOpen className="mx-auto h-8 w-8 text-zinc-400 dark:text-zinc-600" strokeWidth={1.5} />
+              <h3
+                className="mt-4 text-base font-bold text-zinc-900 dark:text-zinc-100"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                No books match &ldquo;{searchTerm}&rdquo;
+              </h3>
+              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                Check your search term or clear the search to view all books.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSearchTerm("")}
+                className="mt-4 font-mono text-[11px] font-semibold tracking-wider text-red-600 dark:text-red-400 uppercase cursor-pointer hover:underline"
+              >
+                Clear Search
+              </button>
+            </div>
+          )}
+        </main>
+
+        {/* Clean Test Selection Modal */}
+        {selectedBook && (
+          <TestSelectionModal
+            open={!!selectedBook}
+            onClose={() => setSelectedBookId(null)}
+            book={selectedBook}
+            tests={selectedBookTests}
+            resultsMap={resultsMap}
+            fullResultsMap={fullResultsMap}
+          />
+        )}
+      </div>
+    </>
   )
 }

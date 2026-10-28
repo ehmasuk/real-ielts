@@ -65,7 +65,7 @@ export function BookCover({
       )}
     >
       {/* Book spine */}
-      <div className="absolute inset-y-0 left-0 w-[14%] border-r border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900" />
+      <div className="absolute inset-y-0 left-0 w-[12%] border-r border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900" />
 
       {/* Cover face — ruled like the notebook paper */}
       <div className="relative left-[14%] h-full w-[86%] bg-[#fbfaf8] dark:bg-[#0c0c0e]">

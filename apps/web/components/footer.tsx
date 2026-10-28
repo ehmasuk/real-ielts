@@ -24,7 +24,7 @@ export function Footer() {
   const [reportOpen, setReportOpen] = useState(false)
   return (
     <footer className="w-full bg-muted/30 dark:bg-muted/10">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         {/* Bottom Panel */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border/40 pt-8 text-xs text-muted-foreground sm:flex-row">
           <p>&copy; {currentYear} Real IELTS. All rights reserved.</p>

@@ -69,8 +69,9 @@ export const Header = React.memo(function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   const pathname = usePathname()
   // Match the container grid of the page underneath so brand and links
-  // line up with the page's own left/right edges.
-  const containerWidth = pathname === "/" ? "max-w-6xl" : "max-w-7xl"
+  // line up with the page's own left/right edges. Kept at 6xl everywhere
+  // so the header is consistent with the homepage across the site.
+  const containerWidth = "max-w-6xl"
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-[#fbfaf8] dark:border-zinc-800 dark:bg-[#0c0c0e]">
