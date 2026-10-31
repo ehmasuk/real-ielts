@@ -35,9 +35,9 @@ async function seed() {
     }
     // ---- Books ----
     const booksData = [
-        { number: 17, title: "Cambridge IELTS 17", slug: "cambridge-ielts-17", status: "published" },
-        { number: 18, title: "Cambridge IELTS 18", slug: "cambridge-ielts-18", status: "published" },
-        { number: 19, title: "Cambridge IELTS 19", slug: "cambridge-ielts-19", status: "published" },
+        { number: 17, title: "Cambridge IELTS 17", slug: "cambridge-ielts-17", category: "Cambridge", status: "published" },
+        { number: 18, title: "Cambridge IELTS 18", slug: "cambridge-ielts-18", category: "Cambridge", status: "published" },
+        { number: 19, title: "Cambridge IELTS 19", slug: "cambridge-ielts-19", category: "Cambridge", status: "published" },
     ];
     console.log("Seeding books...");
     for (const b of booksData) {

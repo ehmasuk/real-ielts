@@ -6,7 +6,10 @@ import catchAsync from "../utils/catchAsync.js";
 // @route   GET /api/books
 // @access  Public
 export const getBooks = catchAsync(async (req: Request, res: Response) => {
-  const books = await bookServices.getAll();
+  const { category } = req.query;
+  const books = await bookServices.getAll(
+    category ? { category: String(category) } : undefined
+  );
   res.status(200).json(books);
 });
 
@@ -14,7 +17,10 @@ export const getBooks = catchAsync(async (req: Request, res: Response) => {
 // @route   GET /api/books/count
 // @access  Public
 export const getBookCount = catchAsync(async (req: Request, res: Response) => {
-  const count = await bookServices.count();
+  const { category } = req.query;
+  const count = await bookServices.count(
+    category ? { category: String(category) } : undefined
+  );
   res.status(200).json({ count });
 });
 
@@ -22,7 +28,10 @@ export const getBookCount = catchAsync(async (req: Request, res: Response) => {
 // @route   GET /api/admin/books
 // @access  Private (Admin)
 export const getAdminBooks = catchAsync(async (req: Request, res: Response) => {
-  const books = await bookServices.getAllAdmin();
+  const { category } = req.query;
+  const books = await bookServices.getAllAdmin(
+    category ? { category: String(category) } : undefined
+  );
   res.status(200).json(books);
 });
 
@@ -47,8 +56,8 @@ export const getAdminBookById = catchAsync(async (req: Request, res: Response) =
 // @route   POST /api/admin/books
 // @access  Private (Admin)
 export const createBookHandler = catchAsync(async (req: Request, res: Response) => {
-  const { number, title, slug, status } = req.body;
-  const book = await bookServices.create({ number, title, slug, status });
+  const { number, title, slug, status, category } = req.body;
+  const book = await bookServices.create({ number, title, slug, status, category });
   res.status(201).json(book);
 });
 
@@ -61,8 +70,8 @@ export const updateBookHandler = catchAsync(async (req: Request, res: Response) 
     res.status(400);
     throw new Error("Missing book id");
   }
-  const { number, title, slug, status } = req.body;
-  const book = await bookServices.update(id, { number, title, slug, status });
+  const { number, title, slug, status, category } = req.body;
+  const book = await bookServices.update(id, { number, title, slug, status, category });
   if (!book) {
     res.status(404);
     throw new Error("Book not found");

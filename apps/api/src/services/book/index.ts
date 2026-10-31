@@ -1,4 +1,4 @@
-import { Book, type IBook } from "../../models/book.model.js"
+import { Book, type IBook, type BookCategory } from "../../models/book.model.js"
 import { Test } from "../../models/test.model.js"
 import { UserTestResult } from "../../models/user-test-result.model.js"
 
@@ -10,15 +10,43 @@ const generateSlug = (title: string): string => {
   return slug
 }
 
+const buildCategoryFilter = (category?: string): Record<string, any> => {
+  if (!category) return {}
+  const cat = category.trim()
+  const regex = new RegExp(`^${cat.replace(/-/g, " ")}$`, "i")
+  return { category: regex }
+}
+
 const bookServices = {
-  getAll: (): Promise<IBook[]> =>
-    Book.find({ status: "published" }).sort({ number: -1 }),
+  getAll: (filters?: { category?: string }): Promise<IBook[]> => {
+    const query: Record<string, any> = {
+      status: "published",
+      ...buildCategoryFilter(filters?.category),
+    }
+    return Book.find(query).sort({ number: -1 })
+  },
 
-  getAllAdmin: (): Promise<IBook[]> => Book.find().sort({ number: -1 }),
+  getAllAdmin: (filters?: { category?: string }): Promise<IBook[]> => {
+    const query: Record<string, any> = {
+      ...buildCategoryFilter(filters?.category),
+    }
+    return Book.find(query).sort({ number: -1 })
+  },
 
-  count: (): Promise<number> => Book.countDocuments({ status: "published" }),
+  count: (filters?: { category?: string }): Promise<number> => {
+    const query: Record<string, any> = {
+      status: "published",
+      ...buildCategoryFilter(filters?.category),
+    }
+    return Book.countDocuments(query)
+  },
 
-  countAll: (): Promise<number> => Book.countDocuments(),
+  countAll: (filters?: { category?: string }): Promise<number> => {
+    const query: Record<string, any> = {
+      ...buildCategoryFilter(filters?.category),
+    }
+    return Book.countDocuments(query)
+  },
 
   getById: (id: string): Promise<IBook | null> => Book.findById(id),
 
@@ -26,17 +54,20 @@ const bookServices = {
     number,
     title,
     slug,
+    category = "Cambridge",
     status = "draft",
   }: {
     number: number
     title: string
     slug?: string
+    category?: BookCategory
     status?: "draft" | "published"
   }): Promise<IBook> =>
     Book.create({
       number,
       title,
       slug: slug ?? generateSlug(title),
+      category,
       status,
     }),
 
@@ -46,6 +77,7 @@ const bookServices = {
       number: number
       title: string
       slug: string
+      category: BookCategory
       status: "draft" | "published"
     }>
   ): Promise<IBook | null> =>

@@ -36,8 +36,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
-import { fetchBookById, fetchTests, updateTest, publishTest, deleteTest } from "@/lib/api"
-import type { TestItem } from "../../lib/mock-data"
+import {
+  fetchBookById,
+  fetchTests,
+  updateTest,
+  publishTest,
+  deleteTest,
+  updateBook,
+} from "@/lib/api"
+import type { TestItem, BookItem } from "../../lib/mock-data"
+import { BookFormDialog } from "../components/book-form-dialog"
 
 type Skill = "listening" | "reading" | "writing" | "speaking"
 
@@ -132,6 +140,15 @@ export default function BookDetailPage() {
 
   const totalTests = tests.length
   const book = rawBook
+  const [editDialogOpen, setEditDialogOpen] = React.useState(false)
+
+  const updateBookMutation = useMutation({
+    mutationFn: updateBook,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["book", bookId] })
+      queryClient.invalidateQueries({ queryKey: ["books"] })
+    },
+  })
 
   if (isLoading) {
     return (
@@ -178,6 +195,17 @@ export default function BookDetailPage() {
               <div className="flex items-center gap-3 mt-0.5">
                 <span className="text-sm text-muted-foreground">Book #{book.number}</span>
                 <Badge
+                  variant="outline"
+                  className={cn(
+                    "text-[10px] font-semibold",
+                    book.category === "Recent Questions"
+                      ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                      : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20"
+                  )}
+                >
+                  {book.category || "Cambridge"}
+                </Badge>
+                <Badge
                   variant={book.status === "published" ? "default" : "secondary"}
                   className={cn(
                     "text-[10px] font-semibold",
@@ -193,15 +221,26 @@ export default function BookDetailPage() {
             </div>
           </div>
         </div>
-        <Link href="/admin/tests">
+        <div className="flex items-center gap-2">
           <Button
             size="sm"
-            className="bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:from-indigo-500 hover:to-purple-500"
+            variant="outline"
+            onClick={() => setEditDialogOpen(true)}
+            className="border-border/60"
           >
-            <Plus className="mr-1.5 h-4 w-4" />
-            Create Test
+            <Edit className="mr-1.5 h-3.5 w-3.5" />
+            Edit Book
           </Button>
-        </Link>
+          <Link href="/admin/tests">
+            <Button
+              size="sm"
+              className="bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:from-indigo-500 hover:to-purple-500"
+            >
+              <Plus className="mr-1.5 h-4 w-4" />
+              Create Test
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Skill Sections */}
@@ -323,6 +362,27 @@ export default function BookDetailPage() {
           )
         })}
       </div>
+
+      {book && (
+        <BookFormDialog
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          book={{
+            id: book._id,
+            number: book.number || 0,
+            title: book.title,
+            slug: book.slug,
+            category: book.category || "Cambridge",
+            status: (book.status as "published" | "draft") || "draft",
+            testsCount: totalTests,
+            createdAt: book.createdAt || "",
+            updatedAt: book.updatedAt || "",
+          }}
+          onSave={(data) => {
+            updateBookMutation.mutate({ id: bookId, data })
+          }}
+        />
+      )}
     </div>
   )
 }

@@ -14,6 +14,12 @@ export declare const createBookSchema: z.ZodObject<{
         draft: "draft";
         archived: "archived";
     }>>;
+    category: z.ZodOptional<z.ZodEnum<{
+        Cambridge: "Cambridge";
+        "Recent Questions": "Recent Questions";
+        cambridge: "cambridge";
+        "recent-questions": "recent-questions";
+    }>>;
 }, z.core.$strip>;
 export declare const updateBookSchema: z.ZodObject<{
     number: z.ZodOptional<z.ZodNumber>;
@@ -23,6 +29,12 @@ export declare const updateBookSchema: z.ZodObject<{
         published: "published";
         draft: "draft";
         archived: "archived";
+    }>>>;
+    category: z.ZodOptional<z.ZodOptional<z.ZodEnum<{
+        Cambridge: "Cambridge";
+        "Recent Questions": "Recent Questions";
+        cambridge: "cambridge";
+        "recent-questions": "recent-questions";
     }>>>;
 }, z.core.$strip>;
 export declare const createTestSchema: z.ZodObject<{

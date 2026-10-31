@@ -8,16 +8,46 @@ const generateSlug = (title) => {
         .replace(/(^-|-$)/g, "");
     return slug;
 };
+const buildCategoryFilter = (category) => {
+    if (!category)
+        return {};
+    const cat = category.trim();
+    const regex = new RegExp(`^${cat.replace(/-/g, " ")}$`, "i");
+    return { category: regex };
+};
 const bookServices = {
-    getAll: () => Book.find({ status: "published" }).sort({ number: -1 }),
-    getAllAdmin: () => Book.find().sort({ number: -1 }),
-    count: () => Book.countDocuments({ status: "published" }),
-    countAll: () => Book.countDocuments(),
+    getAll: (filters) => {
+        const query = {
+            status: "published",
+            ...buildCategoryFilter(filters?.category),
+        };
+        return Book.find(query).sort({ number: -1 });
+    },
+    getAllAdmin: (filters) => {
+        const query = {
+            ...buildCategoryFilter(filters?.category),
+        };
+        return Book.find(query).sort({ number: -1 });
+    },
+    count: (filters) => {
+        const query = {
+            status: "published",
+            ...buildCategoryFilter(filters?.category),
+        };
+        return Book.countDocuments(query);
+    },
+    countAll: (filters) => {
+        const query = {
+            ...buildCategoryFilter(filters?.category),
+        };
+        return Book.countDocuments(query);
+    },
     getById: (id) => Book.findById(id),
-    create: ({ number, title, slug, status = "draft", }) => Book.create({
+    create: ({ number, title, slug, category = "Cambridge", status = "draft", }) => Book.create({
         number,
         title,
         slug: slug ?? generateSlug(title),
+        category,
         status,
     }),
     update: (id, data) => Book.findByIdAndUpdate(id, data, { returnDocument: "after", runValidators: true }),

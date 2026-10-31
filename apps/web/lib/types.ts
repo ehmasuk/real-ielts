@@ -5,11 +5,14 @@
  * self-documenting, and resilient to backend shape changes.
  */
 
+export type BookCategory = "Cambridge" | "Recent Questions"
+
 export interface Book {
   _id: string
   number?: number
   title: string
   slug: string
+  category?: BookCategory | string
   status?: string
   createdAt?: string
   updatedAt?: string

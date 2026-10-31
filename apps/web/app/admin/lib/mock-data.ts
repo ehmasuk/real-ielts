@@ -5,6 +5,7 @@ export interface BookItem {
   number: number
   title: string
   slug: string
+  category?: "Cambridge" | "Recent Questions" | string
   status: "published" | "draft"
   testsCount: number
   createdAt: string

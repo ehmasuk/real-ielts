@@ -15,6 +15,7 @@ function mapBook(b: any): BookItem {
     number: b.number,
     title: b.title,
     slug: b.slug,
+    category: b.category || "Cambridge",
     status: b.status,
     testsCount: b.testsCount || 0,
     createdAt: new Date(b.createdAt).toISOString().slice(0, 10),
@@ -29,7 +30,7 @@ export default function BooksPage() {
 
   const { data: rawBooks, isLoading } = useQuery({
     queryKey: ["books"],
-    queryFn: fetchBooks,
+    queryFn: () => fetchBooks(),
   })
 
   const books: BookItem[] = React.useMemo(
@@ -73,13 +74,20 @@ export default function BooksPage() {
     }
   }, [])
 
-  const handleSave = React.useCallback((data: { number: number; title: string }) => {
-    if (editingBook) {
-      updateMutation.mutate({ id: editingBook.id, data })
-    } else {
-      createMutation.mutate({ ...data, status: "draft" })
-    }
-  }, [editingBook])
+  const handleSave = React.useCallback(
+    (data: {
+      number: number
+      title: string
+      category: "Cambridge" | "Recent Questions"
+    }) => {
+      if (editingBook) {
+        updateMutation.mutate({ id: editingBook.id, data })
+      } else {
+        createMutation.mutate({ ...data, status: "draft" })
+      }
+    },
+    [editingBook]
+  )
 
   return (
     <div className="space-y-6">

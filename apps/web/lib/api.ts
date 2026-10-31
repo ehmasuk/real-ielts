@@ -25,13 +25,21 @@ import type {
 
 // ─── Public ───────────────────────────────────────────────────────────────────
 
-export const fetchPublicBooks = async (): Promise<Book[]> => {
-  const res = await api.get<Book[]>("/books")
+export const fetchPublicBooks = async (params?: { category?: string } | any): Promise<Book[]> => {
+  const queryParams =
+    params && typeof params === "object" && "category" in params
+      ? { category: params.category }
+      : undefined
+  const res = await api.get<Book[]>("/books", { params: queryParams })
   return res.data
 }
 
-export const fetchBookCount = async (): Promise<{ count: number }> => {
-  const res = await api.get<{ count: number }>("/books/count")
+export const fetchBookCount = async (params?: { category?: string } | any): Promise<{ count: number }> => {
+  const queryParams =
+    params && typeof params === "object" && "category" in params
+      ? { category: params.category }
+      : undefined
+  const res = await api.get<{ count: number }>("/books/count", { params: queryParams })
   return res.data
 }
 
@@ -104,8 +112,12 @@ export const fetchUserFullTestResults = async (): Promise<UserFullTestResult[]> 
 
 // ─── Books (Admin) ───────────────────────────────────────────────────────────
 
-export const fetchBooks = async (): Promise<Book[]> => {
-  const res = await api.get<Book[]>("/admin/books")
+export const fetchBooks = async (params?: { category?: string } | any): Promise<Book[]> => {
+  const queryParams =
+    params && typeof params === "object" && "category" in params
+      ? { category: params.category }
+      : undefined
+  const res = await api.get<Book[]>("/admin/books", { params: queryParams })
   return res.data
 }
 
@@ -119,7 +131,12 @@ export const fetchBookById = async (id: string): Promise<Book> => {
   return res.data
 }
 
-export const createBook = async (data: { number: number; title: string; status?: string }): Promise<Book> => {
+export const createBook = async (data: {
+  number: number
+  title: string
+  category?: string
+  status?: string
+}): Promise<Book> => {
   const res = await api.post<Book>("/admin/books", data)
   return res.data
 }

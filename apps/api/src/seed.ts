@@ -40,9 +40,9 @@ async function seed() {
 
   // ---- Books ----
   const booksData = [
-    { number: 17, title: "Cambridge IELTS 17", slug: "cambridge-ielts-17", status: "published" as const },
-    { number: 18, title: "Cambridge IELTS 18", slug: "cambridge-ielts-18", status: "published" as const },
-    { number: 19, title: "Cambridge IELTS 19", slug: "cambridge-ielts-19", status: "published" as const },
+    { number: 17, title: "Cambridge IELTS 17", slug: "cambridge-ielts-17", category: "Cambridge" as const, status: "published" as const },
+    { number: 18, title: "Cambridge IELTS 18", slug: "cambridge-ielts-18", category: "Cambridge" as const, status: "published" as const },
+    { number: 19, title: "Cambridge IELTS 19", slug: "cambridge-ielts-19", category: "Cambridge" as const, status: "published" as const },
   ];
 
   console.log("Seeding books...");

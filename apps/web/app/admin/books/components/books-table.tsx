@@ -38,7 +38,7 @@ interface BooksTableProps {
   onDelete: (book: BookItem) => void
 }
 
-type SortField = "number" | "title" | "status" | "testsCount"
+type SortField = "number" | "title" | "category" | "status" | "testsCount"
 type SortDir = "asc" | "desc"
 
 export function BooksTable({ books, onEdit, onToggleStatus, onDelete }: BooksTableProps) {
@@ -47,8 +47,8 @@ export function BooksTable({ books, onEdit, onToggleStatus, onDelete }: BooksTab
 
   const sorted = React.useMemo(() => {
     return [...books].sort((a, b) => {
-      const aVal = a[sortField]
-      const bVal = b[sortField]
+      const aVal = a[sortField] || ""
+      const bVal = b[sortField] || ""
       if (typeof aVal === "number" && typeof bVal === "number") {
         return sortDir === "asc" ? aVal - bVal : bVal - aVal
       }
@@ -99,6 +99,7 @@ export function BooksTable({ books, onEdit, onToggleStatus, onDelete }: BooksTab
           <TableRow className="hover:bg-transparent border-border/40">
             <SortableHeader field="number">#</SortableHeader>
             <SortableHeader field="title">Title</SortableHeader>
+            <SortableHeader field="category">Category</SortableHeader>
             <TableHead className="hidden sm:table-cell">Slug</TableHead>
             <SortableHeader field="status">Status</SortableHeader>
             <SortableHeader field="testsCount">Tests</SortableHeader>
@@ -122,6 +123,19 @@ export function BooksTable({ books, onEdit, onToggleStatus, onDelete }: BooksTab
                 >
                   {book.title}
                 </Link>
+              </TableCell>
+              <TableCell>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "text-[10px] font-semibold whitespace-nowrap",
+                    book.category === "Recent Questions"
+                      ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                      : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20"
+                  )}
+                >
+                  {book.category || "Cambridge"}
+                </Badge>
               </TableCell>
               <TableCell className="hidden sm:table-cell">
                 <code className="rounded bg-muted/60 px-1.5 py-0.5 text-[11px] font-mono text-muted-foreground">

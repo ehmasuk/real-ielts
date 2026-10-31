@@ -12,7 +12,16 @@ import {
 } from "@workspace/ui/components/dialog"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select"
 import type { BookItem } from "../../lib/mock-data"
+
+export type StaticBookCategory = "Cambridge" | "Recent Questions"
 
 interface BookFormDialogProps {
   open: boolean
@@ -21,6 +30,7 @@ interface BookFormDialogProps {
   onSave: (data: {
     number: number
     title: string
+    category: StaticBookCategory
   }) => void
 }
 
@@ -33,6 +43,7 @@ export function BookFormDialog({
   const isEdit = !!book
   const [number, setNumber] = React.useState("")
   const [title, setTitle] = React.useState("")
+  const [category, setCategory] = React.useState<StaticBookCategory>("Cambridge")
   const [errors, setErrors] = React.useState<Record<string, string>>({})
 
   React.useEffect(() => {
@@ -40,9 +51,13 @@ export function BookFormDialog({
       if (book) {
         setNumber(String(book.number))
         setTitle(book.title)
+        setCategory(
+          book.category === "Recent Questions" ? "Recent Questions" : "Cambridge"
+        )
       } else {
         setNumber("")
         setTitle("")
+        setCategory("Cambridge")
       }
       setErrors({})
     }
@@ -67,6 +82,7 @@ export function BookFormDialog({
     onSave({
       number: parseInt(number, 10),
       title: title.trim(),
+      category,
     })
     onOpenChange(false)
   }
@@ -80,8 +96,8 @@ export function BookFormDialog({
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
             {isEdit
-              ? "Update the book details below."
-              : "Add a new Cambridge IELTS book to the platform."}
+              ? "Update the book details and category below."
+              : "Add a new IELTS book and attach a category."}
           </DialogDescription>
         </DialogHeader>
 
@@ -120,6 +136,28 @@ export function BookFormDialog({
             {errors.title && (
               <p className="text-[11px] text-destructive">{errors.title}</p>
             )}
+          </div>
+
+          {/* Category */}
+          <div className="space-y-2">
+            <Label htmlFor="book-category" className="text-sm font-medium">
+              Book Category
+            </Label>
+            <Select
+              value={category}
+              onValueChange={(val) => setCategory(val as StaticBookCategory)}
+            >
+              <SelectTrigger id="book-category" className="w-full">
+                <SelectValue placeholder="Select Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Cambridge">Cambridge</SelectItem>
+                <SelectItem value="Recent Questions">Recent Questions</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-[11px] text-muted-foreground">
+              Select which category this book belongs to.
+            </p>
           </div>
 
           <DialogFooter className="gap-2">
