@@ -74,7 +74,10 @@ export function TestsTable({ tests, onTogglePublish, onDelete }: TestsTableProps
                 <div className="flex flex-col">
                   <span>Test {test.testNumber}</span>
                   <span className="text-[10px] text-muted-foreground font-normal sm:hidden">
-                    C{test.bookNumber} • {test.skill}
+                    {test.bookCategory === "Recent Questions"
+                      ? test.bookTitle || `Recent Questions ${test.bookNumber}`
+                      : `IELTS ${test.bookNumber}`}{" "}
+                    • {test.skill}
                   </span>
                 </div>
               </TableCell>
@@ -83,7 +86,9 @@ export function TestsTable({ tests, onTogglePublish, onDelete }: TestsTableProps
                   href={`/admin/books/${test.bookId}`}
                   className="font-medium text-foreground hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
-                  Cambridge {test.bookNumber}
+                  {test.bookCategory === "Recent Questions"
+                    ? test.bookTitle || `Recent Questions ${test.bookNumber}`
+                    : test.bookTitle || `Cambridge ${test.bookNumber}`}
                 </Link>
               </TableCell>
               <TableCell>

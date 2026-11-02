@@ -98,7 +98,7 @@ export default function BooksPage() {
             Books
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Manage Cambridge IELTS books on the platform
+            Manage books on the platform (Cambridge IELTS & Recent Questions)
           </p>
         </div>
         <Button

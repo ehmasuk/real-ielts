@@ -48,8 +48,11 @@ export const createTestHandler = catchAsync(async (req: Request, res: Response) 
 export const updateTestHandler = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   if (!id) throw newError({ message: "Missing test id", statusCode: 400 });
-  const { bookId, testNumber, skill, status, contentJson, answerJson } = req.body;
-  const test = await testServices.update(id, { bookId, testNumber, skill, status, contentJson, answerJson });
+  const updates: Record<string, unknown> = {};
+  for (const key of ["bookId", "testNumber", "skill", "status", "contentJson", "answerJson"] as const) {
+    if (req.body[key] !== undefined) updates[key] = req.body[key];
+  }
+  const test = await testServices.update(id, updates);
   if (!test) throw newError({ message: "Test not found", statusCode: 404 });
   res.status(200).json(test);
 });

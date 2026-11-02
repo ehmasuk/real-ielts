@@ -38,10 +38,14 @@ interface PageProps {
 }
 
 function mapTest(rawTest: any): TestItem {
+  const bookNumber = rawTest.bookId?.number || rawTest.testNumber
   return {
     id: rawTest._id,
     bookId: rawTest.bookId?._id || rawTest.bookId,
-    bookNumber: rawTest.bookId?.number || rawTest.testNumber,
+    bookNumber,
+    bookTitle:
+      rawTest.bookId?.title || `Cambridge IELTS ${bookNumber}`,
+    bookCategory: rawTest.bookId?.category || "Cambridge",
     testNumber: rawTest.testNumber,
     skill: rawTest.skill,
     status: rawTest.status,
@@ -50,6 +54,13 @@ function mapTest(rawTest: any): TestItem {
     contentJson: JSON.stringify(rawTest.contentJson || {}, null, 2),
     answerJson: JSON.stringify(rawTest.answerJson || {}, null, 2),
   }
+}
+
+/** Category-aware book label: real title for Recent Questions, series-style for Cambridge. */
+function bookLabel(test: Pick<TestItem, "bookTitle" | "bookCategory" | "bookNumber">): string {
+  return test.bookCategory === "Recent Questions"
+    ? test.bookTitle || `Recent Questions ${test.bookNumber}`
+    : test.bookTitle || `Cambridge IELTS ${test.bookNumber}`
 }
 
 export default function TestEditorPage({ params }: PageProps) {
@@ -368,7 +379,7 @@ export default function TestEditorPage({ params }: PageProps) {
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-xl font-bold tracking-tight text-foreground">
-                Cambridge {test.bookNumber} — Test {test.testNumber}
+                {bookLabel(test)} — Test {test.testNumber}
               </h1>
               <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-wider bg-indigo-500/5 text-indigo-500 border-indigo-500/20">
                 {test.skill}

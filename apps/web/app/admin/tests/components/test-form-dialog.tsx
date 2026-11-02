@@ -13,7 +13,9 @@ import { Label } from "@workspace/ui/components/label"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
@@ -27,6 +29,7 @@ interface TestFormDialogProps {
   onSave: (data: {
     bookId: string
     bookNumber: number
+    bookTitle: string
     testNumber: number
     skill: "reading" | "listening" | "writing" | "speaking"
   }) => void
@@ -45,26 +48,45 @@ export function TestFormDialog({
   >("reading")
   const [errors, setErrors] = React.useState<Record<string, string>>({})
 
+  const bookGroups = React.useMemo(() => {
+    const groups: Array<{
+      label: string
+      labelFor: (b: BookItem) => string
+      items: BookItem[]
+    }> = [
+      {
+        label: "Cambridge IELTS",
+        labelFor: (b) => `Cambridge IELTS ${b.number}`,
+        items: books
+          .filter((b) => b.category === "Cambridge")
+          .sort((a, b) => b.number - a.number),
+      },
+      {
+        label: "Recent Questions",
+        labelFor: (b) => b.title,
+        items: books
+          .filter((b) => b.category === "Recent Questions")
+          .sort((a, b) => b.number - a.number),
+      },
+    ]
+    return groups.filter((g) => g.items.length > 0)
+  }, [books])
+
   React.useEffect(() => {
     if (open) {
-      // Default select the first published book
-      const publishedBooks = books.filter((b) => b.status === "published")
-      const firstPublished = publishedBooks[0]
-      if (firstPublished) {
-        setSelectedBookId(firstPublished.id)
-      } else {
-        setSelectedBookId("")
-      }
+      // Default select the first available book
+      const first = bookGroups[0]?.items[0]
+      setSelectedBookId(first ? first.id : "")
       setTestNumber("1")
       setSkill("reading")
       setErrors({})
     }
-  }, [open, books])
+  }, [open, bookGroups])
 
   const validate = () => {
     const errs: Record<string, string> = {}
     if (!selectedBookId) {
-      errs.book = "Please select a Cambridge IELTS Book"
+      errs.book = "Please select a book"
     }
     setErrors(errs)
     return Object.keys(errs).length === 0
@@ -80,6 +102,7 @@ export function TestFormDialog({
     onSave({
       bookId: selectedBookId,
       bookNumber: book.number,
+      bookTitle: book.title,
       testNumber: parseInt(testNumber, 10),
       skill,
     })
@@ -100,19 +123,23 @@ export function TestFormDialog({
         <form onSubmit={handleSubmit} className="space-y-5 py-2">
           {/* Select Book */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Cambridge IELTS Book</Label>
+            <Label className="text-sm font-medium">Book</Label>
             <Select value={selectedBookId} onValueChange={setSelectedBookId}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select Book" />
               </SelectTrigger>
               <SelectContent>
-                {books
-                  .filter((b) => b.status === "published")
-                  .map((book) => (
-                    <SelectItem key={book.id} value={book.id}>
-                      Cambridge IELTS {book.number}
-                    </SelectItem>
-                  ))}
+                {bookGroups.map((group) => (
+                  <SelectGroup key={group.label}>
+                    <SelectLabel>{group.label}</SelectLabel>
+                    {group.items.map((book) => (
+                      <SelectItem key={book.id} value={book.id}>
+                        {group.labelFor(book)}
+                        {book.status !== "published" && " (draft)"}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                ))}
               </SelectContent>
             </Select>
             {errors.book && (

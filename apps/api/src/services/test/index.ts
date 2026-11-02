@@ -140,7 +140,7 @@ const testServices = {
     if (bookId) filter.bookId = new mongoose.Types.ObjectId(bookId);
     return Test.find(filter)
       .select("-contentJson -answerJson")
-      .populate("bookId", "title number")
+      .populate("bookId", "title number category")
       .sort({ testNumber: 1 })
       .lean() as unknown as Promise<ITest[]>;
   },
@@ -263,7 +263,7 @@ const testServices = {
   },
 
   getByIdAdmin: (id: string): Promise<ITest | null> =>
-    Test.findById(id).populate("bookId", "title number").lean() as unknown as Promise<ITest | null>,
+    Test.findById(id).populate("bookId", "title number category").lean() as unknown as Promise<ITest | null>,
 
   create: ({
     bookId,

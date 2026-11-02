@@ -17,6 +17,7 @@ function mapBook(b: any): BookItem {
     number: b.number,
     title: b.title,
     slug: b.slug,
+    category: b.category || "Cambridge",
     status: b.status,
     testsCount: b.testsCount || 0,
     createdAt: new Date(b.createdAt).toISOString().slice(0, 10),
@@ -27,10 +28,16 @@ function mapBook(b: any): BookItem {
 function mapTest(t: any, books: BookItem[]): TestItem {
   const bookIdStr = t.bookId?._id || t.bookId
   const matchingBook = books.find((b) => b.id === bookIdStr)
+  const bookNumber = matchingBook ? matchingBook.number : t.testNumber
   return {
     id: t._id,
     bookId: bookIdStr,
-    bookNumber: matchingBook ? matchingBook.number : t.testNumber,
+    bookNumber,
+    bookTitle:
+      matchingBook?.title ||
+      t.bookId?.title ||
+      `Cambridge IELTS ${bookNumber}`,
+    bookCategory: matchingBook?.category || t.bookId?.category || "Cambridge",
     testNumber: t.testNumber,
     skill: t.skill,
     status: t.status,
@@ -98,7 +105,7 @@ export default function TestsPage() {
   }, [])
 
   const handleDelete = React.useCallback((test: TestItem) => {
-    if (confirm(`Are you sure you want to delete Test ${test.testNumber} for Cambridge ${test.bookNumber}?`)) {
+    if (confirm(`Are you sure you want to delete Test ${test.testNumber} for ${test.bookTitle || `Cambridge ${test.bookNumber}`}?`)) {
       deleteMutation.mutate(test.id)
     }
   }, [])
@@ -106,10 +113,16 @@ export default function TestsPage() {
   const handleSave = React.useCallback((data: {
     bookId: string
     bookNumber: number
+    bookTitle: string
     testNumber: number
     skill: "reading" | "listening" | "writing" | "speaking"
   }) => {
-    const { contentJson, answerJson } = generateTestTemplate(data.skill, data.bookNumber, data.testNumber)
+    const { contentJson, answerJson } = generateTestTemplate(
+      data.skill,
+      data.bookNumber,
+      data.testNumber,
+      data.bookTitle
+    )
 
     createMutation.mutate({
       ...data,

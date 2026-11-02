@@ -191,6 +191,8 @@ export interface TestItem {
   id: string
   bookId: string
   bookNumber: number
+  bookTitle?: string
+  bookCategory?: string
   testNumber: number
   skill: "reading" | "listening" | "writing" | "speaking"
   status: "draft" | "published" | "archived"

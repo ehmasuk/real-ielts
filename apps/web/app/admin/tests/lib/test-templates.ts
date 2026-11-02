@@ -1,5 +1,5 @@
-export function generateTestTemplate(skill: "reading" | "listening" | "writing" | "speaking", bookNumber: number, testNumber: number) {
-  const title = `Cambridge IELTS ${bookNumber} Test ${testNumber} ${skill.charAt(0).toUpperCase() + skill.slice(1)}`;
+export function generateTestTemplate(skill: "reading" | "listening" | "writing" | "speaking", bookNumber: number, testNumber: number, bookTitle?: string) {
+  const title = `${bookTitle || `Cambridge IELTS ${bookNumber}`} Test ${testNumber} ${skill.charAt(0).toUpperCase() + skill.slice(1)}`;
 
   let sections: Record<string, unknown>[];
   let answerKeys: Record<string, unknown>;

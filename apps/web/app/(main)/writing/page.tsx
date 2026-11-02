@@ -22,6 +22,7 @@ interface BookItem {
   number: number
   title: string
   slug: string
+  category?: string
 }
 
 const gradients = [
@@ -120,8 +121,12 @@ export default function WritingPage() {
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-serif text-3xl font-bold tracking-tight mb-1">Book {book.number}</h3>
-                    <p className="text-[10px] text-white/70 font-semibold tracking-widest uppercase">Cambridge series</p>
+                    <h3 className="font-serif text-3xl font-bold tracking-tight mb-1">
+                      {book.category === "Recent Questions" ? book.title : `Book ${book.number}`}
+                    </h3>
+                    <p className="text-[10px] text-white/70 font-semibold tracking-widest uppercase">
+                      {book.category === "Recent Questions" ? "Recent questions" : "Cambridge series"}
+                    </p>
                   </div>
                 </div>
                 <div className="flex-1 p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
