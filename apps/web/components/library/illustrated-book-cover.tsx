@@ -83,11 +83,6 @@ export function IllustratedBookCover({
   const SkillIcon = isReading ? BookOpen : Headphones
   const skillLabel = isReading ? "Reading" : "Listening"
 
-  // Clean, human title without the repeated number (e.g., "CAMBRIDGE IELTS" instead of "CAMBRIDGE IELTS 21")
-  const displayTitle = book.title
-    .replace(/\b\d+\b/g, "")
-    .trim() || (isReading ? "IELTS Reading Practice" : "IELTS Listening Practice")
-
   return (
     <div
       onClick={onClick}
@@ -155,7 +150,7 @@ export function IllustratedBookCover({
             <div className="flex items-center gap-1.5">
               <SkillIcon className="h-3 w-3 text-zinc-500 dark:text-zinc-400 stroke-[2.2]" />
               <span className="font-mono text-[9px] font-bold tracking-[0.2em] uppercase text-zinc-600 dark:text-zinc-400">
-                Official {skillLabel}
+                {skillLabel} Test
               </span>
             </div>
 
@@ -193,7 +188,7 @@ export function IllustratedBookCover({
               className="text-xs sm:text-sm font-bold tracking-tight text-zinc-800 dark:text-zinc-200 uppercase mt-2.5 line-clamp-2 leading-tight"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {displayTitle}
+              {book.title}
             </h3>
           </div>
 
@@ -201,11 +196,11 @@ export function IllustratedBookCover({
           <div className="pt-2 border-t border-zinc-200/80 dark:border-zinc-800/80">
             <div className="flex items-center justify-between font-mono text-[10px]">
               <span className="text-zinc-600 dark:text-zinc-400 font-semibold tracking-wider uppercase">
-                {testsCount} {testsCount === 1 ? "Test" : "Tests"} • {partsTotal} Parts
+                {testsCount} {testsCount === 1 ? "Test" : "Tests"}
               </span>
 
               {bestBand ? (
-                <span className="font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-[2px]">
+                <span className="font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-xs">
                   Band {bestBand}
                 </span>
               ) : (
