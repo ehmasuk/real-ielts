@@ -433,7 +433,7 @@ export function LibraryPage({
                           fullDone={progress.fullDone}
                           bestBand={progress.bestBand}
                           skill={skill}
-                          onClick={() => setSelectedBookId(book._id)}
+                          onClick={() => setSelectedRecentTest({ test, book })}
                         />
                       )
                     })}
