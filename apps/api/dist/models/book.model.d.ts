@@ -1,5 +1,5 @@
 import mongoose, { Document } from "mongoose";
-export type BookCategory = "Cambridge" | "Recent Questions";
+export type BookCategory = "cambridge" | "recent-questions";
 export interface IBook extends Document {
     number: number;
     title: string;

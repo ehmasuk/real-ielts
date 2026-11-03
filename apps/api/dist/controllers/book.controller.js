@@ -57,8 +57,20 @@ export const updateBookHandler = catchAsync(async (req, res) => {
         res.status(400);
         throw new Error("Missing book id");
     }
-    const { number, title, slug, status, category } = req.body;
-    const book = await bookServices.update(id, { number, title, slug, status, category });
+    // Only include fields the client actually sent — passing undefined keys
+    // would make Mongoose apply the model setter (defaulting category to "cambridge")
+    const updates = {};
+    if (req.body.number !== undefined)
+        updates.number = req.body.number;
+    if (req.body.title !== undefined)
+        updates.title = req.body.title;
+    if (req.body.slug !== undefined)
+        updates.slug = req.body.slug;
+    if (req.body.status !== undefined)
+        updates.status = req.body.status;
+    if (req.body.category !== undefined)
+        updates.category = req.body.category;
+    const book = await bookServices.update(id, updates);
     if (!book) {
         res.status(404);
         throw new Error("Book not found");

@@ -116,7 +116,7 @@ const testServices = {
             filter.bookId = new mongoose.Types.ObjectId(bookId);
         return Test.find(filter)
             .select("-contentJson -answerJson")
-            .populate("bookId", "title number")
+            .populate("bookId", "title number category")
             .sort({ testNumber: 1 })
             .lean();
     },
@@ -216,7 +216,7 @@ const testServices = {
             section: test.section,
         };
     },
-    getByIdAdmin: (id) => Test.findById(id).populate("bookId", "title number").lean(),
+    getByIdAdmin: (id) => Test.findById(id).populate("bookId", "title number category").lean(),
     create: ({ bookId, testNumber, skill, status = "draft", contentJson = {}, answerJson = {}, }) => Test.create({ bookId, testNumber, skill, status, contentJson, answerJson }),
     update: (id, data) => Test.findByIdAndUpdate(id, data, { returnDocument: "after", runValidators: true }),
     remove: (id) => Test.findByIdAndDelete(id),

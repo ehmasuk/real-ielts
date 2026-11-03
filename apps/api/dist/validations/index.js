@@ -10,6 +10,8 @@ export const createBookSchema = z.object({
     title: z.string().min(1, "title is required"),
     slug: z.string().min(1, "slug is required").optional(),
     status: z.enum(["published", "draft", "archived"]).optional(),
+    // Accept the canonical slugs plus the legacy display names; the model
+    // setter normalizes everything to the slug form.
     category: z
         .enum(["Cambridge", "Recent Questions", "cambridge", "recent-questions"])
         .optional(),

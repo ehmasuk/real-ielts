@@ -14,6 +14,8 @@ import { bookCategories, toCategorySlug } from "@/lib/book-category"
 import type { BookCategorySlug } from "@/lib/book-category"
 import type { BookCategory } from "@/lib/types"
 import { IllustratedBookCover } from "@/components/library/illustrated-book-cover"
+import { RecentTestCard } from "@/components/library/recent-test-card"
+import { RecentTestModal } from "@/components/library/recent-test-modal"
 import { TestSelectionModal } from "@/components/library/test-selection-modal"
 import { bandFrom } from "@/components/library/helpers"
 import { useToday } from "@/lib/use-today"
@@ -52,6 +54,21 @@ interface LibraryPageProps {
   partsPerTest: number
 }
 
+/** Mono section divider with count — only shown on the "All" filter. */
+function SectionHeader({ label, count, unit }: { label: string; count: number; unit: string }) {
+  return (
+    <div className="flex items-center gap-3 mb-5">
+      <span className="font-mono text-[10px] font-semibold tracking-[0.22em] uppercase text-zinc-600 dark:text-zinc-400">
+        {label}
+      </span>
+      <span className="font-mono text-[10px] text-zinc-400 dark:text-zinc-600 tabular-nums">
+        {count} {unit}{count === 1 ? "" : "s"}
+      </span>
+      <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
+    </div>
+  )
+}
+
 export function LibraryPage({
   skill,
   libraryLabel,
@@ -66,6 +83,10 @@ export function LibraryPage({
     BookCategory | "all"
   >("all")
   const [selectedBookId, setSelectedBookId] = React.useState<string | null>(null)
+  const [selectedRecentTest, setSelectedRecentTest] = React.useState<{
+    test: TestItem
+    book: BookItem
+  } | null>(null)
   const today = useToday()
 
   // 1. Fetch Books
@@ -136,6 +157,37 @@ export function LibraryPage({
     return map
   }, [tests])
 
+  // Book lookup by ID (tests only carry a bookId reference)
+  const bookById = React.useMemo(() => {
+    const map: Record<string, BookItem> = {}
+    for (const b of books as BookItem[]) map[b._id] = b
+    return map
+  }, [books])
+
+  // Cambridge books keep the cover + modal browsing flow
+  const cambridgeBooks = React.useMemo(() => {
+    return (books as BookItem[]).filter(
+      (b) => toCategorySlug(b.category) === "cambridge"
+    )
+  }, [books])
+
+  // Recent-questions tests are displayed flat: one entry per test, no book
+  // grouping. Newest book first, mirroring the ordering of the covers grid.
+  const recentTests = React.useMemo(() => {
+    const entries: Array<{ test: TestItem; book: BookItem }> = []
+    for (const test of tests as TestItem[]) {
+      const bId =
+        typeof test.bookId === "string"
+          ? test.bookId
+          : (test.bookId as { _id: string })?._id
+      const book = bId ? bookById[bId] : undefined
+      if (!book || toCategorySlug(book.category) !== "recent-questions") continue
+      entries.push({ test, book })
+    }
+    entries.sort((a, b) => (b.book.number ?? 0) - (a.book.number ?? 0))
+    return entries
+  }, [tests, bookById])
+
   // Helper to calculate book progress dynamically
   const getBookProgress = React.useCallback(
     (bookId: string) => {
@@ -177,23 +229,50 @@ export function LibraryPage({
     [testsByBook, fullResultsMap, resultsMap, partsPerTest]
   )
 
-  // Filter books by category selection, then by search input
-  const filteredBooks = React.useMemo(() => {
-    let list = [...(books as BookItem[])]
+  // Progress for a single recent-questions test card
+  const getTestProgress = React.useCallback(
+    (test: TestItem) => {
+      const fullRes = fullResultsMap[test._id]
+      const sectionCount = test.contentJson?.sections?.length || partsPerTest
+      let doneParts = 0
+      for (let p = 1; p <= sectionCount; p++) {
+        if (resultsMap[`${test._id}-${p}`]) doneParts++
+      }
+      return {
+        fullDone: !!fullRes,
+        bestBand: fullRes ? bandFrom(fullRes.totalScore, fullRes.totalMax) : null,
+        doneParts,
+        partsCount: sectionCount,
+      }
+    },
+    [fullResultsMap, resultsMap, partsPerTest]
+  )
 
-    if (selectedCategory !== "all") {
-      list = list.filter((b) => toCategorySlug(b.category) === selectedCategory)
-    }
+  const q = searchTerm.trim().toLowerCase()
 
-    const q = searchTerm.trim().toLowerCase()
-    if (!q) return list
-
-    return list.filter((b) => {
+  // Cambridge covers: visible unless the recent-questions filter is active
+  const visibleCambridgeBooks = React.useMemo(() => {
+    if (selectedCategory === "recent-questions") return []
+    if (!q) return cambridgeBooks
+    return cambridgeBooks.filter((b) => {
       const titleMatch = b.title.toLowerCase().includes(q)
       const numMatch = b.number !== undefined && String(b.number).includes(q)
       return titleMatch || numMatch
     })
-  }, [books, searchTerm, selectedCategory])
+  }, [cambridgeBooks, q, selectedCategory])
+
+  // Recent-questions tests: visible unless the cambridge filter is active
+  const visibleRecentTests = React.useMemo(() => {
+    if (selectedCategory === "cambridge") return []
+    if (!q) return recentTests
+    return recentTests.filter(({ book, test }) => {
+      const titleMatch = book.title.toLowerCase().includes(q)
+      const numMatch =
+        (book.number !== undefined && String(book.number).includes(q)) ||
+        String(test.testNumber).includes(q)
+      return titleMatch || numMatch
+    })
+  }, [recentTests, q, selectedCategory])
 
   // Find currently opened book for modal
   const selectedBook = React.useMemo(() => {
@@ -296,7 +375,7 @@ export function LibraryPage({
           </div>
         </div>
 
-        {/* Books Grid */}
+        {/* Library Content */}
         <main className="mx-auto w-full max-w-6xl px-4 pb-24 sm:px-6 lg:px-8">
           {isLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
@@ -307,57 +386,110 @@ export function LibraryPage({
                 />
               ))}
             </div>
-          ) : filteredBooks.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-              {filteredBooks.map((book) => {
-                const progress = getBookProgress(book._id)
-                return (
-                  <IllustratedBookCover
-                    key={book._id}
-                    book={book}
-                    testsCount={progress.testsCount}
-                    completedTests={progress.completedTests}
-                    partsDone={progress.partsDone}
-                    partsTotal={progress.partsTotal}
-                    bestBand={progress.bestBand}
-                    onClick={() => setSelectedBookId(book._id)}
-                  />
-                )
-              })}
-            </div>
           ) : (
-            <div className="py-20 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-[3px]">
-              <BookOpen className="mx-auto h-8 w-8 text-zinc-400 dark:text-zinc-600" strokeWidth={1.5} />
-              <h3
-                className="mt-4 text-base font-bold text-zinc-900 dark:text-zinc-100"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {emptyTitle}&ldquo;{searchTerm || (selectedCategory !== "all" ? selectedCategory : "")}&rdquo;
-              </h3>
-              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                {emptyBody}
-              </p>
-              {searchTerm && (
-                <button
-                  type="button"
-                  onClick={() => setSearchTerm("")}
-                  className="mt-4 font-mono text-[11px] font-semibold tracking-wider text-red-600 dark:text-red-400 uppercase cursor-pointer hover:underline"
-                >
-                  Clear Search
-                </button>
+            <>
+              {/* Cambridge Series — book covers, existing browsing flow */}
+              {visibleCambridgeBooks.length > 0 && (
+                <section>
+                  {selectedCategory === "all" && (
+                    <SectionHeader label="Cambridge Series" count={visibleCambridgeBooks.length} unit={visibleCambridgeBooks.length === 1 ? "book" : "books"} />
+                  )}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                    {visibleCambridgeBooks.map((book) => {
+                      const progress = getBookProgress(book._id)
+                      return (
+                        <IllustratedBookCover
+                          key={book._id}
+                          book={book}
+                          testsCount={progress.testsCount}
+                          completedTests={progress.completedTests}
+                          partsDone={progress.partsDone}
+                          partsTotal={progress.partsTotal}
+                          bestBand={progress.bestBand}
+                          onClick={() => setSelectedBookId(book._id)}
+                        />
+                      )
+                    })}
+                  </div>
+                </section>
               )}
-              {selectedCategory !== "all" && (
-                <button
-                  type="button"
-                  onClick={() => setSelectedCategory("all")}
-                  className="mt-4 ml-3 font-mono text-[11px] font-semibold tracking-wider text-red-600 dark:text-red-400 uppercase cursor-pointer hover:underline"
-                >
-                  Clear Category
-                </button>
+
+              {/* Recent Questions — one flat card per test */}
+              {visibleRecentTests.length > 0 && (
+                <section className={visibleCambridgeBooks.length > 0 ? "mt-12" : undefined}>
+                  {selectedCategory === "all" && (
+                    <SectionHeader label="Recent Questions" count={visibleRecentTests.length} unit="test" />
+                  )}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                    {visibleRecentTests.map(({ test, book }) => {
+                      const progress = getTestProgress(test)
+                      return (
+                        <RecentTestCard
+                          key={test._id}
+                          title={book.title}
+                          testNumber={test.testNumber}
+                          partsCount={progress.partsCount}
+                          doneParts={progress.doneParts}
+                          fullDone={progress.fullDone}
+                          bestBand={progress.bestBand}
+                          skill={skill}
+                          onClick={() => setSelectedBookId(book._id)}
+                        />
+                      )
+                    })}
+                  </div>
+                </section>
               )}
-            </div>
+
+              {/* Combined empty state */}
+              {visibleCambridgeBooks.length === 0 && visibleRecentTests.length === 0 && (
+                <div className="py-20 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-[3px]">
+                  <BookOpen className="mx-auto h-8 w-8 text-zinc-400 dark:text-zinc-600" strokeWidth={1.5} />
+                  <h3
+                    className="mt-4 text-base font-bold text-zinc-900 dark:text-zinc-100"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {emptyTitle}&ldquo;{searchTerm || (selectedCategory !== "all" ? bookCategories.find((c) => c.value === selectedCategory)?.label ?? "" : "")}&rdquo;
+                  </h3>
+                  <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                    {emptyBody}
+                  </p>
+                  {searchTerm && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchTerm("")}
+                      className="mt-4 font-mono text-[11px] font-semibold tracking-wider text-red-600 dark:text-red-400 uppercase cursor-pointer hover:underline"
+                    >
+                      Clear Search
+                    </button>
+                  )}
+                  {selectedCategory !== "all" && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCategory("all")}
+                      className="mt-4 ml-3 font-mono text-[11px] font-semibold tracking-wider text-red-600 dark:text-red-400 uppercase cursor-pointer hover:underline"
+                    >
+                      Clear Category
+                    </button>
+                  )}
+                </div>
+              )}
+            </>
           )}
         </main>
+
+        {/* Single-test modal for recent-questions */}
+        {selectedRecentTest && (
+          <RecentTestModal
+            open
+            onClose={() => setSelectedRecentTest(null)}
+            test={selectedRecentTest.test}
+            testTitle={selectedRecentTest.book.title}
+            partsPerTest={partsPerTest}
+            resultsMap={resultsMap}
+            fullResultsMap={fullResultsMap}
+          />
+        )}
 
         {/* Clean Test Selection Modal */}
         {selectedBook && (

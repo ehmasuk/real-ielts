@@ -1,4 +1,5 @@
 import { type IBook, type BookCategory } from "../../models/book.model.js";
+export declare const CATEGORY_LEGACY_NAMES: Record<string, string>;
 declare const bookServices: {
     getAll: (filters?: {
         category?: string;

@@ -8,12 +8,23 @@ const generateSlug = (title) => {
         .replace(/(^-|-$)/g, "");
     return slug;
 };
+// Canonical category slugs stored in the DB. Documents created before the
+// slug migration may still contain the legacy display names, so filters
+// always match both until every document is migrated.
+export const CATEGORY_LEGACY_NAMES = {
+    "cambridge": "Cambridge",
+    "recent-questions": "Recent Questions",
+};
+const normalizeCategory = (category) => {
+    const slug = category.trim().toLowerCase().replace(/\s+/g, "-");
+    return slug === "recent-questions" ? "recent-questions" : "cambridge";
+};
 const buildCategoryFilter = (category) => {
     if (!category)
         return {};
-    const cat = category.trim();
-    const regex = new RegExp(`^${cat.replace(/-/g, " ")}$`, "i");
-    return { category: regex };
+    const slug = normalizeCategory(category);
+    const legacy = CATEGORY_LEGACY_NAMES[slug];
+    return legacy ? { category: { $in: [slug, legacy] } } : { category: slug };
 };
 const bookServices = {
     getAll: (filters) => {
@@ -43,7 +54,7 @@ const bookServices = {
         return Book.countDocuments(query);
     },
     getById: (id) => Book.findById(id),
-    create: ({ number, title, slug, category = "Cambridge", status = "draft", }) => Book.create({
+    create: ({ number, title, slug, category = "cambridge", status = "draft", }) => Book.create({
         number,
         title,
         slug: slug ?? generateSlug(title),

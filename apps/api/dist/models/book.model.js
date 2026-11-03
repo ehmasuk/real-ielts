@@ -1,4 +1,11 @@
 import mongoose, { Document, Schema } from "mongoose";
+/** Legacy display-name values still found in older documents / payloads. */
+const CATEGORY_TO_SLUG = {
+    "cambridge": "cambridge",
+    "recent questions": "recent-questions",
+    "recent-questions": "recent-questions",
+    "recentquestions": "recent-questions",
+};
 const bookSchema = new Schema({
     number: {
         type: Number,
@@ -16,16 +23,12 @@ const bookSchema = new Schema({
     },
     category: {
         type: String,
-        enum: ["Cambridge", "Recent Questions", "cambridge", "recent-questions"],
-        default: "Cambridge",
+        enum: ["cambridge", "recent-questions"],
+        default: "cambridge",
         set: (val) => {
             if (!val)
-                return "Cambridge";
-            if (val.toLowerCase() === "recent questions" ||
-                val.toLowerCase() === "recent-questions") {
-                return "Recent Questions";
-            }
-            return "Cambridge";
+                return "cambridge";
+            return CATEGORY_TO_SLUG[val.trim().toLowerCase()] ?? "cambridge";
         },
     },
     status: {
