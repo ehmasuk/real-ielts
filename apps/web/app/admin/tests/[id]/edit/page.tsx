@@ -346,8 +346,8 @@ export default function TestEditorPage({ params }: PageProps) {
         <p className="text-sm text-muted-foreground text-center max-w-sm">
           The test you are trying to edit does not exist or has been removed.
         </p>
-        <Link href="/admin/tests">
-          <Button variant="outline" className="mt-2">Go Back to Tests</Button>
+        <Link href="/admin/books">
+          <Button variant="outline" className="mt-2">Go Back to Books</Button>
         </Link>
       </div>
     )
@@ -358,7 +358,7 @@ export default function TestEditorPage({ params }: PageProps) {
       {/* Header bar */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-border/40 pb-5">
         <div className="flex items-center gap-3">
-          <Link href="/admin/tests">
+          <Link href="/admin/books">
             <Button variant="ghost" size="icon-sm" className="rounded-lg border border-border/40">
               <ArrowLeft className="h-4 w-4" />
             </Button>

@@ -489,7 +489,6 @@ Examples:
 ```txt
 /admin
 /admin/books
-/admin/tests
 /admin/media
 /admin/imports
 /admin/users
@@ -654,62 +653,6 @@ archived
 Cambridge IELTS 20
 Cambridge IELTS 21
 ```
-
----
-
-# 16.6 Tests Management
-
-### Route
-
-```txt
-/admin/tests
-```
-
-### Features
-
-```txt
-Search
-Filter
-Sort
-Duplicate
-Archive
-Publish
-Delete
-Preview
-Version History
-```
-
-### Filters
-
-```txt
-Skill
-Book
-Status
-Version
-Created By
-```
-
-### Status
-
-```txt
-draft
-published
-archived
-```
-
-### Workflow
-
-```txt
-Create
-   ↓
-Draft
-   ↓
-Validate
-   ↓
-Publish
-```
-
-Only published tests are visible to students.
 
 ---
 

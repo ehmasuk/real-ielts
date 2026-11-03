@@ -45,7 +45,6 @@ Frontend for the Real IELTS practice platform — a Computer-Delivered IELTS (CD
 | `/admin` | Dashboard |
 | `/admin/books` | Manage books |
 | `/admin/books/[id]` | Book details |
-| `/admin/tests` | Manage tests |
 | `/admin/tests/[id]/edit` | Test editor (CodeMirror) |
 | `/admin/imports` | Import content |
 | `/admin/bug-reports` | Manage bug reports |

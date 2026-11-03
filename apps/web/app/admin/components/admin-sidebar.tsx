@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation"
 import {
   LayoutDashboard,
   BookOpen,
-  FileText,
   Headphones,
   MessageSquare,
   PenLine,
@@ -52,7 +51,6 @@ const navGroups: NavGroup[] = [
     title: "IELTS",
     items: [
       { href: "/admin/books", label: "Books", icon: BookOpen },
-      { href: "/admin/tests", label: "All Tests", icon: FileText },
     ],
   },
     {
