@@ -3,10 +3,13 @@
 import * as React from "react"
 import { Headphones, BookOpen, Check, ArrowRight } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
+import { COVER_PALETTES } from "./illustrated-book-cover"
 
 export interface RecentTestCardProps {
   title: string
   testNumber: number
+  /** Book number (seed) so the tinted palette aligns with the Cambridge covers. */
+  bookNumber?: number
   partsCount: number
   doneParts: number
   fullDone: boolean
@@ -17,12 +20,15 @@ export interface RecentTestCardProps {
 
 /**
  * Flat card for a single recent-questions test — unlike the Cambridge book
- * covers, recent questions are shown standalone (one card per test) with a
- * clean exam-paper look: white paper, ruled lines, red margin.
+ * covers, recent questions are shown standalone (one card per test). Shares
+ * the same book-cover silhouette, aspect ratio and tinted palettes as the
+ * Cambridge covers, keeping the exam-paper personality (red exam tag, ruled
+ * paper, red margin).
  */
 export function RecentTestCard({
   title,
   testNumber,
+  bookNumber,
   partsCount,
   doneParts,
   fullDone,
@@ -33,6 +39,8 @@ export function RecentTestCard({
   const isReading = skill === "reading"
   const SkillIcon = isReading ? BookOpen : Headphones
   const skillLabel = isReading ? "Reading" : "Listening"
+  const seed = bookNumber && bookNumber > 0 ? bookNumber : testNumber
+  const palette = COVER_PALETTES[(seed - 1) % COVER_PALETTES.length]!
 
   return (
     <div
@@ -47,20 +55,45 @@ export function RecentTestCard({
       }}
       className="group relative flex flex-col text-left transition-all duration-300 cursor-pointer focus:outline-none"
     >
-      {/* Test sheet container */}
+      {/* Test sheet container — same book silhouette as Cambridge covers */}
       <div
         className={cn(
-          "relative aspect-[1/1.1] w-full rounded-[4px] overflow-hidden border transition-all duration-300",
-          "bg-[#fbfaf7] dark:bg-[#121212]",
-          "border-[#e2ded4] dark:border-[#262626]",
-          "shadow-[0_4px_12px_-4px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_12px_-4px_rgba(0,0,0,0.35)]",
-          "group-hover:-translate-y-1.5 group-hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.18)] dark:group-hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.55)]"
+          "relative aspect-[1/1.38] w-full rounded-[4px] overflow-hidden border transition-all duration-300",
+          palette.bg,
+          palette.border,
+          "group-hover:-translate-y-1.5 group-hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.18)] dark:group-hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.55)]",
+          "shadow-[0_4px_12px_-4px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_12px_-4px_rgba(0,0,0,0.35)]"
         )}
       >
-        {/* Notebook ruling */}
+        {/* Book spine shadow / crease on left edge — mirrors Cambridge covers */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none opacity-[0.035] dark:opacity-[0.06]"
+          className={cn(
+            "absolute inset-y-0 left-0 w-4 border-r z-10 transition-colors",
+            palette.spine
+          )}
+        >
+          <div className="absolute inset-y-0 right-1 w-px bg-black/[0.04] dark:bg-white/[0.04]" />
+        </div>
+
+        {/* Elegant inner line frame with corner ticks */}
+        <div
+          aria-hidden="true"
+          className={cn(
+            "absolute inset-3 left-6 rounded-[2px] border pointer-events-none transition-colors",
+            palette.frame
+          )}
+        >
+          <div className="absolute top-1 left-1 w-2 h-2 border-t border-l border-current opacity-40" />
+          <div className="absolute top-1 right-1 w-2 h-2 border-t border-r border-current opacity-40" />
+          <div className="absolute bottom-1 left-1 w-2 h-2 border-b border-l border-current opacity-40" />
+          <div className="absolute bottom-1 right-1 w-2 h-2 border-b border-r border-current opacity-40" />
+        </div>
+
+        {/* Notebook ruling (starts after the spine) */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 left-5 pointer-events-none opacity-[0.035] dark:opacity-[0.06]"
           style={{
             backgroundImage:
               "repeating-linear-gradient(to bottom, transparent 0px, transparent 15px, #000 15px, #000 16px)",
@@ -73,7 +106,7 @@ export function RecentTestCard({
         />
 
         {/* Content */}
-        <div className="relative h-full flex flex-col justify-between pr-5 pl-8 py-4 z-20">
+        <div className="relative h-full flex flex-col justify-between pr-5 pl-8 py-5 z-20">
           {/* Top row: skill tag + done chip */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
@@ -101,12 +134,12 @@ export function RecentTestCard({
               <div className="h-px flex-1 bg-zinc-300/60 dark:bg-zinc-700/60" />
             </div>
 
+            {/* Big bold test number — same scale as Cambridge covers */}
             <span
-              className="block text-4xl sm:text-5xl font-extrabold tracking-tighter text-zinc-950 dark:text-zinc-50 leading-none select-none"
+              className="block text-6xl sm:text-7xl font-extrabold tracking-tighter text-zinc-950 dark:text-zinc-50 leading-none select-none transition-transform duration-300 group-hover:scale-105 origin-left"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              <span className="text-red-600 dark:text-red-400">#</span>
-              {String(testNumber).padStart(2, "0")}
+              <span className="text-red-600 dark:text-red-400">{String(testNumber).padStart(2, "0")}</span>
             </span>
 
             <h3

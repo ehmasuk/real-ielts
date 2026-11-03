@@ -21,7 +21,7 @@ export interface IllustratedBookCoverProps {
 }
 
 // Sophisticated, clean light cover tint palettes for each edition/book
-const COVER_PALETTES = [
+export const COVER_PALETTES = [
   {
     bg: "bg-[#f5f2eb] dark:bg-[#1a1917]",
     border: "border-[#e5dfd3] dark:border-[#2a2723]",

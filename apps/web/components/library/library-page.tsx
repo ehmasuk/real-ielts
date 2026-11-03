@@ -172,7 +172,7 @@ export function LibraryPage({
   }, [books])
 
   // Recent-questions tests are displayed flat: one entry per test, no book
-  // grouping. Newest book first, mirroring the ordering of the covers grid.
+  // grouping. Newest book first, then newest test number first.
   const recentTests = React.useMemo(() => {
     const entries: Array<{ test: TestItem; book: BookItem }> = []
     for (const test of tests as TestItem[]) {
@@ -184,7 +184,11 @@ export function LibraryPage({
       if (!book || toCategorySlug(book.category) !== "recent-questions") continue
       entries.push({ test, book })
     }
-    entries.sort((a, b) => (b.book.number ?? 0) - (a.book.number ?? 0))
+    entries.sort(
+      (a, b) =>
+        (b.book.number ?? 0) - (a.book.number ?? 0) ||
+        b.test.testNumber - a.test.testNumber
+    )
     return entries
   }, [tests, bookById])
 
@@ -428,6 +432,7 @@ export function LibraryPage({
                           key={test._id}
                           title={book.title}
                           testNumber={test.testNumber}
+                          bookNumber={book.number}
                           partsCount={progress.partsCount}
                           doneParts={progress.doneParts}
                           fullDone={progress.fullDone}
