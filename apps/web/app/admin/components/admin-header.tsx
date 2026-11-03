@@ -119,7 +119,7 @@ export const AdminHeader = React.memo(function AdminHeader({ onMenuToggle }: Adm
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive focus:text-destructive">
+              <DropdownMenuItem onClick={() => signOut("/")} className="cursor-pointer text-destructive focus:text-destructive">
                 <LogOut className="size-4" />
                 Sign Out
               </DropdownMenuItem>

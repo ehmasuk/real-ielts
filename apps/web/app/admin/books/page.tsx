@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@workspace/ui/components/button"
 import { BookOpen, Loader2, Plus } from "lucide-react"
 import type { BookItem } from "../lib/mock-data"
-import { BookFormDialog } from "./components/book-form-dialog"
+import { BookFormDialog, type StaticBookCategory } from "./components/book-form-dialog"
 import { BooksTable } from "./components/books-table"
 import { fetchBooks, createBook, updateBook, deleteBook } from "@/lib/api"
 
@@ -15,7 +15,7 @@ function mapBook(b: any): BookItem {
     number: b.number,
     title: b.title,
     slug: b.slug,
-    category: b.category || "Cambridge",
+    category: b.category || "cambridge",
     status: b.status,
     testsCount: b.testsCount || 0,
     createdAt: new Date(b.createdAt).toISOString().slice(0, 10),
@@ -78,7 +78,7 @@ export default function BooksPage() {
     (data: {
       number: number
       title: string
-      category: "Cambridge" | "Recent Questions"
+      category: StaticBookCategory
     }) => {
       if (editingBook) {
         updateMutation.mutate({ id: editingBook.id, data })

@@ -28,6 +28,7 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 import type { TestItem } from "../../lib/mock-data"
+import { toCategorySlug } from "@/lib/book-category"
 
 interface TestsTableProps {
   tests: TestItem[]
@@ -74,7 +75,7 @@ export function TestsTable({ tests, onTogglePublish, onDelete }: TestsTableProps
                 <div className="flex flex-col">
                   <span>Test {test.testNumber}</span>
                   <span className="text-[10px] text-muted-foreground font-normal sm:hidden">
-                    {test.bookCategory === "Recent Questions"
+                    {toCategorySlug(test.bookCategory) === "recent-questions"
                       ? test.bookTitle || `Recent Questions ${test.bookNumber}`
                       : `IELTS ${test.bookNumber}`}{" "}
                     • {test.skill}
@@ -86,7 +87,7 @@ export function TestsTable({ tests, onTogglePublish, onDelete }: TestsTableProps
                   href={`/admin/books/${test.bookId}`}
                   className="font-medium text-foreground hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
-                  {test.bookCategory === "Recent Questions"
+                  {toCategorySlug(test.bookCategory) === "recent-questions"
                     ? test.bookTitle || `Recent Questions ${test.bookNumber}`
                     : test.bookTitle || `Cambridge ${test.bookNumber}`}
                 </Link>

@@ -20,8 +20,9 @@ import {
   SelectValue,
 } from "@workspace/ui/components/select"
 import type { BookItem } from "../../lib/mock-data"
+import { bookCategories, toCategorySlug, type BookCategorySlug } from "@/lib/book-category"
 
-export type StaticBookCategory = "Cambridge" | "Recent Questions"
+export type StaticBookCategory = BookCategorySlug
 
 interface BookFormDialogProps {
   open: boolean
@@ -43,7 +44,7 @@ export function BookFormDialog({
   const isEdit = !!book
   const [number, setNumber] = React.useState("")
   const [title, setTitle] = React.useState("")
-  const [category, setCategory] = React.useState<StaticBookCategory>("Cambridge")
+  const [category, setCategory] = React.useState<StaticBookCategory>("cambridge")
   const [errors, setErrors] = React.useState<Record<string, string>>({})
 
   React.useEffect(() => {
@@ -51,13 +52,11 @@ export function BookFormDialog({
       if (book) {
         setNumber(String(book.number))
         setTitle(book.title)
-        setCategory(
-          book.category === "Recent Questions" ? "Recent Questions" : "Cambridge"
-        )
+        setCategory(toCategorySlug(book.category))
       } else {
         setNumber("")
         setTitle("")
-        setCategory("Cambridge")
+        setCategory("cambridge")
       }
       setErrors({})
     }
@@ -151,8 +150,11 @@ export function BookFormDialog({
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Cambridge">Cambridge</SelectItem>
-                <SelectItem value="Recent Questions">Recent Questions</SelectItem>
+                {bookCategories.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <p className="text-[11px] text-muted-foreground">

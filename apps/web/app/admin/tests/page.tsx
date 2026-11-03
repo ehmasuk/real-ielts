@@ -9,6 +9,7 @@ import type { TestItem, BookItem } from "../lib/mock-data"
 import { TestFormDialog } from "./components/test-form-dialog"
 import { TestsTable } from "./components/tests-table"
 import { fetchBooks, fetchTests, createTest, updateTest, publishTest, deleteTest } from "@/lib/api"
+import { toCategorySlug } from "@/lib/book-category"
 import { generateTestTemplate } from "./lib/test-templates"
 
 function mapBook(b: any): BookItem {
@@ -17,7 +18,7 @@ function mapBook(b: any): BookItem {
     number: b.number,
     title: b.title,
     slug: b.slug,
-    category: b.category || "Cambridge",
+    category: b.category || "cambridge",
     status: b.status,
     testsCount: b.testsCount || 0,
     createdAt: new Date(b.createdAt).toISOString().slice(0, 10),
@@ -37,7 +38,7 @@ function mapTest(t: any, books: BookItem[]): TestItem {
       matchingBook?.title ||
       t.bookId?.title ||
       `Cambridge IELTS ${bookNumber}`,
-    bookCategory: matchingBook?.category || t.bookId?.category || "Cambridge",
+    bookCategory: matchingBook?.category || t.bookId?.category || "cambridge",
     testNumber: t.testNumber,
     skill: t.skill,
     status: t.status,

@@ -5,7 +5,9 @@
  * self-documenting, and resilient to backend shape changes.
  */
 
-export type BookCategory = "Cambridge" | "Recent Questions"
+import type { BookCategorySlug } from "@/lib/book-category"
+
+export type BookCategory = BookCategorySlug
 
 export interface Book {
   _id: string

@@ -10,6 +10,8 @@ import {
   fetchUserResults,
   fetchUserFullTestResults,
 } from "@/lib/api"
+import { bookCategories, toCategorySlug } from "@/lib/book-category"
+import type { BookCategorySlug } from "@/lib/book-category"
 import type { BookCategory } from "@/lib/types"
 import { IllustratedBookCover } from "@/components/library/illustrated-book-cover"
 import { TestSelectionModal } from "@/components/library/test-selection-modal"
@@ -35,15 +37,10 @@ interface BookItem {
 }
 
 /** Static book categories, mirroring the admin books page. */
-const BOOK_CATEGORIES: Array<{ value: "all" | BookCategory; label: string }> = [
+const BOOK_CATEGORIES: Array<{ value: "all" | BookCategorySlug; label: string }> = [
   { value: "all", label: "All" },
-  { value: "Cambridge", label: "Cambridge" },
-  { value: "Recent Questions", label: "Recent Questions" },
+  ...bookCategories,
 ]
-
-/** Normalize a book's raw category value to a known static category. */
-const normalizeCategory = (raw?: string): BookCategory =>
-  raw && raw.toLowerCase().includes("recent") ? "Recent Questions" : "Cambridge"
 
 interface LibraryPageProps {
   skill: "listening" | "reading"
@@ -185,7 +182,7 @@ export function LibraryPage({
     let list = [...(books as BookItem[])]
 
     if (selectedCategory !== "all") {
-      list = list.filter((b) => normalizeCategory(b.category) === selectedCategory)
+      list = list.filter((b) => toCategorySlug(b.category) === selectedCategory)
     }
 
     const q = searchTerm.trim().toLowerCase()

@@ -28,8 +28,10 @@ export function useAuth() {
     nextAuthSignIn("google", callbackURL ? { callbackUrl: callbackURL } : undefined)
   }, [])
 
-  const signOut = useCallback(async () => {
-    await nextAuthSignOut()
+  const signOut = useCallback(async (callbackURL?: unknown) => {
+    // Guard against a DOM event being passed when used directly as onClick
+    const url = typeof callbackURL === "string" ? callbackURL : undefined
+    await nextAuthSignOut(url ? { callbackUrl: url } : undefined)
     setAccessToken(null)
   }, [])
 

@@ -12,6 +12,7 @@ import {
   ArrowUpDown,
 } from "lucide-react"
 import { cn } from "@workspace/ui/lib/utils"
+import { bookCategoryLabel, toCategorySlug } from "@/lib/book-category"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -129,12 +130,12 @@ export function BooksTable({ books, onEdit, onToggleStatus, onDelete }: BooksTab
                   variant="outline"
                   className={cn(
                     "text-[10px] font-semibold whitespace-nowrap",
-                    book.category === "Recent Questions"
+                    toCategorySlug(book.category) === "recent-questions"
                       ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
                       : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20"
                   )}
                 >
-                  {book.category || "Cambridge"}
+                  {bookCategoryLabel(book.category)}
                 </Badge>
               </TableCell>
               <TableCell className="hidden sm:table-cell">

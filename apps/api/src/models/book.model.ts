@@ -1,6 +1,14 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export type BookCategory = "Cambridge" | "Recent Questions";
+export type BookCategory = "cambridge" | "recent-questions";
+
+/** Legacy display-name values still found in older documents / payloads. */
+const CATEGORY_TO_SLUG: Record<string, BookCategory> = {
+  "cambridge": "cambridge",
+  "recent questions": "recent-questions",
+  "recent-questions": "recent-questions",
+  "recentquestions": "recent-questions",
+};
 
 export interface IBook extends Document {
   number: number;
@@ -30,17 +38,11 @@ const bookSchema = new Schema<IBook>(
     },
     category: {
       type: String,
-      enum: ["Cambridge", "Recent Questions", "cambridge", "recent-questions"],
-      default: "Cambridge",
+      enum: ["cambridge", "recent-questions"],
+      default: "cambridge",
       set: (val: string) => {
-        if (!val) return "Cambridge";
-        if (
-          val.toLowerCase() === "recent questions" ||
-          val.toLowerCase() === "recent-questions"
-        ) {
-          return "Recent Questions";
-        }
-        return "Cambridge";
+        if (!val) return "cambridge";
+        return CATEGORY_TO_SLUG[val.trim().toLowerCase()] ?? "cambridge";
       },
     },
     status: {

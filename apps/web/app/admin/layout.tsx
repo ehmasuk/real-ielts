@@ -5,6 +5,7 @@ import { TooltipProvider } from "@workspace/ui/components/tooltip"
 import { Sheet, SheetContent } from "@workspace/ui/components/sheet"
 import { AdminSidebar } from "./components/admin-sidebar"
 import { AdminHeader } from "./components/admin-header"
+import { AdminGate } from "./components/admin-gate"
 
 export default function AdminLayout({
   children,
@@ -27,8 +28,9 @@ export default function AdminLayout({
   }, [])
 
   return (
-    <TooltipProvider delayDuration={0}>
-      <div className="flex h-screen overflow-hidden bg-background">
+    <AdminGate>
+      <TooltipProvider delayDuration={0}>
+        <div className="flex h-screen overflow-hidden bg-background">
         {/* Desktop sidebar */}
         <div className="hidden lg:flex">
           <AdminSidebar
@@ -57,6 +59,7 @@ export default function AdminLayout({
           </main>
         </div>
       </div>
-    </TooltipProvider>
+      </TooltipProvider>
+    </AdminGate>
   )
 }

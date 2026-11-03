@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Search, PenTool, BookOpen } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import { fetchPublicBooks, fetchPublicTestsList } from "@/lib/api"
+import { toCategorySlug } from "@/lib/book-category"
 import { BookCardSkeleton } from "@/components/shared/skeletons"
 
 interface TestItem {
@@ -122,10 +123,10 @@ export default function WritingPage() {
                   </div>
                   <div>
                     <h3 className="font-serif text-3xl font-bold tracking-tight mb-1">
-                      {book.category === "Recent Questions" ? book.title : `Book ${book.number}`}
+                      {toCategorySlug(book.category) === "recent-questions" ? book.title : `Book ${book.number}`}
                     </h3>
                     <p className="text-[10px] text-white/70 font-semibold tracking-widest uppercase">
-                      {book.category === "Recent Questions" ? "Recent questions" : "Cambridge series"}
+                      {toCategorySlug(book.category) === "recent-questions" ? "Recent questions" : "Cambridge series"}
                     </p>
                   </div>
                 </div>

@@ -28,6 +28,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Badge } from "@workspace/ui/components/badge"
 import type { TestItem } from "../../../lib/mock-data"
 import { fetchTestById, fetchTests, updateTest, publishTest } from "@/lib/api"
+import { toCategorySlug } from "@/lib/book-category"
 import { formatString } from "@/components/test/shared/formatString"
 import CodeMirror, { EditorView } from "@uiw/react-codemirror"
 import { json } from "@codemirror/lang-json"
@@ -45,7 +46,7 @@ function mapTest(rawTest: any): TestItem {
     bookNumber,
     bookTitle:
       rawTest.bookId?.title || `Cambridge IELTS ${bookNumber}`,
-    bookCategory: rawTest.bookId?.category || "Cambridge",
+    bookCategory: rawTest.bookId?.category || "cambridge",
     testNumber: rawTest.testNumber,
     skill: rawTest.skill,
     status: rawTest.status,
@@ -58,7 +59,7 @@ function mapTest(rawTest: any): TestItem {
 
 /** Category-aware book label: real title for Recent Questions, series-style for Cambridge. */
 function bookLabel(test: Pick<TestItem, "bookTitle" | "bookCategory" | "bookNumber">): string {
-  return test.bookCategory === "Recent Questions"
+  return toCategorySlug(test.bookCategory) === "recent-questions"
     ? test.bookTitle || `Recent Questions ${test.bookNumber}`
     : test.bookTitle || `Cambridge IELTS ${test.bookNumber}`
 }

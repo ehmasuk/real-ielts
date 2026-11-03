@@ -21,6 +21,7 @@ import {
 } from "@workspace/ui/components/select"
 import * as React from "react"
 import type { BookItem } from "../../lib/mock-data"
+import { toCategorySlug } from "@/lib/book-category"
 
 interface TestFormDialogProps {
   open: boolean
@@ -58,14 +59,14 @@ export function TestFormDialog({
         label: "Cambridge IELTS",
         labelFor: (b) => `Cambridge IELTS ${b.number}`,
         items: books
-          .filter((b) => b.category === "Cambridge")
+          .filter((b) => toCategorySlug(b.category) === "cambridge")
           .sort((a, b) => b.number - a.number),
       },
       {
         label: "Recent Questions",
         labelFor: (b) => b.title,
         items: books
-          .filter((b) => b.category === "Recent Questions")
+          .filter((b) => toCategorySlug(b.category) === "recent-questions")
           .sort((a, b) => b.number - a.number),
       },
     ]

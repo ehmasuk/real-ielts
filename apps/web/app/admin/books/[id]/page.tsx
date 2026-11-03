@@ -45,6 +45,7 @@ import {
   updateBook,
 } from "@/lib/api"
 import type { TestItem, BookItem } from "../../lib/mock-data"
+import { bookCategoryLabel, toCategorySlug } from "@/lib/book-category"
 import { BookFormDialog } from "../components/book-form-dialog"
 
 type Skill = "listening" | "reading" | "writing" | "speaking"
@@ -198,12 +199,12 @@ export default function BookDetailPage() {
                   variant="outline"
                   className={cn(
                     "text-[10px] font-semibold",
-                    book.category === "Recent Questions"
+                    toCategorySlug(book.category) === "recent-questions"
                       ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
                       : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20"
                   )}
                 >
-                  {book.category || "Cambridge"}
+                  {bookCategoryLabel(book.category)}
                 </Badge>
                 <Badge
                   variant={book.status === "published" ? "default" : "secondary"}
@@ -372,7 +373,7 @@ export default function BookDetailPage() {
             number: book.number || 0,
             title: book.title,
             slug: book.slug,
-            category: book.category || "Cambridge",
+            category: book.category || "cambridge",
             status: (book.status as "published" | "draft") || "draft",
             testsCount: totalTests,
             createdAt: book.createdAt || "",

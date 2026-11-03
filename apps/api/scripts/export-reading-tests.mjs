@@ -23,7 +23,7 @@ const repoRoot = path.resolve(process.cwd(), "..", "..");
 const OUT_DIR = path.join(repoRoot, "exports", "reading");
 
 const SKILL = "reading";
-const CATEGORY = "Cambridge"; // matches how the admin saves it (setter normalizes)
+const CATEGORY = "cambridge";
 
 await mongoose.connect(URI);
 const db = mongoose.connection.db;

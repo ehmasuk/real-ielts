@@ -1,11 +1,13 @@
 // Mock data for admin dashboard and pages
 
+import type { BookCategorySlug } from "@/lib/book-category"
+
 export interface BookItem {
   id: string
   number: number
   title: string
   slug: string
-  category?: "Cambridge" | "Recent Questions" | string
+  category?: BookCategorySlug | string
   status: "published" | "draft"
   testsCount: number
   createdAt: string
