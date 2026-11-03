@@ -6,7 +6,7 @@ export default function ReadingPage() {
   return (
     <LibraryPage
       skill="reading"
-      libraryLabel="REAL IELTS — READING LIBRARY"
+      libraryLabel="REAL IELTS — ACADEMIC READING LIBRARY"
       pageTitle="Reading Practice"
       pageDescription={
         "Select a book to start a full exam simulation or practice individual passages under real CD-IELTS conditions."

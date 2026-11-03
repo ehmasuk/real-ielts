@@ -15,13 +15,15 @@ const archivo = Archivo({ subsets: ["latin"], variable: "--font-display" })
 
 export const metadata: Metadata = {
   title: {
-    default: "Real IELTS — Practice for the Computer-Delivered IELTS Exam",
+    default: "Real IELTS — Academic IELTS (CD-IELTS) Practice",
     template: "%s | Real IELTS",
   },
   description:
-    "Train under real exam conditions with Cambridge IELTS practice tests. Access comprehensive mocks from Cambridge series 16–21, get instant band score diagnostics, and clear explanations for every error.",
+    "Academic-module IELTS practice under real exam conditions with Cambridge IELTS tests. Access comprehensive mocks from Cambridge series 16–21, get instant band score diagnostics, and clear explanations for every error.",
   keywords: [
     "IELTS",
+    "Academic IELTS",
+    "IELTS Academic",
     "IELTS practice",
     "Cambridge IELTS",
     "CD-IELTS",
@@ -42,24 +44,24 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Real IELTS",
-    title: "Real IELTS — Practice for the Computer-Delivered IELTS Exam",
+    title: "Real IELTS — Academic IELTS (CD-IELTS) Practice",
     description:
-      "Train under real exam conditions with Cambridge IELTS practice tests. Access comprehensive mocks from Cambridge series 16–21, get instant band score diagnostics, and clear explanations for every error.",
+      "Academic-module IELTS practice under real exam conditions with Cambridge IELTS tests. Access comprehensive mocks from Cambridge series 16–21, get instant band score diagnostics, and clear explanations for every error.",
     url: "https://real-ielts.vercel.app",
     images: [
       {
         url: "/opengraph-image.png",
         width: 1200,
         height: 630,
-        alt: "Real IELTS — Practice for the Computer-Delivered IELTS Exam",
+        alt: "Real IELTS — Academic IELTS (CD-IELTS) Practice",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Real IELTS — Practice for the Computer-Delivered IELTS Exam",
+    title: "Real IELTS — Academic IELTS (CD-IELTS) Practice",
     description:
-      "Train under real exam conditions with Cambridge IELTS practice tests. Access comprehensive mocks from Cambridge series 16–21, get instant band score diagnostics, and clear explanations for every error.",
+      "Academic-module IELTS practice under real exam conditions with Cambridge IELTS tests. Access comprehensive mocks from Cambridge series 16–21, get instant band score diagnostics, and clear explanations for every error.",
     images: ["/opengraph-image.png"],
   },
   icons: {

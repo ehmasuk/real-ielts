@@ -83,7 +83,7 @@ function NotebookHeader() {
     <div className="mx-auto w-full max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-zinc-200 pb-3 dark:border-zinc-800">
         <span className="text-[10px] font-semibold tracking-[0.22em] text-zinc-500 dark:text-zinc-400">
-          REAL IELTS — CD-IELTS PRACTICE
+          REAL IELTS — ACADEMIC CD-IELTS PRACTICE
         </span>
         <span className="text-right font-mono text-[10px] font-medium tracking-[0.14em] tabular-nums text-zinc-500 dark:text-zinc-400">
           {date || "\u00A0"}
@@ -151,11 +151,11 @@ function Head() {
             variants={fadeUp}
             className="mt-6 max-w-xl text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-400"
           >
-            Real IELTS is a practice environment for self-studying candidates.
-            Sit complete Listening and Reading tests from Cambridge books 7–21
-            under real exam conditions — timed, scored, and explained the moment
-            you submit. No account needed to practice; sign in only to save your
-            results.
+            Real IELTS is an Academic-module practice environment for
+            self-studying candidates. Sit complete Listening and Reading tests
+            from Cambridge books 7–21 under real exam conditions — timed,
+            scored, and explained the moment you submit. No account needed to
+            practice; sign in only to save your results.
           </motion.p>
 
           <motion.div
@@ -187,7 +187,7 @@ function Head() {
             className="mt-6 flex flex-wrap items-center gap-2"
             aria-label="Library contents"
           >
-            {["21 BOOKS", "84 LISTENING TESTS", "63 READING TESTS"].map((chip) => (
+            {["ACADEMIC ONLY", "21 BOOKS", "84 LISTENING TESTS", "63 READING TESTS"].map((chip) => (
               <span
                 key={chip}
                 className="rounded-[3px] border border-zinc-200 px-2.5 py-1 font-mono text-[10px] font-semibold tracking-[0.14em] tabular-nums text-zinc-500 dark:border-zinc-800 dark:text-zinc-400"

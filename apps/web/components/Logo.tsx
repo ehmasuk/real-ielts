@@ -22,10 +22,16 @@ export function Logo({ variant = "full", className }: LogoProps) {
     <span className={cn("inline-flex items-center gap-1 text-foreground", className)}>
       <LogoSvg className="size-8 shrink-0 " />
       {variant === "full" && (
-        <span className="text-lg leading-none">
-          <span className="font-semibold text-foreground">Real</span>
-          <span className="ml-0.5 font-semibold tracking-wide text-muted-foreground">
-            IELTS
+        <span className="flex items-baseline gap-1.5 text-lg leading-none">
+          <span>
+            <span className="font-semibold text-foreground">Real</span>
+            <span className="ml-0.5 font-semibold tracking-wide text-muted-foreground">
+              IELTS
+            </span>
+          </span>
+          {/* Module tag — Academic only, hidden on compact mobile headers */}
+          <span className="hidden translate-y-[-1px] rounded-[2px] border border-red-600/25 px-1 py-0.5 font-mono text-[8px] font-bold tracking-[0.18em] text-red-600 dark:text-red-400 dark:border-red-400/25 sm:inline">
+            ACADEMIC
           </span>
         </span>
       )}

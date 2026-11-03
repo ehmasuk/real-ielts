@@ -6,7 +6,7 @@ export default function ListeningPage() {
   return (
     <LibraryPage
       skill="listening"
-      libraryLabel="REAL IELTS — LISTENING LIBRARY"
+      libraryLabel="REAL IELTS — ACADEMIC LISTENING LIBRARY"
       pageTitle="Listening Practice"
       pageDescription={
         "Select a book to start a full exam simulation or practice individual parts under real CD-IELTS conditions."
