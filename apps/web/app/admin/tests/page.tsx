@@ -195,6 +195,7 @@ export default function TestsPage() {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         books={books}
+        tests={tests}
         onSave={handleSave}
       />
     </div>

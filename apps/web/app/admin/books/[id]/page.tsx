@@ -43,10 +43,13 @@ import {
   publishTest,
   deleteTest,
   updateBook,
+  createTest,
 } from "@/lib/api"
 import type { TestItem, BookItem } from "../../lib/mock-data"
 import { bookCategoryLabel, toCategorySlug } from "@/lib/book-category"
+import { generateTestTemplate } from "../../tests/lib/test-templates"
 import { BookFormDialog } from "../components/book-form-dialog"
+import { TestFormDialog } from "../../tests/components/test-form-dialog"
 
 type Skill = "listening" | "reading" | "writing" | "speaking"
 
@@ -138,6 +141,41 @@ export default function BookDetailPage() {
       deleteMutation.mutate(test.id)
     }
   }, [])
+
+  const [addSkill, setAddSkill] = React.useState<Skill | null>(null)
+
+  const createMutation = useMutation({
+    mutationFn: createTest,
+    onSuccess: (newTest: any) => {
+      queryClient.invalidateQueries({ queryKey: ["tests", "book", bookId] })
+      router.push(`/admin/tests/${newTest._id}/edit`)
+    },
+    onError: (err) => console.error(err),
+  })
+
+  const handleAddTest = React.useCallback(
+    (data: {
+      bookId: string
+      bookNumber: number
+      bookTitle: string
+      testNumber: number
+      skill: "reading" | "listening" | "writing" | "speaking"
+    }) => {
+      const { contentJson, answerJson } = generateTestTemplate(
+        data.skill,
+        data.bookNumber,
+        data.testNumber,
+        data.bookTitle
+      )
+      createMutation.mutate({
+        ...data,
+        status: "draft",
+        contentJson,
+        answerJson,
+      })
+    },
+    [createMutation]
+  )
 
   const totalTests = tests.length
   const book = rawBook
@@ -232,15 +270,6 @@ export default function BookDetailPage() {
             <Edit className="mr-1.5 h-3.5 w-3.5" />
             Edit Book
           </Button>
-          <Link href="/admin/tests">
-            <Button
-              size="sm"
-              className="bg-linear-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:from-indigo-500 hover:to-purple-500"
-            >
-              <Plus className="mr-1.5 h-4 w-4" />
-              Create Test
-            </Button>
-          </Link>
         </div>
       </div>
 
@@ -257,9 +286,18 @@ export default function BookDetailPage() {
               <div className={cn("flex items-center gap-2.5 border-b border-border/40 px-5 py-3", config.borderColor)}>
                 <Icon className="h-4 w-4 text-muted-foreground" />
                 <h2 className="text-sm font-semibold text-foreground">{config.label}</h2>
-                <Badge variant="outline" className="ml-auto text-[10px] font-semibold">
+                <Badge variant="outline" className="text-[10px] font-semibold">
                   {skillTests.length} test{skillTests.length !== 1 ? "s" : ""}
                 </Badge>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="ml-4 h-7 border-border/60 text-xs"
+                  onClick={() => setAddSkill(skill)}
+                >
+                  <Plus className="mr-1 h-3 w-3" />
+                  Add Test
+                </Button>
               </div>
 
               {skillTests.length > 0 ? (
@@ -351,12 +389,10 @@ export default function BookDetailPage() {
                 <div className="flex flex-col items-center justify-center py-10 text-center">
                   <Icon className="h-8 w-8 text-muted-foreground/20" />
                   <p className="mt-2 text-xs text-muted-foreground">No {config.label.toLowerCase()} tests yet</p>
-                  <Link href="/admin/tests">
-                    <Button variant="outline" size="sm" className="mt-3">
-                      <Plus className="mr-1 h-3 w-3" />
-                      Create {config.label} Test
-                    </Button>
-                  </Link>
+                  <Button variant="outline" size="sm" className="mt-3" onClick={() => setAddSkill(skill)}>
+                    <Plus className="mr-1 h-3 w-3" />
+                    Add {config.label} Test
+                  </Button>
                 </div>
               )}
             </section>
@@ -382,6 +418,30 @@ export default function BookDetailPage() {
           onSave={(data) => {
             updateBookMutation.mutate({ id: bookId, data })
           }}
+        />
+      )}
+
+      {book && (
+        <TestFormDialog
+          open={addSkill !== null}
+          onOpenChange={(open) => {
+            if (!open) setAddSkill(null)
+          }}
+          books={[]}
+          tests={tests}
+          lockedBook={{
+            id: book._id,
+            number: book.number || 0,
+            title: book.title,
+            slug: book.slug,
+            category: book.category || "cambridge",
+            status: (book.status as "published" | "draft") || "draft",
+            testsCount: totalTests,
+            createdAt: book.createdAt || "",
+            updatedAt: book.updatedAt || "",
+          }}
+          lockedSkill={addSkill}
+          onSave={handleAddTest}
         />
       )}
     </div>
