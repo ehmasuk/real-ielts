@@ -9,15 +9,22 @@ import { AuthGate } from "@/components/test/shared/AuthGate"
 import { TestTimer } from "@/components/test/shared/TestTimer"
 import { useTestGuard } from "@/components/test/shared/useTestGuard"
 import { LeaveTestModal } from "@/components/test/shared/LeaveTestModal"
+import { TimeUpModal } from "@/components/test/shared/TimeUpModal"
 import { ReportBugModal } from "@/components/ReportBugModal"
 import { ReadingLayout } from "@/components/test/layouts/ReadingLayout"
+import { READING_FULL_DURATION_S } from "@/lib/timers"
 import { extractQuestionsFromGroups, type QuestionItem } from "@/components/test/shared/NavigationBar"
 import { cn } from "@workspace/ui/lib/utils"
 import { Bug, Timer, ChevronLeft, ChevronRight } from "lucide-react"
 
+/** Extra time granted per "I need more time" tap (5 minutes). */
+const EXTRA_TIME_GRANT_S = 5 * 60
+
 export default function ReadingFullTestPage() {
   const { showModal, confirmLeave, cancelLeave, bypassOnce } = useTestGuard()
   const [reportOpen, setReportOpen] = useState(false)
+  const [timeUpOpen, setTimeUpOpen] = useState(false)
+  const [extraTimeS, setExtraTimeS] = useState(0)
   const params = useParams()
   const testId = params.testId as string
   const { isAuthenticated, isLoading: authLoading } = useAuth()
@@ -27,11 +34,21 @@ export default function ReadingFullTestPage() {
     redirecting,
     answers,
     submitting,
-    elapsed,
     formatTime,
     handleAnswerChange,
     handleSubmit,
-  } = useFullTest({ testId, skill: "reading" })
+    addExtraTime,
+  } = useFullTest({ testId, skill: "reading", timeLimitS: READING_FULL_DURATION_S })
+
+  const grantMoreTime = () => {
+    setExtraTimeS((s) => s + EXTRA_TIME_GRANT_S)
+    addExtraTime(EXTRA_TIME_GRANT_S)
+    setTimeUpOpen(false)
+  }
+  const submitNow = () => {
+    setTimeUpOpen(false)
+    handleSubmit()
+  }
 
   const sections = data?.sections ?? []
   const [activePartIndex, setActivePartIndex] = useState(0)
@@ -120,7 +137,12 @@ export default function ReadingFullTestPage() {
         <div className="flex flex-1 justify-center">
           <div className="flex items-center gap-1.5 font-mono text-sm font-bold tracking-wider text-white">
             <Timer className="size-4" />
-            <TestTimer initialElapsed={elapsed} formatTime={formatTime} />
+            <TestTimer
+              limit={READING_FULL_DURATION_S}
+              extraSeconds={extraTimeS}
+              onExpire={() => setTimeUpOpen(true)}
+              formatTime={formatTime}
+            />
           </div>
         </div>
 
@@ -226,6 +248,7 @@ export default function ReadingFullTestPage() {
       )}
 
       <LeaveTestModal open={showModal} onConfirm={confirmLeave} onCancel={cancelLeave} />
+      <TimeUpModal open={timeUpOpen} onSubmit={submitNow} onMoreTime={grantMoreTime} />
       <ReportBugModal open={reportOpen} onClose={() => setReportOpen(false)} />
     </div>
   )

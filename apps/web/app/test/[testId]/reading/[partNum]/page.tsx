@@ -9,13 +9,20 @@ import { AuthGate } from "@/components/test/shared/AuthGate"
 import { TestTimer } from "@/components/test/shared/TestTimer"
 import { useTestGuard } from "@/components/test/shared/useTestGuard"
 import { LeaveTestModal } from "@/components/test/shared/LeaveTestModal"
+import { TimeUpModal } from "@/components/test/shared/TimeUpModal"
 import { ReportBugModal } from "@/components/ReportBugModal"
 import { ReadingLayout } from "@/components/test/layouts/ReadingLayout"
+import { READING_PART_DURATION_S } from "@/lib/timers"
 import { Bug, AlarmClock } from "lucide-react"
+
+/** Extra time granted per "I need more time" tap (5 minutes). */
+const EXTRA_TIME_GRANT_S = 5 * 60
 
 export default function ReadingPartPage() {
   const { showModal, confirmLeave, cancelLeave, bypassOnce } = useTestGuard()
   const [reportOpen, setReportOpen] = useState(false)
+  const [timeUpOpen, setTimeUpOpen] = useState(false)
+  const [extraTimeS, setExtraTimeS] = useState(0)
   const params = useParams()
   const testId = params.testId as string
   const partNum = parseInt(params.partNum as string, 10)
@@ -26,11 +33,21 @@ export default function ReadingPartPage() {
     redirecting,
     answers,
     submitting,
-    elapsed,
     formatTime,
     handleAnswerChange,
     handleSubmit,
-  } = useTestPart(testId, partNum)
+    addExtraTime,
+  } = useTestPart(testId, partNum, { timeLimitS: READING_PART_DURATION_S })
+
+  const grantMoreTime = () => {
+    setExtraTimeS((s) => s + EXTRA_TIME_GRANT_S)
+    addExtraTime(EXTRA_TIME_GRANT_S)
+    setTimeUpOpen(false)
+  }
+  const submitNow = () => {
+    setTimeUpOpen(false)
+    handleSubmit()
+  }
 
   const sectionTitle = data?.section?.title
   const instructions = data?.section?.instructions
@@ -91,7 +108,12 @@ export default function ReadingPartPage() {
         <div className="flex flex-1 justify-center">
           <div className="flex items-center gap-1.5 font-mono text-sm font-bold tracking-wider text-white">
             <AlarmClock className="size-4" />
-            <TestTimer initialElapsed={elapsed} formatTime={formatTime} />
+            <TestTimer
+              limit={READING_PART_DURATION_S}
+              extraSeconds={extraTimeS}
+              onExpire={() => setTimeUpOpen(true)}
+              formatTime={formatTime}
+            />
           </div>
         </div>
 
@@ -119,6 +141,7 @@ export default function ReadingPartPage() {
       </AuthGate>
 
       <LeaveTestModal open={showModal} onConfirm={confirmLeave} onCancel={cancelLeave} />
+      <TimeUpModal open={timeUpOpen} onSubmit={submitNow} onMoreTime={grantMoreTime} />
       <ReportBugModal open={reportOpen} onClose={() => setReportOpen(false)} />
     </div>
   )
