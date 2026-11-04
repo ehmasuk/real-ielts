@@ -101,16 +101,6 @@ export interface UserFullTestResult {
   totalMax: number
 }
 
-export interface DrillManifest {
-  id: string
-  title: string
-  description: string
-  icon: string
-  category: string
-  skills: string[]
-  schema: Record<string, unknown>
-}
-
 export interface BugReport {
   _id: string
   description: string

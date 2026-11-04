@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     // Fail fast on garbage tokens before making a network call; the API
     // re-validates the signature anyway.
     try {
-      jwt.verify(token, JWT_SECRET)
+      jwt.verify(token, JWT_SECRET, { algorithms: ["HS256"] })
     } catch {
       return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 })
     }

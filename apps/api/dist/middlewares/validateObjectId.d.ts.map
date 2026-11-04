@@ -1,1 +1,0 @@
-{"version":3,"file":"validateObjectId.d.ts","sourceRoot":"","sources":["../../src/middlewares/validateObjectId.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,YAAY,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAA;AAK9D;;;;;;;GAOG;AACH,QAAA,MAAM,gBAAgB,GAAI,WAAW,MAAM,MACjC,KAAK,OAAO,EAAE,MAAM,QAAQ,EAAE,MAAM,YAAY,KAAG,IAQ5D,CAAA;AAED,eAAe,gBAAgB,CAAA"}

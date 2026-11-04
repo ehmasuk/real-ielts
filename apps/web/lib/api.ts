@@ -16,7 +16,6 @@ import type {
   FullTestResult,
   FullTestSubmitResponse,
   UserFullTestResult,
-  DrillManifest,
   BugReport,
   User,
   UsersResponse,
@@ -218,50 +217,5 @@ export const fetchUsers = async (
 
 export const updateUser = async ({ id, data }: { id: string; data: Record<string, unknown> }): Promise<User> => {
   const res = await api.patch<User>(`/admin/users/${id}`, data)
-  return res.data
-}
-
-// ─── Drill Progress ──────────────────────────────────────────────────────────
-
-export const fetchDrillProgress = async (drillId: string): Promise<{
-  currentLevel: number
-  completedLevels: number[]
-  stars: Record<number, number>
-  bestAccuracy: number
-}> => {
-  const res = await api.get(`/drill-progress/${drillId}`)
-  return res.data
-}
-
-export const updateDrillProgress = async (
-  drillId: string,
-  data: { levelNumber: number; stars: number; accuracy: number }
-): Promise<{
-  currentLevel: number
-  completedLevels: number[]
-  stars: Record<number, number>
-  bestAccuracy: number
-}> => {
-  const res = await api.put(`/drill-progress/${drillId}`, data)
-  return res.data
-}
-
-// ─── Drill Schemas ───────────────────────────────────────────────────────────
-
-export const fetchAllDrillSchemas = async (): Promise<{ drillId: string; schema: Record<string, unknown>; version: number }[]> => {
-  const res = await api.get<{ drillId: string; schema: Record<string, unknown>; version: number }[]>("/drills")
-  return res.data
-}
-
-export const fetchDrillSchema = async (drillId: string): Promise<{ schema: Record<string, unknown> }> => {
-  const res = await api.get<{ schema: Record<string, unknown> }>(`/drills/${drillId}`)
-  return res.data
-}
-
-export const updateDrillSchema = async (
-  drillId: string,
-  data: { schema: Record<string, unknown> }
-): Promise<{ schema: Record<string, unknown> }> => {
-  const res = await api.put<{ schema: Record<string, unknown> }>(`/admin/drills/${drillId}`, data)
   return res.data
 }

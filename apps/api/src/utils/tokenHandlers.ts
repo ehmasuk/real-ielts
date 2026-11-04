@@ -8,7 +8,9 @@ export const signAccessToken = (payload: { id: string; role: string }): string =
 
 export const verifyToken = (token: string): DecodedTokenType | null => {
   try {
-    return jwt.verify(token, env.JWT_SECRET) as DecodedTokenType
+    // Pin the algorithm so a token signed with a different alg can never be
+    // accepted (defence in depth against algorithm-confusion attacks).
+    return jwt.verify(token, env.JWT_SECRET, { algorithms: ["HS256"] }) as DecodedTokenType
   } catch {
     return null
   }

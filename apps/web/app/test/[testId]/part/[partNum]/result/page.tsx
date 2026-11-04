@@ -131,7 +131,7 @@ function SinglePartResultPage() {
               className="mt-4 text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              No Drill Result Recorded
+              No Result Recorded
             </h2>
             <p className="mt-2 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               Complete and submit Part {partNum} to view your detailed answer diagnostic and audio script alignment.

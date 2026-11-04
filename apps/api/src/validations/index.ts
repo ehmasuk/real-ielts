@@ -69,9 +69,3 @@ export const updateUserSchema = z.object({
   role: z.enum(["student", "admin"]).optional(),
   status: z.enum(["active", "disabled", "banned"]).optional(),
 })
-
-export const updateDrillProgressSchema = z.object({
-  levelNumber: z.number().int().positive("levelNumber must be a positive integer"),
-  stars: z.number().int().nonnegative("stars must be a non-negative integer"),
-  accuracy: z.number().min(0, "accuracy must be at least 0").max(100, "accuracy must not exceed 100"),
-})

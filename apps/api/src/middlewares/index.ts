@@ -1,4 +1,5 @@
 import cors from "cors";
+import crypto from "crypto";
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -59,10 +60,22 @@ const middlewares = (app: Express): void => {
   });
   app.use("/api/auth", authLimiter);
 
+  // Attach a request id to every response so error responses (which echo it
+  // back) can be traced to a specific request.
+  app.use((_req, res, next) => {
+    res.setHeader("x-request-id", crypto.randomUUID());
+    next();
+  });
+
   // Body size limits
   app.use(express.json({ limit: "1mb" }));
   app.use(express.urlencoded({ extended: true, limit: "1mb" }));
-  app.use(morgan("dev"));
+  // Log the path only in production — the "dev"/URL formats include the query
+  // string, which would put things like admin search terms (emails) in logs.
+  morgan.token("path", (req) => (req as express.Request).path);
+  app.use(
+    morgan(isDev ? "dev" : ":method :path :status :res[content-length] - :response-time ms"),
+  );
   app.use(cookieParser());
   app.use(
     cors({
