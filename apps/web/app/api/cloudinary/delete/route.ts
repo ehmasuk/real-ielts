@@ -21,14 +21,32 @@ export async function POST(request: Request) {
     }
 
     const token = authHeader.slice(7)
-    let decoded: { id: string; role: string }
+    // Fail fast on garbage tokens before making a network call; the API
+    // re-validates the signature anyway.
     try {
-      decoded = jwt.verify(token, JWT_SECRET) as { id: string; role: string }
+      jwt.verify(token, JWT_SECRET)
     } catch {
       return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 })
     }
 
-    if (decoded.role !== "admin") {
+    // The JWT is valid for 30 days, so its role claim can go stale (e.g. a
+    // demoted admin). Confirm the current role with the API's /auth/me,
+    // which re-checks status and role against the database. Fail closed on
+    // any network error.
+    const apiUri = process.env.NEXT_PUBLIC_API_URI || "http://localhost:8080/api"
+    let currentRole: string | undefined
+    try {
+      const meRes = await fetch(`${apiUri}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (meRes.ok) {
+        const meResult = await meRes.json()
+        currentRole = meResult?.data?.role
+      }
+    } catch {
+      // Network failure — treat as unauthorized below.
+    }
+    if (currentRole !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 

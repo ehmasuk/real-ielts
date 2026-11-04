@@ -1,10 +1,13 @@
 import express from "express";
 import { getTests, getTestsList, getTestByIdHandler, getTestPartHandler, submitTestPartHandler, getPartResultHandler, getUserResultsHandler, getFullTestHandler, submitFullTestHandler, getFullTestResultHandler, getUserFullTestResultsHandler } from "../controllers/test.controller.js";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
+import validateObjectId from "../middlewares/validateObjectId.js";
 import { validate } from "../middlewares/validate.js";
 import { submitAnswersSchema, submitFullTestSchema } from "../validations/index.js";
 
 const router: express.Router = express.Router();
+
+router.param("id", validateObjectId("id"));
 
 router.get("/", getTests);
 router.get("/list", getTestsList);

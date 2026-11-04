@@ -58,7 +58,7 @@ export function RecentTestCard({
       {/* Test sheet container — same book silhouette as Cambridge covers */}
       <div
         className={cn(
-          "relative aspect-[1/1.38] w-full rounded-[4px] overflow-hidden border transition-all duration-300",
+          "relative aspect-[1/1.38] w-full rounded-lg overflow-hidden border transition-all duration-300",
           palette.bg,
           palette.border,
           "group-hover:-translate-y-1.5 group-hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.18)] dark:group-hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.55)]",
@@ -73,14 +73,14 @@ export function RecentTestCard({
             palette.spine
           )}
         >
-          <div className="absolute inset-y-0 right-1 w-px bg-black/[0.04] dark:bg-white/[0.04]" />
+          <div className="absolute inset-y-0 right-1 w-px bg-black/4 dark:bg-white/4" />
         </div>
 
         {/* Elegant inner line frame with corner ticks */}
         <div
           aria-hidden="true"
           className={cn(
-            "absolute inset-3 left-6 rounded-[2px] border pointer-events-none transition-colors",
+            "absolute inset-3 left-6 rounded-xs border pointer-events-none transition-colors",
             palette.frame
           )}
         >
@@ -117,8 +117,8 @@ export function RecentTestCard({
             </div>
 
             {fullDone && (
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[2px] bg-emerald-600 text-white font-mono text-[9px] font-bold uppercase tracking-wider shadow-2xs">
-                <Check className="h-2.5 w-2.5 stroke-[3]" />
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-xs bg-emerald-600 text-white font-mono text-[9px] font-bold uppercase tracking-wider shadow-2xs">
+                <Check className="h-2.5 w-2.5 stroke-3]" />
                 Done
               </span>
             )}

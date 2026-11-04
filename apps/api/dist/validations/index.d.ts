@@ -106,6 +106,17 @@ export declare const updateMediaSchema: z.ZodObject<{
     title: z.ZodOptional<z.ZodString>;
     used: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>;
+export declare const updateUserSchema: z.ZodObject<{
+    role: z.ZodOptional<z.ZodEnum<{
+        student: "student";
+        admin: "admin";
+    }>>;
+    status: z.ZodOptional<z.ZodEnum<{
+        active: "active";
+        disabled: "disabled";
+        banned: "banned";
+    }>>;
+}, z.core.$strip>;
 export declare const updateDrillProgressSchema: z.ZodObject<{
     levelNumber: z.ZodNumber;
     stars: z.ZodNumber;

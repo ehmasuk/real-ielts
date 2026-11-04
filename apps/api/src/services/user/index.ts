@@ -2,6 +2,10 @@ import { User } from "../../models/user.model.js"
 import { UserTestResult } from "../../models/user-test-result.model.js"
 import newError from "../../utils/newError.js"
 
+// Escape regex metacharacters so a search string can never inject operators
+// ($regex is passed user input) or trigger catastrophic backtracking (ReDoS).
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+
 const userServices = {
   list: async (params: {
     page?: number
@@ -11,21 +15,29 @@ const userServices = {
     status?: string
   }) => {
     const { page = 1, limit = 20, search, role, status } = params
+
+    // Clamp pagination to sane bounds; Number() on garbage yields NaN, and an
+    // unbounded limit would dump the whole user table in one response.
+    const safePage = Number.isFinite(page) && page >= 1 ? Math.floor(page) : 1
+    const safeLimit = Number.isFinite(limit) ? Math.min(Math.max(Math.floor(limit), 1), 100) : 20
+
     const filter: Record<string, unknown> = {}
 
     if (search) {
+      // Cap length before it reaches the regex engine.
+      const term = escapeRegex(search.slice(0, 100))
       filter.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
+        { name: { $regex: term, $options: "i" } },
+        { email: { $regex: term, $options: "i" } },
       ]
     }
 
     if (role) filter.role = role
     if (status) filter.status = status
 
-    const skip = (page - 1) * limit
+    const skip = (safePage - 1) * safeLimit
     const [users, total] = await Promise.all([
-      User.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      User.find(filter).sort({ createdAt: -1 }).skip(skip).limit(safeLimit).lean(),
       User.countDocuments(filter),
     ])
 
@@ -44,9 +56,9 @@ const userServices = {
     return {
       users: usersWithCounts,
       total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
+      page: safePage,
+      limit: safeLimit,
+      totalPages: Math.ceil(total / safeLimit),
     }
   },
 

@@ -1,11 +1,19 @@
+import crypto from "crypto";
 import authServices from "../services/auth/index.js";
 import newError from "../utils/newError.js";
 import successResponse from "../utils/successResponse.js";
 import env from "../config/env.js";
 import catchAsync from "../utils/catchAsync.js";
+// Compare secrets in constant time (after hashing both sides to equal
+// length) so request timing can't leak the key byte by byte.
+const secretsMatch = (provided, expected) => {
+    const providedHash = crypto.createHash("sha256").update(provided).digest();
+    const expectedHash = crypto.createHash("sha256").update(expected).digest();
+    return crypto.timingSafeEqual(providedHash, expectedHash);
+};
 const sync = catchAsync(async (req, res) => {
     const apiKey = req.headers["x-internal-api-key"];
-    if (apiKey !== env.INTERNAL_API_KEY) {
+    if (typeof apiKey !== "string" || !secretsMatch(apiKey, env.INTERNAL_API_KEY)) {
         throw newError({ message: "Forbidden", statusCode: 403 });
     }
     const { sub, email, name, picture } = req.body;

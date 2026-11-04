@@ -8,12 +8,14 @@ import {
 } from "../controllers/book.controller.js";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 import requireRole from "../middlewares/requireRole.js";
+import validateObjectId from "../middlewares/validateObjectId.js";
 import { validate } from "../middlewares/validate.js";
 import { createBookSchema, updateBookSchema } from "../validations/index.js";
 
 const router: express.Router = express.Router();
 
 router.use(isAuthenticated, requireRole("admin"));
+router.param("id", validateObjectId("id"));
 
 router.get("/", getAdminBooks);
 router.get("/:id", getAdminBookById);

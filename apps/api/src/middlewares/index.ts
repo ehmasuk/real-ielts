@@ -1,5 +1,6 @@
 import cors from "cors";
 import express from "express";
+import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
@@ -7,12 +8,33 @@ import env from "../config/env.js";
 import type { Express } from "express";
 
 const middlewares = (app: Express): void => {
+  const isDev = process.env.NODE_ENV !== "production";
+
+  // Security headers. CSP is disabled — this is a JSON-only API — and CORP is
+  // set to cross-origin so the frontend can embed any media the API may serve
+  // (e.g. audio) directly in the browser.
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+    }),
+  );
+
+  // Vercel (and any reverse proxy) terminates the connection and forwards the
+  // real client IP in X-Forwarded-For. Without "trust proxy", req.ip is the
+  // proxy's IP, so the rate limiters below would key every visitor into one
+  // shared bucket (or be trivially bypassable). Exactly one hop is trusted.
+  // In dev there is no proxy, so keep the default (off) — otherwise the IP
+  // could be spoofed via a hand-crafted X-Forwarded-For header.
+  if (!isDev) {
+    app.set("trust proxy", 1);
+  }
+
   // Rate limiting — applies to all /api routes except /auth (see below).
   // Dev gets a much bigger budget: page loads + react-query fetches can
   // easily exceed 100 requests in the window while iterating, and a 429 here
   // breaks NextAuth's POST /auth/sync at sign-in time (login deadlock until
   // the API server is restarted to reset the in-memory counter).
-  const isDev = process.env.NODE_ENV !== "production";
   const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: isDev ? 1000 : 100, // limit each IP to n requests per windowMs

@@ -11,12 +11,14 @@ import {
 } from "../controllers/test.controller.js";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 import requireRole from "../middlewares/requireRole.js";
+import validateObjectId from "../middlewares/validateObjectId.js";
 import { validate } from "../middlewares/validate.js";
 import { createTestSchema, updateTestSchema } from "../validations/index.js";
 
 const router: express.Router = express.Router();
 
 router.use(isAuthenticated, requireRole("admin"));
+router.param("id", validateObjectId("id"));
 
 router.get("/", getAdminTests);
 router.get("/count", getTestCount);

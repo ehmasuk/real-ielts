@@ -1,7 +1,18 @@
-import mongoose from "mongoose";
+import mongoose, { isValidObjectId } from "mongoose";
 import { Test, type ITest } from "../../models/test.model.js";
 import { UserTestResult } from "../../models/user-test-result.model.js";
 import { UserFullTestResult } from "../../models/user-full-test-result.model.js";
+import newError from "../../utils/newError.js";
+
+// Validate query-supplied ids before they reach the ObjectId constructor —
+// a malformed id would otherwise throw a CastError and surface as a 500.
+const bookIdFilter = (bookId?: string): mongoose.Types.ObjectId | undefined => {
+  if (!bookId) return undefined;
+  if (!isValidObjectId(bookId)) {
+    throw newError({ message: "Invalid bookId", statusCode: 400 });
+  }
+  return new mongoose.Types.ObjectId(bookId);
+};
 
 /**
  * Normalizes an answer for comparison: lowercases, trims, collapses whitespace.
@@ -114,21 +125,24 @@ function scoreSection({
 const testServices = {
   getAll: (filters?: { bookId?: string; skill?: string }): Promise<ITest[]> => {
     const filter: Record<string, any> = { status: "published" };
-    if (filters?.bookId) filter.bookId = new mongoose.Types.ObjectId(filters.bookId);
+    const bookId = bookIdFilter(filters?.bookId);
+    if (bookId) filter.bookId = bookId;
     if (filters?.skill) filter.skill = filters.skill;
     return Test.find(filter).select("-answerJson").sort({ testNumber: 1 }).lean();
   },
 
   getAllLightweight: (filters?: { bookId?: string; skill?: string }) => {
     const filter: Record<string, any> = { status: "published" };
-    if (filters?.bookId) filter.bookId = new mongoose.Types.ObjectId(filters.bookId);
+    const bookId = bookIdFilter(filters?.bookId);
+    if (bookId) filter.bookId = bookId;
     if (filters?.skill) filter.skill = filters.skill;
     return Test.find(filter).select("bookId testNumber skill status").sort({ testNumber: 1 }).lean();
   },
 
   count: (filters?: { bookId?: string; skill?: string }): Promise<number> => {
     const filter: Record<string, any> = { status: "published" };
-    if (filters?.bookId) filter.bookId = new mongoose.Types.ObjectId(filters.bookId);
+    const bookId = bookIdFilter(filters?.bookId);
+    if (bookId) filter.bookId = bookId;
     if (filters?.skill) filter.skill = filters.skill;
     return Test.countDocuments(filter);
   },
@@ -137,7 +151,8 @@ const testServices = {
 
   getAllAdmin: (bookId?: string): Promise<ITest[]> => {
     const filter: Record<string, any> = {};
-    if (bookId) filter.bookId = new mongoose.Types.ObjectId(bookId);
+    const validBookId = bookIdFilter(bookId);
+    if (validBookId) filter.bookId = validBookId;
     return Test.find(filter)
       .select("-contentJson -answerJson")
       .populate("bookId", "title number category")
