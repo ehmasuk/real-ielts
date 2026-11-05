@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "better-auth/best-practices/SKILL.md",
       "computedHash": "9ab075b5061be2a5f299c10505667345cc1ec76e8de4120901cfd586643e776f"
+    },
+    "helmet-config-generator": {
+      "source": "ehtbanton/claudeskillsrepo",
+      "sourceType": "github",
+      "skillPath": "helmet-config-generator/SKILL.md",
+      "computedHash": "e9ffe855011f1e01f1c926de4b2e01cf8790a34135885d005253f1d21229ed3f"
     }
   }
 }

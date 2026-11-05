@@ -4,19 +4,23 @@ import express from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import env from "../config/env.js";
-import type { Express, Request } from "express";
-// Vercel's build-time type-checker resolves these dual-ESM/CJS packages
-// differently from local tsc — a default import can bind to the module
-// namespace ("has no call signatures") instead of the function. Both styles
-// below are safe under every TypeScript resolution mode:
-// - express-rate-limit ships a real named `rateLimit` export.
-// - helmet only exports the middleware as "default", so import the namespace
-//   and read .default (helmet's CJS build also sets .default, so this holds
-//   at runtime regardless of which build Node picks).
+import type { Express, Request, RequestHandler } from "express";
+// express-rate-limit ships a real named `rateLimit` export, which resolves
+// correctly under every TypeScript mode (a default import of it breaks
+// Vercel's build-time type-checker).
 import { rateLimit } from "express-rate-limit";
+// helmet only exports its middleware as the module's default export. Vercel's
+// build-time type-checker infers that default from helmet's CJS entry, where
+// `module.exports.default = module.exports` makes `.default` type as the
+// module itself (non-callable). Import the namespace and assert the shape
+// that is always true at runtime: `.default` is the middleware factory (both
+// the ESM build's `export { helmet as default }` and the CJS build's
+// `module.exports.default = module.exports` guarantee it).
 import * as helmetModule from "helmet";
 
-const helmet = helmetModule.default;
+type HelmetFactory = (options?: Record<string, unknown>) => RequestHandler;
+
+const helmet = (helmetModule as unknown as { default: HelmetFactory }).default;
 
 const middlewares = (app: Express): void => {
   const isDev = process.env.NODE_ENV !== "production";
