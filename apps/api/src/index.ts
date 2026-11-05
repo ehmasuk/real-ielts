@@ -1,15 +1,14 @@
 import http from "http";
 
 import app from "./app.js";
-import connectDB from "./config/db.js";
 
 // create a node server so that we can use it later with socket
 const server = http.createServer(app);
 
-const port = 8080;
+// Vercel's zero-config Express runtime injects PORT; 8080 is the local
+// fallback. The DB connection is started in app.ts.
+const port = Number(process.env.PORT) || 8080;
 
-connectDB().then(() => {
-  server.listen(port, () => {
-    console.log(`Server is running in http://localhost:${port}`);
-  });
+server.listen(port, () => {
+  console.log(`Server is running in http://localhost:${port}`);
 });

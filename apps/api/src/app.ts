@@ -1,4 +1,5 @@
 import express, { type Express } from "express";
+import connectDB from "./config/db.js";
 import {
   catchGlobalErrors,
   notFound,
@@ -8,7 +9,11 @@ import routes from "./routes/index.js";
 
 const app: Express = express();
 
-// end fix
+// Connect to MongoDB at module load. Mongoose buffers queries until the
+// connection resolves, so this is safe for both the local server and
+// Vercel's serverless runtime (whichever entry file it picks — this file
+// or src/index.ts).
+void connectDB();
 
 // load all middlewares
 middlewares(app);
