@@ -1,12 +1,22 @@
 import cors from "cors";
 import crypto from "crypto";
 import express from "express";
-import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
-import rateLimit from "express-rate-limit";
 import env from "../config/env.js";
-import type { Express } from "express";
+import type { Express, Request } from "express";
+// Vercel's build-time type-checker resolves these dual-ESM/CJS packages
+// differently from local tsc — a default import can bind to the module
+// namespace ("has no call signatures") instead of the function. Both styles
+// below are safe under every TypeScript resolution mode:
+// - express-rate-limit ships a real named `rateLimit` export.
+// - helmet only exports the middleware as "default", so import the namespace
+//   and read .default (helmet's CJS build also sets .default, so this holds
+//   at runtime regardless of which build Node picks).
+import { rateLimit } from "express-rate-limit";
+import * as helmetModule from "helmet";
+
+const helmet = helmetModule.default;
 
 const middlewares = (app: Express): void => {
   const isDev = process.env.NODE_ENV !== "production";
@@ -42,7 +52,7 @@ const middlewares = (app: Express): void => {
     standardHeaders: true,
     legacyHeaders: false,
     message: { code: 429, message: "Too many requests, please try again later." },
-    skip: (req) => req.path.startsWith("/auth"),
+    skip: (req: Request) => req.path.startsWith("/auth"),
   });
   app.use("/api", limiter);
 
