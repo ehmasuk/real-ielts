@@ -3,7 +3,8 @@
 import * as React from "react"
 import { Highlighter } from "lucide-react"
 import { QuestionGroup } from "../question-types"
-import { NavigationBar, extractQuestionsFromGroups } from "../shared/NavigationBar"
+import { extractQuestionsFromGroups } from "../shared/NavigationBar"
+import { TestFooter } from "../shared/TestFooter"
 import { HighlightContextMenu } from "../shared/HighlightContextMenu"
 import { useHighlight } from "@/hooks/usePassageHighlight"
 
@@ -12,19 +13,15 @@ export const ListeningLayout = React.memo(function ListeningLayout({
   questionGroups,
   answers,
   onAnswerChange,
-  handleSubmit,
-  submitting,
   isAuthenticated,
-  hideSubmit = false,
+  partNum = 1,
 }: {
   sectionTitle: string
   questionGroups: any[]
   answers: Record<string, any>
   onAnswerChange: (questionId: string, value: any) => void
-  handleSubmit: () => void
-  submitting: boolean
   isAuthenticated: boolean
-  hideSubmit?: boolean
+  partNum?: number
 }) {
   const [activeQuestionId, setActiveQuestionId] = React.useState<string | null>(null)
 
@@ -105,12 +102,12 @@ export const ListeningLayout = React.memo(function ListeningLayout({
       </div>
 
       {isAuthenticated && (
-        <NavigationBar
-          questions={questions}
+        <TestFooter
+          parts={[{ partNum, questions }]}
+          activePartNum={partNum}
+          activeQuestionId={activeQuestionId}
           onQuestionClick={scrollToQuestion}
-          onSubmit={handleSubmit}
-          submitting={submitting}
-          hideSubmit={hideSubmit}
+          onPartClick={() => {}}
         />
       )}
     </div>

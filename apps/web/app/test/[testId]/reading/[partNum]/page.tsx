@@ -62,12 +62,10 @@ export default function ReadingPartPage() {
       questionGroups={questionGroups}
       answers={answers}
       onAnswerChange={handleAnswerChange}
-      handleSubmit={handleSubmit}
-      submitting={submitting}
       isAuthenticated={isAuthenticated}
-      hideSubmit
+      partNum={partNum}
     />
-  ), [sectionTitle, instructions, passage, questionGroups, answers, handleAnswerChange, handleSubmit, submitting, isAuthenticated])
+  ), [sectionTitle, instructions, passage, questionGroups, answers, handleAnswerChange, isAuthenticated, partNum])
 
   if (authLoading || isLoading || redirecting) {
     return (

@@ -71,9 +71,8 @@ export default function TestPartPage() {
         questionGroups={questionGroups}
         answers={answers}
         onAnswerChange={handleAnswerChange}
-        handleSubmit={handleSubmit}
-        submitting={submitting}
         isAuthenticated={isAuthenticated}
+        partNum={partNum}
       />
     ) : (
       <ListeningLayout
@@ -81,12 +80,11 @@ export default function TestPartPage() {
         questionGroups={questionGroups}
         answers={answers}
         onAnswerChange={handleAnswerChange}
-        handleSubmit={handleSubmit}
-        submitting={submitting}
         isAuthenticated={isAuthenticated}
+        partNum={partNum}
       />
     ),
-  [isReading, passage, sectionTitle, questionGroups, answers, handleAnswerChange, handleSubmit, submitting, isAuthenticated]
+  [isReading, passage, sectionTitle, questionGroups, answers, handleAnswerChange, isAuthenticated, partNum]
   )
 
   if (authLoading || isLoading || redirecting) {

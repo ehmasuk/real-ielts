@@ -10,9 +10,9 @@ import { useTestGuard } from "@/components/test/shared/useTestGuard"
 import { LeaveTestModal } from "@/components/test/shared/LeaveTestModal"
 import { ReportBugModal } from "@/components/ReportBugModal"
 import { ListeningLayout } from "@/components/test/layouts/ListeningLayout"
-import { extractQuestionsFromGroups, type QuestionItem } from "@/components/test/shared/NavigationBar"
-import { cn } from "@workspace/ui/lib/utils"
-import { Bug, ChevronLeft, ChevronRight } from "lucide-react"
+import { extractQuestionsFromGroups } from "@/components/test/shared/NavigationBar"
+import { TestFooter, type TestFooterPart } from "@/components/test/shared/TestFooter"
+import { Bug } from "lucide-react"
 
 export default function ListeningFullTestPage() {
   const { showModal, confirmLeave, cancelLeave, bypassOnce } = useTestGuard()
@@ -32,7 +32,7 @@ export default function ListeningFullTestPage() {
     handleSubmit,
   } = useFullTest({ testId, skill: "listening" })
 
-  const sections = data?.sections ?? []
+  const sections = useMemo(() => data?.sections ?? [], [data])
   const [activePartIndex, setActivePartIndex] = useState(0)
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null)
 
@@ -45,15 +45,6 @@ export default function ListeningFullTestPage() {
 
   const audioRef = useRef<HTMLAudioElement>(null)
 
-  const questions: QuestionItem[] = useMemo(() => {
-    if (!activeSection) return []
-    return extractQuestionsFromGroups(
-      activeSection.questionGroups ?? [],
-      activeAnswers,
-      activeQuestionId
-    )
-  }, [activeSection, activeAnswers, activeQuestionId])
-
   const scrollToQuestion = useCallback((questionId: string) => {
     const el = document.querySelector(`[data-question-id="${questionId}"]`)
     if (el) {
@@ -61,6 +52,19 @@ export default function ListeningFullTestPage() {
       ;(el as HTMLElement).focus()
     }
   }, [])
+
+  const footerParts: TestFooterPart[] = useMemo(
+    () =>
+      sections.map((section: any, index: number) => ({
+        partNum: index + 1,
+        questions: extractQuestionsFromGroups(
+          section?.questionGroups ?? [],
+          answers[String(index + 1)] ?? {},
+          activeQuestionId
+        ),
+      })),
+    [sections, answers, activeQuestionId]
+  )
 
   const handleAnswerChangeForActive = useCallback(
     (questionId: string, value: any) => {
@@ -93,20 +97,6 @@ export default function ListeningFullTestPage() {
       audio.play().catch(() => {})
     }
   }, [activePartIndex, activeAudioUrl])
-
-  const goNext = useCallback(() => {
-    if (activePartIndex < totalParts - 1) {
-      setActivePartIndex((i) => i + 1)
-      setActiveQuestionId(null)
-    }
-  }, [activePartIndex, totalParts])
-
-  const goPrev = useCallback(() => {
-    if (activePartIndex > 0) {
-      setActivePartIndex((i) => i - 1)
-      setActiveQuestionId(null)
-    }
-  }, [activePartIndex])
 
   if (authLoading || isLoading || redirecting) {
     return (
@@ -182,8 +172,6 @@ export default function ListeningFullTestPage() {
               questionGroups={activeSection.questionGroups ?? []}
               answers={activeAnswers}
               onAnswerChange={handleAnswerChangeForActive}
-              handleSubmit={handleSubmit}
-              submitting={submitting}
               isAuthenticated={false}
             />
           )}
@@ -192,67 +180,16 @@ export default function ListeningFullTestPage() {
 
       {/* ── Bottom Navigation Bar ──────────────────────────────────────────── */}
       {isAuthenticated && (
-        <div className="z-50 flex h-14 shrink-0 items-center border-t border-border bg-muted/95 backdrop-blur-sm">
-          <div className="mx-auto flex h-full w-full max-w-7xl items-center gap-3 px-3 sm:gap-4 sm:px-4">
-            {/* Prev Part */}
-            <button
-              onClick={goPrev}
-              disabled={activePartIndex === 0}
-              className={cn(
-                "flex shrink-0 items-center gap-1 rounded px-3 py-1.5 text-xs font-bold transition-colors",
-                activePartIndex === 0
-                  ? "text-muted-foreground/40 cursor-not-allowed"
-                  : "text-foreground hover:bg-muted/60"
-              )}
-            >
-              <ChevronLeft className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Prev Part</span>
-            </button>
-
-            {/* Question dots */}
-            <div className="no-scrollbar flex flex-1 items-center gap-1 overflow-x-auto">
-              {questions.map((q) => (
-                <button
-                  key={q.questionId}
-                  onClick={() => scrollToQuestion(q.questionId)}
-                  className={cn(
-                    "flex h-8 w-8 shrink-0 items-center justify-center rounded text-xs font-bold transition-colors",
-                    q.isActive &&
-                      !q.isAnswered &&
-                      "bg-foreground text-background",
-                    q.isAnswered &&
-                      "bg-indigo-600 text-white",
-                    !q.isAnswered &&
-                      !q.isActive &&
-                      "border border-border/40 bg-background/50 text-muted-foreground hover:bg-background hover:text-foreground"
-                  )}
-                >
-                  {q.number}
-                </button>
-              ))}
-            </div>
-
-            {/* Part indicator */}
-            <span className="shrink-0 text-[11px] font-bold text-muted-foreground">
-              Part {activePartNum} of {totalParts}
-            </span>
-
-            {/* Next Part */}
-            <button
-              onClick={goNext}
-              disabled={activePartIndex === totalParts - 1}
-              className={cn(
-                "flex shrink-0 items-center gap-1 rounded px-3 py-1.5 text-xs font-bold transition-colors",
-                activePartIndex === totalParts - 1
-                  ? "text-muted-foreground/40 cursor-not-allowed"
-                  : "text-foreground hover:bg-muted/60"
-              )}
-            >
-              <span className="hidden sm:inline">Next Part</span>
-              <ChevronRight className="h-3.5 w-3.5" />
-            </button>
-          </div>
-        </div>
+        <TestFooter
+          parts={footerParts}
+          activePartNum={activePartNum}
+          activeQuestionId={activeQuestionId}
+          onQuestionClick={scrollToQuestion}
+          onPartClick={(partNum) => {
+            setActivePartIndex(partNum - 1)
+            setActiveQuestionId(null)
+          }}
+        />
       )}
 
       <LeaveTestModal open={showModal} onConfirm={confirmLeave} onCancel={cancelLeave} />

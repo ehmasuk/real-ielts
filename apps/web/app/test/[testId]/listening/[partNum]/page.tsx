@@ -54,12 +54,10 @@ export default function ListeningPartPage() {
       questionGroups={questionGroups}
       answers={answers}
       onAnswerChange={handleAnswerChange}
-      handleSubmit={handleSubmit}
-      submitting={submitting}
       isAuthenticated={isAuthenticated}
-      hideSubmit
+      partNum={partNum}
     />
-  ), [sectionTitle, questionGroups, answers, handleAnswerChange, handleSubmit, submitting, isAuthenticated])
+  ), [sectionTitle, questionGroups, answers, handleAnswerChange, isAuthenticated, partNum])
 
   if (authLoading || isLoading || redirecting) {
     return (

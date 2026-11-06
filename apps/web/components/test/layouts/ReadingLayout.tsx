@@ -3,7 +3,8 @@
 import * as React from "react"
 import { Highlighter } from "lucide-react"
 import { QuestionGroup } from "../question-types"
-import { NavigationBar, extractQuestionsFromGroups } from "../shared/NavigationBar"
+import { extractQuestionsFromGroups } from "../shared/NavigationBar"
+import { TestFooter } from "../shared/TestFooter"
 import { formatString } from "../shared/formatString"
 import { HighlightContextMenu } from "../shared/HighlightContextMenu"
 import { useHighlight } from "@/hooks/usePassageHighlight"
@@ -15,10 +16,8 @@ export const ReadingLayout = React.memo(function ReadingLayout({
   instructions,
   answers,
   onAnswerChange,
-  handleSubmit,
-  submitting,
   isAuthenticated,
-  hideSubmit = false,
+  partNum = 1,
 }: {
   sectionTitle: string
   instructions?: string
@@ -26,10 +25,8 @@ export const ReadingLayout = React.memo(function ReadingLayout({
   questionGroups: any[]
   answers: Record<string, any>
   onAnswerChange: (questionId: string, value: any) => void
-  handleSubmit: () => void
-  submitting: boolean
   isAuthenticated: boolean
-  hideSubmit?: boolean
+  partNum?: number
 }) {
   const [activeQuestionId, setActiveQuestionId] = React.useState<string | null>(null)
 
@@ -165,13 +162,12 @@ export const ReadingLayout = React.memo(function ReadingLayout({
       </div>
 
       {isAuthenticated && (
-        <NavigationBar
-          fixed={false}
-          questions={questions}
+        <TestFooter
+          parts={[{ partNum, questions }]}
+          activePartNum={partNum}
+          activeQuestionId={activeQuestionId}
           onQuestionClick={scrollToQuestion}
-          onSubmit={handleSubmit}
-          submitting={submitting}
-          hideSubmit={hideSubmit}
+          onPartClick={() => {}}
         />
       )}
     </div>
