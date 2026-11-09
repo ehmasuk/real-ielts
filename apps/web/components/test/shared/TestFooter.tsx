@@ -38,7 +38,7 @@ export const TestFooter = React.memo(function TestFooter({
 }: TestFooterProps) {
   return (
     <div className="z-50 flex h-14 shrink-0 border-t border-border bg-muted/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-full w-full items-stretch">
+      <div className="mx-auto flex h-full w-full max-w-7xl items-stretch">
         {parts.map((part) => {
           const answered = part.questions.filter((q) => q.isAnswered).length
           const total = part.questions.length
@@ -49,7 +49,7 @@ export const TestFooter = React.memo(function TestFooter({
             return (
               <div
                 key={part.partNum}
-                className="flex min-w-0 flex-1 items-center px-2 sm:px-4"
+                className="flex min-w-0 items-center px-2 sm:px-4"
               >
                 <span
                   className={cn(
@@ -72,7 +72,7 @@ export const TestFooter = React.memo(function TestFooter({
                         aria-label={`Question ${q.number}${q.isAnswered ? ", answered" : ""}`}
                         aria-current={isFocused ? "location" : undefined}
                         className={cn(
-                          "flex shrink-0 items-center justify-center gap-0 border-t-3 px-1 text-sm font-bold transition-colors sm:px-2",
+                          "flex shrink-0 items-center justify-center gap-0 border-t-3 px-2 text-sm font-bold transition-colors sm:px-3",
                           q.isAnswered
                             ? "border-t-blue-500 text-foreground hover:text-blue-600"
                             : "border-t-zinc-300 text-foreground/70 hover:text-foreground dark:border-t-zinc-600",
@@ -95,7 +95,7 @@ export const TestFooter = React.memo(function TestFooter({
               onClick={() => onPartClick(part.partNum)}
               aria-label={`Go to Part ${part.partNum}, ${answered} of ${total} answered`}
               className={cn(
-                "flex min-w-0 flex-1 shrink-0 items-center justify-center gap-2 border-t-2 px-3 text-sm transition-colors hover:bg-muted/60 sm:px-6",
+                "flex min-w-0 flex-1 items-center justify-center gap-2 border-t-2 px-3 text-sm transition-colors hover:bg-muted/60 sm:px-6",
                 done
                   ? "border-t-blue-500"
                   : "border-t-zinc-300 dark:border-t-zinc-600",
