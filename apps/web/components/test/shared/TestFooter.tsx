@@ -38,7 +38,7 @@ export const TestFooter = React.memo(function TestFooter({
 }: TestFooterProps) {
   return (
     <div className="z-50 flex h-14 shrink-0 border-t border-border bg-muted/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-full w-full max-w-7xl items-stretch">
+      <div className="mx-auto flex h-full w-full items-stretch">
         {parts.map((part) => {
           const answered = part.questions.filter((q) => q.isAnswered).length
           const total = part.questions.length
@@ -51,7 +51,14 @@ export const TestFooter = React.memo(function TestFooter({
                 key={part.partNum}
                 className="flex min-w-0 flex-1 items-center px-2 sm:px-4"
               >
-                <span className="shrink-0 pr-1 text-sm font-bold text-foreground sm:pr-2">
+                <span
+                  className={cn(
+                    "shrink-0 pr-1 h-full grid place-items-center border-t-3 text-sm font-bold text-foreground sm:pr-2",
+                    done
+                      ? "border-t-blue-500"
+                      : "border-t-zinc-300 dark:border-t-zinc-600",
+                  )}
+                >
                   Part {part.partNum}
                 </span>
                 <div className="no-scrollbar flex h-full shrink flex-1 items-stretch overflow-x-auto">
@@ -65,12 +72,12 @@ export const TestFooter = React.memo(function TestFooter({
                         aria-label={`Question ${q.number}${q.isAnswered ? ", answered" : ""}`}
                         aria-current={isFocused ? "location" : undefined}
                         className={cn(
-                          "flex shrink-0 items-center justify-center gap-0 border-t-2 px-1 text-xs font-bold transition-colors sm:px-1.5",
+                          "flex shrink-0 items-center justify-center gap-0 border-t-3 px-1 text-sm font-bold transition-colors sm:px-2",
                           q.isAnswered
                             ? "border-t-blue-500 text-foreground hover:text-blue-600"
                             : "border-t-zinc-300 text-foreground/70 hover:text-foreground dark:border-t-zinc-600",
                           isFocused &&
-                            "mx-0.5 rounded-[4px] bg-background/60 outline outline-1 outline-blue-600 dark:outline-blue-400",
+                            "mx-0.5 rounded-lg bg-background/60 outline-blue-600 dark:outline-blue-400",
                         )}
                       >
                         {q.number}
